@@ -20,3 +20,7 @@ Route::get('/', function () {
 Route::get('/limit-sample', function () {
     return view('limitSample.index');
 });
+
+Route::get('/limit-sample/part/1', function () {
+    return view('limitSample.allPart');
+});

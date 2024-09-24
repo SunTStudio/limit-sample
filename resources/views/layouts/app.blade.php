@@ -74,7 +74,7 @@
         </nav>
 
         <div id="page-wrapper" class="gray-bg">
-            <div class="row border-bottom">
+            <div class="row border-bottom mb-4">
                 <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
                     <div class="navbar-header">
                         <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
@@ -92,6 +92,9 @@
                     </ul>
                 </nav>
             </div>
+
+
+            @yield('header')
             <div class="wrapper wrapper-content">
                 @yield('content')
             </div>

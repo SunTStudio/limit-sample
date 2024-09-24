@@ -11,6 +11,20 @@
   src: url('../fonts/glyphicons-halflings-regular.eot');
   src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg') format('svg');
 }
+
+#model .product-imitation img{
+    width:100%;
+    object-fit:cover;
+    height:20rem;
+}
+
+#part .product-imitation img{
+    width:100%;
+    object-fit:cover;
+    height:9rem;
+}
+
+
 .glyphicon {
   position: relative;
   top: 1px;
@@ -6500,7 +6514,7 @@ del {
 }
 .product-imitation {
   text-align: center;
-  padding: 90px 0;
+  padding: 5px 0;
   background-color: #f8f8f9;
   color: #bebec3;
   font-weight: 600;

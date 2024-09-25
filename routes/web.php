@@ -17,10 +17,50 @@ Route::get('/', function () {
     return view('limitSample.dashboard');
 });
 
+
+// Model
+
 Route::get('/limit-sample', function () {
-    return view('limitSample.index');
+    return view('model.index');
 });
 
-Route::get('/limit-sample/part/1', function () {
-    return view('limitSample.allPart');
+Route::get('/limit-sample/model/create', function () {
+    return view('model.create');
 });
+
+Route::get('/limit-sample/model/edit/id', function () {
+    return view('model.edit');
+});
+
+
+
+
+
+// Part
+
+Route::get('limit-sample/model/id/part/create', function () {
+    return view('part.create');
+});
+Route::get('limit-sample/part/edit/id', function () {
+    return view('part.edit');
+});
+Route::get('/limit-sample/model/id/part', function () {
+    return view('part.index');
+});
+
+
+//area Part
+
+Route::get('/limit-sample/part/id', function () {
+    return view('areaPart.index');
+});
+
+Route::get('/limit-sample/areaPart/id', function () {
+    return view('areaPart.detail');
+});
+
+Route::get('/limit-sample/area-part/edit/id', function () {
+    return view('areaPart.edit');
+});
+
+

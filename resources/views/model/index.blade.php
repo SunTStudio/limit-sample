@@ -19,14 +19,21 @@
 @section('content')
 <section id="model">
     <div class="row justify-content-center">
-        <div class="col-lg-10 col-10">
-            <div class="input-group m-4"><input placeholder="Search" type="text" class="form-control form-control-sm">
+        <div class="col-lg-5 col-8 rounded  mb-3">
+            <div class="input-group" >
+                <input placeholder="Search" type="text" class="form-control form-control-sm">
                 <span class="input-group-append">
-                    <button type="button" class="btn btn-sm btn-primary">Go!
+                    <button type="button" class="btn btn-sm btn-primary"><i class="fa fa-search"></i>
                     </button>
                 </span>
             </div>
         </div>
+        <div class="col-lg-2 col-10 text-center  mb-3">
+            <a href="{{ url('/limit-sample/model/create') }}" class="btn btn-secondary ">Tambah Model  <i class="fa fa-plus"></i></a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
         <div class="col-lg-6 col-11">
             <div class="ibox">
                 <div class="ibox-content product-box">
@@ -37,10 +44,10 @@
                     </div>
                     <div class="product-desc">
                         <a href="#" class="product-name"> D26A</a>
-                        <div class="m-t text-right">
+                        <div class="m-t text-right d-flex justify-content-between">
 
-                            <a href="{{ url('/limit-sample/part/1') }}" class="btn btn-xs btn-outline btn-primary">See Detail <i class="fa fa-long-arrow-right"></i> </a>
-                            <a href="#" class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
+                            <a href="{{ url('/limit-sample/model/id/part') }}" class="btn btn-xs btn-outline btn-primary">See Detail <i class="fa fa-long-arrow-right"></i> </a>
+                            <a href="{{ url('/limit-sample/model/edit/id') }}" class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
                         </div>
                     </div>
                 </div>
@@ -55,10 +62,10 @@
                     </div>
                     <div class="product-desc">
                         <a href="#" class="product-name"> D30D</a>
-                        <div class="m-t text-right">
+                        <div class="m-t text-right d-flex justify-content-between">
 
-                            <a href="#" class="btn btn-xs btn-outline btn-primary">See Detail <i class="fa fa-long-arrow-right"></i> </a>
-                            <a href="#" class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
+                            <a href="{{ url('/limit-sample/model/id/part')}}" class="btn btn-xs btn-outline btn-primary">See Detail <i class="fa fa-long-arrow-right"></i> </a>
+                            <a href="{{ url('/limit-sample/model/edit/id')}}" class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
                         </div>
                     </div>
                 </div>
@@ -73,7 +80,7 @@
                     </div>
                     <div class="product-desc">
                         <a href="#" class="product-name"> D40D</a>
-                        <div class="m-t text-right">
+                        <div class="m-t text-right d-flex justify-content-between">
 
                             <a href="#" class="btn btn-xs btn-outline btn-primary">See Detail <i class="fa fa-long-arrow-right"></i> </a>
                             <a href="#" class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
@@ -91,7 +98,7 @@
                     </div>
                     <div class="product-desc">
                         <a href="#" class="product-name"> D26A</a>
-                        <div class="m-t text-right">
+                        <div class="m-t text-right d-flex justify-content-between">
 
                             <a href="#" class="btn btn-xs btn-outline btn-primary">See Detail <i class="fa fa-long-arrow-right"></i> </a>
                             <a href="#" class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>

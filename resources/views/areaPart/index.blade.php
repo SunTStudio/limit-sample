@@ -7,10 +7,10 @@
             <h2>Limit Sample - <strong>Area Path</strong> </h2>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="{{ url('/limit-sample/') }}">Modal</a>
+                    <a href="{{ url('/limit-sample/modal') }}">Modal</a>
                 </li>
                 <li class="breadcrumb-item active">
-                    <a href="{{ url('/limit-sample/model/id/part') }}">Part</a>
+                    <a href="{{ url("/limit-sample/model/$model->id/part") }}">Part</a>
                 </li>
                 <li class="breadcrumb-item active">
                     <strong href="index.html">Area Path</strong>
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="col-lg-2 col-10 text-center  mb-3">
-                <a href="{{ url('/limit-sample/model/create') }}" class="btn btn-secondary ">Tambah Area Part <i
+                <a href="{{ url("/limit-sample/area-part/create/$part->id") }}" class="btn btn-secondary ">Tambah Area Part <i
                         class="fa fa-plus"></i></a>
             </div>
         </div>
@@ -45,15 +45,13 @@
                 <div class="col-lg-12 p-0">
                     <div class="ibox-content">
                         <div class="map-container">
-                            <img id="mapImage" src="{{ asset('img/part/D26A.png') }}" alt="Area Map">
-
+                            <img id="mapImage" src="{{ asset("img/part/$part->foto_part") }}" alt="Area Map">
+                            @foreach ($areaParts as $areaPart )
                             <!-- Tombol Visit dengan posisi tetap -->
-                            <button class="visit-btn" style="top: 8%; left: 12%;" data-toggle="modal"
+                            <button class="visit-btn" style="top: {{ $areaPart->koordinat_y }}; left: {{ $areaPart->koordinat_x }};" data-toggle="modal"
                                 data-target="#myModal4">1</button>
-                            <button class="visit-btn" style="top: 30%; left: 38%;" data-toggle="modal"
-                                data-target="#myModal4">2</button>
-                            <button class="visit-btn" style="top: 13.29%; left: 92.74%;" data-toggle="modal"
-                                data-target="#myModal4">3</button>
+                            @endforeach
+
                         </div>
                     </div>
                 </div>
@@ -76,7 +74,7 @@
                             <span>Part Dapat Ditampilkan</span>
                         </div>
                     </div>
-                    <a href="{{ url('/limit-sample/model/id/part') }}" class="btn btn-secondary">Kemabali</a>
+                    <a href="{{ url("/limit-sample/model/$model->id/part") }}" class="btn btn-secondary">Kemabali</a>
                 </div>
             </div>
         </div>

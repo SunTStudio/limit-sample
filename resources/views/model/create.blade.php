@@ -5,7 +5,7 @@
         <h2>Limit Sample - <strong>Model</strong> </h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="{{ url('/limit-sample/') }}">Model</a>
+                <a href="{{ url('/limit-sample/model') }}">Model</a>
             </li>
             <li class="breadcrumb-item active">
                 <strong href="index.html">Tambah Model</strong>
@@ -29,16 +29,17 @@
                     <h5>Form Tambah Model Baru</h5>
                 </div>
                 <div class="ibox-content">
-                    <form method="get" action="{{ url('limit-sample') }}">
+                    <form method="POST" action="{{ url('/limit-sample/model/create') }}" enctype="multipart/form-data">
+                        @csrf
                         <div class="form-group  row"><label class="col-sm-2 col-form-label">Nama Model</label>
 
-                            <div class="col-sm-10"><input type="text" class="form-control"></div>
+                            <div class="col-sm-10"><input type="text" name="name" class="form-control"></div>
                         </div>
                         <div class="form-group  row">
                             <label class="col-sm-2 col-form-label">Foto Model</label>
                             <div class="col-sm-10">
                                 <div class="custom-file">
-                                    <input id="logo" type="file" class="custom-file-input">
+                                    <input id="logo" type="file" class="custom-file-input" name="foto_model">
                                     <label for="logo" class="custom-file-label">Choose file...</label>
                                 </div>
                             </div>

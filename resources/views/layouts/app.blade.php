@@ -37,7 +37,7 @@
                         <a href="{{ url('/') }}"><i class="fa fa-dashboard"></i><span class="nav-label">Dashboards</span></a>
                     </li>
                     <li class="{{ Request::is('limit-sample*') ? 'active' : '' }}">
-                        <a href="{{ url('/limit-sample') }}"><i class="fa fa-th-large"></i><span class="nav-label">Limit Sample</span></a>
+                        <a href="{{ url('/limit-sample/model') }}"><i class="fa fa-th-large"></i><span class="nav-label">Limit Sample</span></a>
                     </li>
                     {{-- <li id="managementMenu">
                         <a href="#"><i class="fa fa-th-large"></i><span class="nav-label">Manajemen Perpus</span><span class="fa arrow"></span></a>

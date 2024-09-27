@@ -8,7 +8,10 @@
                     <a href="{{ url('/limit-sample/') }}">Modal</a>
                 </li>
                 <li class="breadcrumb-item active">
-                    <a href="{{ url('/limit-sample/model/id/part') }}">Part</a>
+                    <a href="{{ url("/limit-sample/model/$model->id/part") }}">Part</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <a href="{{ url("/limit-sample/part/$part->id") }}">Area Part</a>
                 </li>
                 <li class="breadcrumb-item active">
                     <strong href="index.html">Tambah Part</strong>
@@ -106,9 +109,11 @@
                                 <textarea type="text-area" name="metode_pengecekan" class="form-control"></textarea>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
+            
             <div class="col-lg-12">
                 <div class="ibox ">
                     <div class="ibox-title">
@@ -117,28 +122,28 @@
                     <div class="ibox-content">
                         <div class="form-group  row">
                             <label class="col-sm-2 col-form-label">Foto Ke-Satu</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-10 mb-2">
                                 <div class="custom-file">
                                     <input id="logo" name="foto_ke_satu" type="file" class="custom-file-input">
                                     <label for="logo" class="custom-file-label">Choose file...</label>
                                 </div>
                             </div>
                             <label class="col-sm-2 col-form-label">Foto Ke-Dua</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-10 mb-2">
                                 <div class="custom-file">
                                     <input id="logo" name="foto_ke_dua" type="file" class="custom-file-input">
                                     <label for="logo" class="custom-file-label">Choose file...</label>
                                 </div>
                             </div>
                             <label class="col-sm-2 col-form-label">Foto Ke-Tiga</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-10 mb-2">
                                 <div class="custom-file">
                                     <input id="logo" name="foto_ke_tiga" type="file" class="custom-file-input">
                                     <label for="logo" class="custom-file-label">Choose file...</label>
                                 </div>
                             </div>
                             <label class="col-sm-2 col-form-label">Foto Ke-Empat</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-10 mb-2">
                                 <div class="custom-file">
                                     <input id="logo" name="foto_ke_empat" type="file" class="custom-file-input">
                                     <label for="logo" class="custom-file-label">Choose file...</label>
@@ -155,10 +160,26 @@
                     </div>
                     <div class="ibox-content">
                         <div class="map-container">
-                            <img id="mapImage" src="{{ asset('img/part/D26A.png') }}" alt="Area Map">
+                            <img id="mapImage" src="{{ asset("img/part/$part->foto_part") }}" alt="Area Map">
+                            @foreach ($areaParts as $areaPart )
+                            <!-- Tombol Visit dengan posisi tetap -->
+                            <button class="visit-btn"
+                                style="top: {{ $areaPart->koordinat_y }}; left: {{ $areaPart->koordinat_x }};
+                                @if ($areaPart->sec_head_approval_date == null)
+                                    background-color: yellow; color: black;
+                                @elseif($areaPart->dept_head_approval_date == null)
+                                    background-color: rgb(85, 85, 85); color: rgb(0, 0, 0);
+                                @else
+                                    background-color: black; color: white;
+                                @endif"
+                                type="button">
+                                {{ $loop->iteration }}
+                            </button>
+
+                            @endforeach
                             <div id="buttonsContainer"></div>
-                            <input type="hidden" name="koordinat_x" id="btnY" value="">
-                            <input type="hidden" name="koordinat_y" id="btnX" value="">
+                            <input type="hidden" name="koordinat_y" id="btnY" value="">
+                            <input type="hidden" name="koordinat_x" id="btnX" value="">
                         </div>
                         {{-- <a class="zoom-btn btn btn-light" id="zoomInBtn">+</a>
                         <a class="zoom-btn btn btn-light" id="zoomOutBtn">-</a> --}}
@@ -166,7 +187,7 @@
                         <div class="hr-line-dashed"></div>
                         <div class="form-group row">
                             <div class="col-sm-4 col-sm-offset-2">
-                                <a href="{{ url("/limit-sample/$part->id/part") }}" class="btn btn-white btn-sm">Batal</a>
+                                <a href="{{ url("/limit-sample/part/$part->id") }}" class="btn btn-white btn-sm">Batal</a>
                                 <button class="btn btn-primary btn-sm" type="submit">Tambah</button>
                             </div>
                         </div>
@@ -232,8 +253,8 @@
         const y = event.clientY - rect.top;  // Koordinat Y relatif terhadap gambar
 
         // Hitung persentase posisi klik terhadap gambar
-        const percentageX = ((x / rect.width) * 100).toFixed(2);
-        const percentageY = ((y / rect.height) * 100).toFixed(2);
+        const percentageX = ((x / rect.width) * 95).toFixed(2);
+        const percentageY = ((y / rect.height) * 95).toFixed(2);
 
         // Bersihkan tombol yang sudah ada sebelumnya
         buttonsContainer.innerHTML = '';
@@ -245,8 +266,8 @@
         button.style.left = `${(x / rect.width) * 95}%`;
 
         //setting value inputan btnY dan btnX
-        btnY.setAttribute('value',`${(y / rect.height) * 100}%`);
-        btnX.setAttribute('value',`${(x / rect.width) * 100}%`);
+        btnY.setAttribute('value',`${(y / rect.height) * 95}%`);
+        btnX.setAttribute('value',`${(x / rect.width) * 95}%`);
 
         // Simpan persentase posisi untuk keperluan zoom
         button.dataset.percentageX = percentageX;

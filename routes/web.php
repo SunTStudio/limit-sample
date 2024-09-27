@@ -45,6 +45,7 @@ Route::post('limit-sample/model/{id}/part/create',[PartController::class, 'store
 Route::get('limit-sample/part/edit/{id}',[PartController::class, 'edit'])->name('part.edit');
 Route::post('limit-sample/part/edit/{id}',[PartController::class, 'update'])->name('part.update');
 Route::get('/limit-sample/model/{id}/part/search/',[PartController::class, 'search'])->name('part.search');
+Route::delete('/limit-sample/model/part/delete/{id}',[PartController::class, 'destroy'])->name('areaPart.delete');
 
 
 //area Part
@@ -55,5 +56,4 @@ Route::post('/limit-sample/area-part/create/{id}',[AreaPartController::class, 's
 Route::get('/limit-sample/area-part/edit/{id}',[AreaPartController::class, 'edit'])->name('areaPart.edit');
 Route::post('/limit-sample/area-part/edit/{id}',[AreaPartController::class, 'update'])->name('areaPart.update');
 Route::get('/limit-sample/areaPart/{id}',[AreaPartController::class, 'detail'])->name('areaPart.edit');
-
 

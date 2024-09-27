@@ -8,7 +8,7 @@
                 <a href="{{ url('/limit-sample/') }}">Modal</a>
             </li>
             <li class="breadcrumb-item active">
-                <a href="{{ url('/limit-sample/model/id/part') }}">Part</a>
+                <a href="{{ url("/limit-sample/model/$model->id/part") }}">Part</a>
             </li>
             <li class="breadcrumb-item active">
                 <strong href="#">Edit Part</strong>
@@ -32,20 +32,21 @@
                     <h5>Form Edit Part</h5>
                 </div>
                 <div class="ibox-content">
-                    <form method="get" action="{{ url('/limit-sample/model/id/part') }}">
+                    <form method="POST" action="{{ url("/limit-sample/part/edit/$part->id") }}" enctype="multipart/form-data">
+                        @csrf
                         <div class="form-group  row"><label class="col-sm-2 col-form-label">Nama Model</label>
 
-                            <div class="col-sm-10"><input type="text" class="form-control" placeholder="Nama Model" disabled></div>
+                            <div class="col-sm-10"><input type="text" class="form-control" placeholder="{{ $model->name }}" disabled></div>
                         </div>
                         <div class="form-group  row"><label class="col-sm-2 col-form-label">Nama Part</label>
 
-                            <div class="col-sm-10"><input type="text" class="form-control"></div>
+                            <div class="col-sm-10"><input type="text" name="name" class="form-control" value="{{ $part->name }}"></div>
                         </div>
                         <div class="form-group  row">
                             <label class="col-sm-2 col-form-label">Foto Part</label>
                             <div class="col-sm-10">
                                 <div class="custom-file">
-                                    <input id="logo" type="file" class="custom-file-input">
+                                    <input id="logo" name="foto_part" type="file" class="custom-file-input">
                                     <label for="logo" class="custom-file-label">Choose file...</label>
                                 </div>
                             </div>
@@ -53,7 +54,7 @@
                         <div class="hr-line-dashed"></div>
                         <div class="form-group row">
                             <div class="col-sm-4 col-sm-offset-2">
-                                <a href="{{ url('/limit-sample/model/id/part') }}" class="btn btn-white btn-sm" >Batal</a>
+                                <a href="{{ url("/limit-sample/model/$model->id/part") }}" class="btn btn-white btn-sm" >Batal</a>
                                 <button class="btn btn-primary btn-sm" type="submit">Edit</button>
                             </div>
                         </div>

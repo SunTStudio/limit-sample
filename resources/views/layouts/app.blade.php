@@ -12,6 +12,7 @@
     <link href="{{ asset('css/animate.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/summernote/summernote-bs4.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     @yield('css')
 </head>
@@ -25,7 +26,7 @@
                         <div class="dropdown profile-element">
                             <img alt="image" class="rounded-circle" src="{{ asset('img/profile_small.jpg') }}" />
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <span class="block m-t-xs font-bold">Risky</span>
+                                <span class="block m-t-xs font-bold">Editor</span>
                                 <span class="text-muted text-xs block">Editor</span>
                             </a>
                         </div>
@@ -120,6 +121,11 @@
     <script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
     {{-- datepicker --}}
     <script src="{{ asset('js/plugins/datapicker/bootstrap-datepicker.js') }}"></script>
+
+    <!-- SUMMERNOTE -->
+    <script src="{{ asset('js/plugins/summernote/summernote-bs4.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote-cleaner/0.7.0/summernote-cleaner.min.js"></script>
+
     <!-- Flot -->
     <script src="{{ asset('js/plugins/flot/jquery.flot.js') }}"></script>
     <script src="{{ asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>

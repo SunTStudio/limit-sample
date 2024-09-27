@@ -7,7 +7,7 @@
             <h2>Limit Sample - <strong>Area Path</strong> </h2>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="{{ url('/limit-sample/modal') }}">Modal</a>
+                    <a href="{{ url('/limit-sample/model') }}">Modal</a>
                 </li>
                 <li class="breadcrumb-item active">
                     <a href="{{ url("/limit-sample/model/$model->id/part") }}">Part</a>
@@ -44,12 +44,23 @@
             <div class="row m-t-lg">
                 <div class="col-lg-12 p-0">
                     <div class="ibox-content">
-                        <div class="map-container">
+                        <div class="map-container text-center">
                             <img id="mapImage" src="{{ asset("img/part/$part->foto_part") }}" alt="Area Map">
                             @foreach ($areaParts as $areaPart )
                             <!-- Tombol Visit dengan posisi tetap -->
-                            <button class="visit-btn" style="top: {{ $areaPart->koordinat_y }}; left: {{ $areaPart->koordinat_x }};" data-toggle="modal"
-                                data-target="#myModal4">1</button>
+                            <button class="visit-btn"
+                                style="top: {{ $areaPart->koordinat_y }}; left: {{ $areaPart->koordinat_x }};
+                                @if ($areaPart->sec_head_approval_date == null)
+                                    background-color: yellow; color: black;
+                                @elseif($areaPart->dept_head_approval_date == null)
+                                    background-color: rgb(85, 85, 85); color: rgb(0, 0, 0);
+                                @else
+                                    background-color: black; color: white;
+                                @endif"
+                                data-toggle="modal" data-target="#{{ $areaPart->id }}">
+                                {{ $loop->iteration }}
+                            </button>
+
                             @endforeach
 
                         </div>
@@ -58,7 +69,7 @@
 
             </div>
             <div class="row">
-                <div class="col-lg-12 text-center">
+                <div class="col-lg-12">
                     <div class="legend-container">
                         <p><strong>Keterangan</strong></p>
                         <div class="legend-item">
@@ -74,7 +85,15 @@
                             <span>Part Dapat Ditampilkan</span>
                         </div>
                     </div>
-                    <a href="{{ url("/limit-sample/model/$model->id/part") }}" class="btn btn-secondary">Kemabali</a>
+                    <div class="text-center">
+                        <a href="{{ url("/limit-sample/model/$model->id/part") }}" class="btn btn-secondary">Kembali</a>
+                        <form action="{{ url("/limit-sample/model/part/delete/$part->id") }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus part ini?');">
+                            @csrf
+                            @method('DELETE') <!-- Ini menandakan bahwa request ini adalah DELETE method -->
+                            <button type="submit" class="btn btn-danger">Hapus</button>
+                        </form>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,30 +101,92 @@
 
 
     <section id="modal">
+
+        @foreach ($areaParts as $areaPart)
+
         <!-- Modal -->
-        <div class="modal inmodal" id="myModal4" tabindex="-1" role="dialog"  aria-hidden="true">
-            <div class="modal-dialog">
+        <div class="modal inmodal" id="{{ $areaPart->id }}" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content animated fadeIn">
-                    <div class="modal-header">
+                    {{-- <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        <i class="fa fa-clock-o modal-icon"></i>
-                        <h4 class="modal-title">Modal title</h4>
+                        <h4 class="modal-title">Limit Sample</h4>
                         <small>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</small>
-                    </div>
+                    </div> --}}
                     <div class="modal-body">
-                        <p><strong>Lorem Ipsum is simply dummy</strong> text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
-                            printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
-                            remaining essentially unchanged.</p>
+                        <div class="row d-flex text-center border border-dark  m-0 p-0 align-items-center" style="background-color: #002060; border-width: 4px;">
+                            <div class="col-2 p-3 m-0" style="background-color: #ffffff;">
+                                <img src="{{ asset('img/limitSample/logoLimitSample.png') }}" class="img-fluid"
+                                    alt="">
+                                </div>
+                            <div class="col-8" style="background-color: #002060;">
+                                <p class="m-0" style="color: yellow;" id="CopHeading"><strong> LIMIT SAMPLE </strong></p>
+                            </div>
+                            <div class="col-2" style="background-color: #002060;">
+                                <p class="m-0 pr-3" style="color: yellow;" id="CopSubHeading"> {{ $areaPart->modelPart->name }}</p>
+                            </div>
+                            <div class="col-12">
+                                <div class="row text-left bg-white text-dark">
+                                    <div class="col-6 border border-dark p-2"><strong>Part Name</strong>             : {{ $areaPart->name }}</div>
+                                    <div class="col-6 border border-dark p-2"><strong>Effective Date</strong>                    : 	{{ $areaPart->effective_date }}</div>
+                                    <div class="col-6 border border-dark p-2"><strong>Charackteristic</strong>       : {{ $areaPart->characteristics }}</div>
+                                    <div class="col-6 border border-dark p-2"><strong>Expired Date</strong>                      : 	{{ $areaPart->expired_date }}</div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="row bg-white">
+                                    <div class="col-6 p-3 border border-dark "><img src="{{ asset("img/areaPart/$areaPart->foto_ke_satu") }}" alt="" class="fotoLimitSample"></div>
+                                    <div class="col-6 p-3 border border-dark "><img src="{{ asset("img/areaPart/$areaPart->foto_ke_dua") }}" alt="" class="fotoLimitSample"></div>
+                                    <div class="col-6 p-3 border border-dark "><img src="{{ asset("img/areaPart/$areaPart->foto_ke_tiga") }}" alt="" class="fotoLimitSample"></div>
+                                    <div class="col-6 p-3 border border-dark "><img src="{{ asset("img/areaPart/$areaPart->foto_ke_empat") }}" alt="" class="fotoLimitSample"></div>
+                                </div>
+                            </div>
+                            <div class="col-12 text-left p-2 border border-dark text-dark" style="background-color: #ffffff;">
+                                <p > <strong> A.Detail</strong></p>
+                                <p>{{ $areaPart->deskripsi }}</p>
+                                <div class="detail pl-3">
+                                    <p><span><strong>1.	Appearance             </strong>: </span>{{ $areaPart->appearance }}</p>
+                                    <p><span><strong>2.	Dimension              </strong>: </span>{{ $areaPart->dimension }}</p>
+                                    <p><span><strong>3.	Jumlah                 </strong>: </span>{{ $areaPart->jumlah }}</p>
+                                </div>
+                            </div>
+                            <div class="col-12 text-left p-2 border border-dark text-dark" style="background-color: #ffffff;">
+                                <p > <strong> B.Metode Pengecekan</strong></p>
+                                <div class="metodePengecekan pl-3">
+                                    <p>{{ $areaPart->metode_pengecekan	 }}
+                                        </p>
+                                </div>
+                            </div>
+                            <div class="col-12 text-dark">
+                                <div class="row bg-white">
+                                    <div class="col-6 p-1 border border-dark ">
+                                        <p><strong>Approval</strong></p>
+                                        <p><strong>Section Head</strong></p>
+                                        <br><br>
+                                        <p><strong>(Nama SecHead)</strong></p>
+                                    </div>
+                                    <div class="col-6 p-1 border border-dark ">
+                                        <p><strong>Approval</strong></p>
+                                        <p><strong>Departemen Head</strong></p>
+                                        <br><br>
+                                        <p><strong>(Nama DeptHead)</strong></p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer" style="display: flex; justify-content: center;">
                         <button type="button" class="btn btn-white" data-dismiss="modal">Kembali</button>
-                        <a href="{{ url('/') }}" class="btn btn-secondary">Export PDF</a>
-                        <a href="{{ url('/limit-sample/area-part/edit/id') }}" class="btn btn-secondary">Edit</a>
+                        <a href="{{ url("/limit-sample/area-part/edit/$areaPart->id") }}" class="btn btn-secondary">Edit</a>
                         <a href="{{ url('') }}" class="btn btn-danger">Hapus</a>
                     </div>
                 </div>
             </div>
         </div>
+
+        @endforeach
+
     </section>
 @endsection
 

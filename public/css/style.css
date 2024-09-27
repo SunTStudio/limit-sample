@@ -35,8 +35,8 @@
 }
 
 .map-container img {
-    width: 100%;
-    height: auto;
+    width: auto;
+    height: 30rem;
     cursor: pointer; /* Menunjukkan bahwa gambar dapat diklik */
 }
 
@@ -59,7 +59,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-    font-size: 0.5rem ;
+    font-size: 1rem ;
 }
 .circle {
     width: 20px;
@@ -75,6 +75,19 @@
 }
 .circle.black {
     background-color: black;
+}
+
+#CopHeading{
+    font-size:2rem;
+    font-weight:800;
+}
+#CopSubHeading{
+    font-size:1rem;
+    font-weight:800;
+}
+
+.fotoLimitSample{
+    height: 15rem;
 }
 
 .glyphicon {
@@ -1563,6 +1576,8 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
 .top-navigation .navbar-nav .open .dropdown-menu .dropdown-header {
     padding: 10px 15px 10px 20px;
 }
+
+//settingan Smartphone
 @media (max-width: 768px) {
     .top-navigation .navbar-header {
         display: block;
@@ -1592,17 +1607,9 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
         cursor: pointer; /* Menunjukkan bahwa gambar dapat diklik */
     }
 
-    .visit-btn {
-        position: absolute;
-        font-size: 0.5rem;
-        font-weight: 600;
-        padding: 0.2rem 0.4rem;
-        background-color: black;
-        color: white;
-        border: none;
-        border-radius: 100%;
-        cursor: pointer;
-    }
+
+
+
 }
 .menu-visible-lg,
 .menu-visible-md {
@@ -3679,6 +3686,8 @@ a.forum-item-title:hover {
 .forum-item.active a.forum-item-title {
     color: #1ab394;
 }
+
+/* settingan */
 @media (max-width: 992px) {
     .forum-info {
         margin: 15px 0 10px 0;
@@ -3687,6 +3696,51 @@ a.forum-item-title:hover {
     }
     .forum-desc {
         float: none !important;
+    }
+    #CopHeading{
+        font-size:1rem;
+        font-weight:800;
+    }
+    #CopSubHeading{
+        font-size:0.6rem;
+        font-weight:800;
+    }
+
+    .legend-container {
+        margin: 20px;
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 0.6rem ;
+    }
+    .circle {
+        padding:0.3rem;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+    .visit-btn {
+        position: absolute;
+        font-size: 0.5rem;
+        font-weight: 600;
+        padding: 0.2rem 0.4rem;
+        background-color: black;
+        color: white;
+        border: none;
+        border-radius: 100%;
+        cursor: pointer;
+    }
+
+    .fotoLimitSample{
+        height: 5rem;
+    }
+    .map-container img {
+        width: 100%;
+        height: auto;
+        cursor: pointer; /* Menunjukkan bahwa gambar dapat diklik */
     }
 }
 /* New Timeline style */

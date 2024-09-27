@@ -53,8 +53,13 @@
                                     <a href="{{ url("/limit-sample/model/$model->id/part") }}"
                                         class="btn btn-xs btn-outline btn-primary">See Detail <i
                                             class="fa fa-long-arrow-right"></i> </a>
-                                    <a href="{{ url("/limit-sample/model/edit/$model->id") }}"
-                                        class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
+                                    <div>
+                                        <a href="{{ url("/limit-sample/model/edit/$model->id") }}"
+                                            class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
+                                        <a href="{{ url("/limit-sample/model/delete/$model->id") }}"
+                                            class="btn btn-xs btn-outline btn-primary">Delete <i class="fa fa-trash"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

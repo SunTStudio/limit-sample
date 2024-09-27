@@ -8,7 +8,10 @@
                     <a href="{{ url('/limit-sample/') }}">Modal</a>
                 </li>
                 <li class="breadcrumb-item active">
-                    <a href="{{ url('/limit-sample/model/id/part') }}">Part</a>
+                    <a href="{{ url("/limit-sample/model/$model->id/part") }}">Part</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <a href="{{ url("/limit-sample/part/$part->id") }}">Area Part</a>
                 </li>
                 <li class="breadcrumb-item active">
                     <strong href="index.html">Tambah Part</strong>
@@ -31,47 +34,43 @@
                         <h5>Form Tambah Area Part Baru</h5>
                     </div>
                     <div class="ibox-content">
-                        <form method="get" action="{{ url('/limit-sample/id/part') }}">
+                        <form method="POST" action="{{ url("/limit-sample/area-part/edit/$areaPart->id") }}" enctype="multipart/form-data" >
+                            @csrf
+                            @error('name')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                             <div class="form-group  row"><label class="col-sm-2 col-form-label">Nama Model</label>
 
-                                <div class="col-sm-10"><input type="text" class="form-control" placeholder="Nama Model"
+                                <div class="col-sm-10"><input type="text" class="form-control" name="model_part_id" value="{{ $part->modelPart->name }}"
                                         disabled></div>
                             </div>
                             <div class="form-group  row"><label class="col-sm-2 col-form-label">Nama Part</label>
 
-                                <div class="col-sm-10"><input type="text" class="form-control" placeholder="Nama Part"
+                                <div class="col-sm-10"><input type="text" class="form-control" name="part_id" value="{{ $part->name }}"
                                         disabled></div>
                             </div>
                             <div class="form-group  row"><label class="col-sm-2 col-form-label">Nama Area Part</label>
 
-                                <div class="col-sm-10"><input type="text" class="form-control"></div>
+                                <div class="col-sm-10"><input type="text" name="name" class="form-control" value="{{ $areaPart->name }}"></div>
                             </div>
                             <div class="form-group" id="data_1">
                                 <label class="font-normal">Effective Date</label>
                                 <div class="input-group date">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
-                                        type="text" class="form-control" value="03/04/2014">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" name="effective_date" class="form-control datepicker" value="{{ $areaPart->effective_date }}">
                                 </div>
                             </div>
+
                             <div class="form-group" id="data_2">
                                 <label class="font-normal">Expired Date</label>
                                 <div class="input-group date">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input
-                                        type="text" class="form-control" value="03/04/2014">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" name="expired_date" class="form-control datepicker" value="{{ $areaPart->expired_date }}">
                                 </div>
                             </div>
                             <div class="form-group  row"><label class="col-sm-2 col-form-label">Characteristik</label>
 
-                                <div class="col-sm-10"><input type="text" class="form-control"></div>
-                            </div>
-                            <div class="form-group  row">
-                                <label class="col-sm-2 col-form-label">Foto Part</label>
-                                <div class="col-sm-10">
-                                    <div class="custom-file">
-                                        <input id="logo" type="file" class="custom-file-input">
-                                        <label for="logo" class="custom-file-label">Choose file...</label>
-                                    </div>
-                                </div>
+                                <div class="col-sm-10"><input type="text" name="characteristics" class="form-control" value="{{ $areaPart->characteristics }}"></div>
                             </div>
                             <div class="hr-line-dashed"></div>
                     </div>
@@ -86,20 +85,20 @@
                         <div class="form-group  row"><label class="col-sm-2 col-form-label">Deskripsi</label>
 
                             <div class="col-sm-10">
-                                <textarea type="text-area" class="form-control"></textarea>
+                                <textarea type="text-area" name="deskripsi" class="form-control">{{ $areaPart->deskripsi }}</textarea>
                             </div>
                         </div>
                         <div class="form-group  row"><label class="col-sm-2 col-form-label">1. Apperance</label>
 
-                            <div class="col-sm-10"><input type="text" class="form-control"></div>
+                            <div class="col-sm-10"><input name="appearance" type="text" class="form-control" value="{{ $areaPart->appearance }}"></div>
                         </div>
                         <div class="form-group  row"><label class="col-sm-2 col-form-label">2. Dimension</label>
 
-                            <div class="col-sm-10"><input type="text" class="form-control"></div>
+                            <div class="col-sm-10"><input type="text" name="dimension" class="form-control" value="{{ $areaPart->dimension }}"></div>
                         </div>
                         <div class="form-group  row"><label class="col-sm-2 col-form-label">3. Jumlah</label>
 
-                            <div class="col-sm-10"><input type="text" class="form-control"></div>
+                            <div class="col-sm-10"><input type="text" name="jumlah" class="form-control" value="{{ $areaPart->jumlah }}"></div>
                         </div>
                         <div class="hr-line-dashed"></div>
                         <div class="form-group  row"><label class="col-sm-2 col-form-label">
@@ -107,7 +106,7 @@
                             </label>
 
                             <div class="col-sm-10">
-                                <textarea type="text-area" class="form-control"></textarea>
+                                <textarea type="text-area" name="metode_pengecekan" class="form-control">{{ $areaPart->metode_pengecekan }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -121,30 +120,30 @@
                     <div class="ibox-content">
                         <div class="form-group  row">
                             <label class="col-sm-2 col-form-label">Foto Ke-Satu</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-10 mb-2">
                                 <div class="custom-file">
-                                    <input id="logo" type="file" class="custom-file-input">
+                                    <input id="logo" name="foto_ke_satu" type="file" class="custom-file-input">
                                     <label for="logo" class="custom-file-label">Choose file...</label>
                                 </div>
                             </div>
                             <label class="col-sm-2 col-form-label">Foto Ke-Dua</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-10 mb-2">
                                 <div class="custom-file">
-                                    <input id="logo" type="file" class="custom-file-input">
+                                    <input id="logo" name="foto_ke_dua" type="file" class="custom-file-input">
                                     <label for="logo" class="custom-file-label">Choose file...</label>
                                 </div>
                             </div>
                             <label class="col-sm-2 col-form-label">Foto Ke-Tiga</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-10 mb-2">
                                 <div class="custom-file">
-                                    <input id="logo" type="file" class="custom-file-input">
+                                    <input id="logo" name="foto_ke_tiga" type="file" class="custom-file-input">
                                     <label for="logo" class="custom-file-label">Choose file...</label>
                                 </div>
                             </div>
                             <label class="col-sm-2 col-form-label">Foto Ke-Empat</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-10 mb-2">
                                 <div class="custom-file">
-                                    <input id="logo" type="file" class="custom-file-input">
+                                    <input id="logo" name="foto_ke_empat" type="file" class="custom-file-input">
                                     <label for="logo" class="custom-file-label">Choose file...</label>
                                 </div>
                             </div>
@@ -160,9 +159,23 @@
                     <div class="ibox-content">
                         <div class="map-container">
                             <img id="mapImage" src="{{ asset('img/part/D26A.png') }}" alt="Area Map">
+                            <!-- Tombol Visit dengan posisi tetap -->
+                            <button class="visit-btn"
+                                style="top: {{ $areaPart->koordinat_y }}; left: {{ $areaPart->koordinat_x }};
+                                @if ($areaPart->sec_head_approval_date == null)
+                                    background-color: yellow; color: black;
+                                @elseif($areaPart->dept_head_approval_date == null)
+                                    background-color: rgb(85, 85, 85); color: rgb(0, 0, 0);
+                                @else
+                                    background-color: black; color: white;
+                                @endif"
+                                type="button">
+                                <i class="fa fa-map-marker"></i>
+                            </button>
+
                             <div id="buttonsContainer"></div>
-                            <input type="hidden" name="koordinatY" id="btnY" value="">
-                            <input type="hidden" name="koordinatY" id="btnX" value="">
+                            <input type="hidden" name="koordinat_y" id="btnY" value="">
+                            <input type="hidden" name="koordinat_x" id="btnX" value="">
                         </div>
                         {{-- <a class="zoom-btn btn btn-light" id="zoomInBtn">+</a>
                         <a class="zoom-btn btn btn-light" id="zoomOutBtn">-</a> --}}
@@ -170,7 +183,7 @@
                         <div class="hr-line-dashed"></div>
                         <div class="form-group row">
                             <div class="col-sm-4 col-sm-offset-2">
-                                <a href="{{ url('/limit-sample/id/part') }}" class="btn btn-white btn-sm">Batal</a>
+                                <a href="{{ url("/limit-sample/part/$part->id") }}" class="btn btn-white btn-sm">Batal</a>
                                 <button class="btn btn-primary btn-sm" type="submit">Tambah</button>
                             </div>
                         </div>
@@ -236,8 +249,8 @@
         const y = event.clientY - rect.top;  // Koordinat Y relatif terhadap gambar
 
         // Hitung persentase posisi klik terhadap gambar
-        const percentageX = ((x / rect.width) * 100).toFixed(2);
-        const percentageY = ((y / rect.height) * 100).toFixed(2);
+        const percentageX = ((x / rect.width) * 95).toFixed(2);
+        const percentageY = ((y / rect.height) * 95).toFixed(2);
 
         // Bersihkan tombol yang sudah ada sebelumnya
         buttonsContainer.innerHTML = '';
@@ -249,8 +262,8 @@
         button.style.left = `${(x / rect.width) * 95}%`;
 
         //setting value inputan btnY dan btnX
-        btnY.setAttribute('value',`${(y / rect.height) * 100}%`);
-        btnX.setAttribute('value',`${(x / rect.width) * 100}%`);
+        btnY.setAttribute('value',`${(y / rect.height) * 95}%`);
+        btnX.setAttribute('value',`${(x / rect.width) * 95}%`);
 
         // Simpan persentase posisi untuk keperluan zoom
         button.dataset.percentageX = percentageX;
@@ -269,7 +282,6 @@
 
 
 
-@endsection
 
 
 
@@ -281,25 +293,25 @@
 
 
 
-@section('script')
     <script>
         $(document).ready(function() {
             // Initialize date picker for data_1
             $('#data_1 .input-group.date').datepicker({
                 todayBtn: "linked",
                 keyboardNavigation: false,
+                format: 'mm/dd/yyyy',
                 forceParse: false,
                 calendarWeeks: true,
-                autoclose: true
-            });
+                autoclose: true,
+            }).datepicker("setDate", new Date());
 
             $('#data_2 .input-group.date').datepicker({
                 todayBtn: "linked",
                 keyboardNavigation: false,
                 forceParse: false,
                 autoclose: true,
-                format: "dd/mm/yyyy" // format sesuai dengan input yang diinginkan
-            });
+                format: 'mm/dd/yyyy', // format sesuai dengan input yang diinginkan
+            }).datepicker("setDate", new Date());
         });
     </script>
 @endsection

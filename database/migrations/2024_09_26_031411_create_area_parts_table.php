@@ -21,11 +21,11 @@ class CreateAreaPartsTable extends Migration
             $table->string('characteristics');
             $table->date('effective_date');
             $table->date('expired_date');
-            $table->string('deskripsi');
+            $table->text('deskripsi');
             $table->string('dimension');
-            $table->string('appearance'); 
+            $table->string('appearance');
             $table->string('jumlah');
-            $table->string('metode_pengecekan');
+            $table->text('metode_pengecekan');
             $table->string('foto_ke_satu')->nullable();
             $table->string('foto_ke_dua')->nullable();
             $table->string('foto_ke_tiga')->nullable();

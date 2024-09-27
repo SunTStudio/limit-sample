@@ -79,9 +79,10 @@ class ModelPartController extends Controller
      * @param  \App\Models\ModelPart  $modelPart
      * @return \Illuminate\Http\Response
      */
-    public function edit(ModelPart $modelPart)
+    public function edit(ModelPart $modelPart,$id)
     {
-        //
+        $model = ModelPart::find($id);
+        return response()->view('model.edit',compact('model'));
     }
 
     /**
@@ -91,9 +92,29 @@ class ModelPartController extends Controller
      * @param  \App\Models\ModelPart  $modelPart
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ModelPart $modelPart)
+    public function update(Request $request,$id)
     {
-        //
+        $oldModel = ModelPart::find($id);
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'foto_model' => 'required'
+        ]);
+
+        //Membuat Nama gambar Baru dan Memasukan gambar baru
+        $image = $request->file('foto_model');
+        $imageName = time().'.'.$image->getClientOriginalExtension();
+        $image->move(public_path('img/model'),$imageName);
+        $validatedData['foto_model'] = $imageName;
+        // Ambil gambar lama dari database
+        $oldImage = $oldModel->foto_model;
+
+        // Hapus gambar lama dari direktori jika ada
+        if ($oldImage && file_exists(public_path('img/model/' . $oldImage))) {
+            unlink(public_path('img/model/' . $oldImage));
+        }
+        $oldModel->update($validatedData);
+
+        return redirect()->route('model.index');
     }
 
     /**

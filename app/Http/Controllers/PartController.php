@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\ModelPart;
 use App\Models\Part;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-
+use Intervention\Image\Facades\Image;
+use File;
 class PartController extends Controller
 {
     /**
@@ -47,6 +49,7 @@ class PartController extends Controller
      */
     public function store(Request $request,$id)
     {
+        // Temukan model berdasarkan ID
         $model = ModelPart::find($id);
 
         // Validasi file yang diunggah
@@ -58,18 +61,28 @@ class PartController extends Controller
         // Ambil file yang diunggah
         $image = $request->file('foto_part');
 
+        // Membaca gambar
+        $originalImage = Image::make($image);
+        // Periksa tinggi dan lebar gambar
+        if ($originalImage->height() > $originalImage->width()) {
+            // Rotate gambar 90 derajat jika tinggi lebih besar dari lebar
+            $originalImage->rotate(90);
+        }
+
         // Buat nama unik untuk file
         $imageName = time() . '.' . $image->getClientOriginalExtension();
 
-        // Pindahkan file ke direktori public/img/part
-        $image->move(public_path('img/part'), $imageName);
+        // Simpan gambar yang sudah diproses ke direktori public/img/part
+        $originalImage->save(public_path('img/part/' . $imageName), 90);
+
+        // Simpan data part ke database
         Part::create([
             'name' => $request->name,
             'foto_part' => $imageName,
             'model_part_id' => $id,
         ]);
 
-        return redirect()->route('part.index');
+        return redirect()->route('part.index',['id' => $id]);
     }
 
     /**
@@ -89,9 +102,11 @@ class PartController extends Controller
      * @param  \App\Models\Part  $part
      * @return \Illuminate\Http\Response
      */
-    public function edit(Part $part)
+    public function edit(Part $part,$id)
     {
-        //
+        $part = Part::find($id);
+        $model = ModelPart::find(($part->model_part_id));
+        return response()->view('part.edit', compact('part','model'));
     }
 
     /**
@@ -101,9 +116,39 @@ class PartController extends Controller
      * @param  \App\Models\Part  $part
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Part $part)
+    public function update(Request $request, Part $part,$id)
     {
-        //
+        $oldPart = Part::find($id);
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'foto_part' => 'required'
+        ]);
+
+        //Membuat Nama gambar Baru dan Memasukan gambar baru
+        $image = $request->file('foto_part');
+
+        // Membaca gambar
+        $originalImage = Image::make($image);
+
+         // Periksa tinggi dan lebar gambar
+         if ($originalImage->height() > $originalImage->width()) {
+            // Rotate gambar 90 derajat jika tinggi lebih besar dari lebar
+            $originalImage->rotate(90);
+        }
+
+        $imageName = time().'.'.$image->getClientOriginalExtension();
+        $originalImage->save(public_path('img/part/' . $imageName), 90);
+        $validatedData['foto_part'] = $imageName;
+        // Ambil gambar lama dari database
+        $oldImage = $oldPart->foto_part;
+
+        // Hapus gambar lama dari direktori jika ada
+        if ($oldImage && file_exists(public_path('img/part/' . $oldImage))) {
+            unlink(public_path('img/part/' . $oldImage));
+        }
+        $oldPart->update($validatedData);
+        $id = $oldPart->model_part_id;
+        return redirect()->route('part.index',compact('id'));
     }
 
     /**
@@ -112,8 +157,27 @@ class PartController extends Controller
      * @param  \App\Models\Part  $part
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Part $part)
+    public function destroy($id)
     {
-        //
+        // Temukan data Part berdasarkan ID
+        $part = Part::find($id);
+
+        // Cek apakah Part ditemukan
+        if (!$part) {
+            return redirect()->route('part.index')->with('error', 'Part tidak ditemukan!');
+        }
+
+        // Hapus file gambar jika ada
+        $oldImage = $part->foto_part;
+        $imagePath = public_path('img/part/' . $oldImage);
+
+        if (file_exists($imagePath)) {
+            unlink($imagePath); // Menghapus file gambar
+        }
+
+        // Hapus data dari database
+        $part->delete();
+
+        return redirect()->route('part.index')->with('success', 'Part berhasil dihapus!');
     }
 }

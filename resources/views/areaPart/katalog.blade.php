@@ -1,10 +1,9 @@
 @extends('layouts.app')
-@section('css')
-@endsection
+
 @section('header')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
-            <h2>Limit Sample - <strong>Area Path</strong> </h2>
+            <h2>Limit Sample - <strong>Part</strong> </h2>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                     <a href="{{ url('/limit-sample/model') }}">Modal</a>
@@ -13,7 +12,10 @@
                     <a href="{{ url("/limit-sample/model/$model->id/part") }}">Part</a>
                 </li>
                 <li class="breadcrumb-item active">
-                    <strong href="index.html">Area Path</strong>
+                    <a href="{{ url("/limit-sample/part/$part->id") }}">Area Part</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <strong >Detail Area Part</strong>
                 </li>
             </ol>
         </div>
@@ -25,56 +27,59 @@
 
 @section('content')
     <section id="areaPart">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-8 rounded  mb-3">
+                <form action="{{ route('katalog.search',["id" => $partArea->id]) }}" method="GET">
+                    <div class="input-group">
+                        <input placeholder="Search" type="text" name="searchKatalog" class="form-control form-control-sm">
+                        <span class="input-group-append">
+                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-2 col-10 text-center  mb-3">
+                <a href="{{ url("/limit-sample/area-part/create/$partArea->id") }}" class="btn btn-secondary ">Tambah Detail Area Part <i
+                        class="fa fa-plus"></i></a>
+            </div>
+        </div>
 
-        <div class="wrapper animated fadeInRight pt-0">
-            <div class="row m-t-lg">
-                <div class="col-lg-12 p-0">
-                    <div class="ibox-content">
-                        <div class="map-container text-center tooltip-demo">
-                            <img id="mapImage" src="{{ asset("img/part/$part->foto_part") }}" alt="Area Map">
-                            @foreach ($partAreas as $partArea)
-                                <!-- Tombol Visit dengan posisi tetap -->
-                                <a href="{{ url("/limit-sample/area-part/$partArea->id") }}" class="visit-btn" data-toggle="tooltip" data-placement="top" title="{{ $partArea->nameArea }}"
-                                    style="top: {{ $partArea->koordinat_y }}; left: {{ $partArea->koordinat_x }};
-                                    background-color: black; color: white;
-                                ">
-                                    {{ $loop->iteration }}
-                                </a>
-                            @endforeach
+        <div class="row justify-content-center">
+            @foreach ($AreaParts as $areaPart)
+                <div class="col-lg-3 col-11">
+                    <div class="ibox">
+                        <div class="ibox-content product-box">
 
+
+                            <div class="product-imitation">
+                                <img src="{{ asset("img/areaPart/$areaPart->foto_ke_satu") }}" class="img-fluid img-katalog" alt="">
+                            </div>
+                            <div class="product-desc">
+                                <a href="#" class="product-name"> {{ $areaPart->name }}</a>
+                                <div class="m-t text-right d-flex justify-content-between">
+
+                                    <a data-toggle="modal" data-target="#{{ $areaPart->id }}"
+                                        class="btn btn-xs btn-outline btn-primary">See Detail <i
+                                            class="fa fa-long-arrow-right"></i> </a>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            @endforeach
 
-            </div>
-            <div class="row mb-4 mt-4">
-                <div class="col-lg-12">
-                    <div class="text-center d-flex justify-content-center">
-                        <a href="{{ url("/limit-sample/part-area/kelola/$part->id") }}" class="btn btn-secondary mr-2">Kelola Part Area</a>
-                        <a href="{{ url("/limit-sample/model/$model->id/part") }}" class="btn btn-dark mr-2">Kembali</a>
-                        <form action="{{ url("/limit-sample/model/part/delete/$part->id") }}" method="POST"
-                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus part ini?');">
-                            @csrf
-                            @method('DELETE') <!-- Ini menandakan bahwa request ini adalah DELETE method -->
-                            <button type="submit" class="btn btn-danger">Hapus</button>
-                        </form>
+    <section id="modal">
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-{{-- <section id="modal">
-
-        @foreach ($areaParts as $areaPart)
+        @foreach ($AreaParts as $areaPart)
             <div class="modal inmodal" id="{{ $areaPart->id }}" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content animated fadeIn">
                         <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                         <h4 class="modal-title">Limit Sample</h4>
-                        <small>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</small>
+                        {{-- <small>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</small> --}}
                     </div>
                         <div class="modal-body">
                             <div class="row d-flex text-center border border-dark  m-0 p-0 align-items-center"
@@ -95,6 +100,10 @@
                                     <div class="row text-left bg-white text-dark">
                                         <div class="col-6 border border-dark p-2"><strong>Part Name</strong> :
                                             {{ $areaPart->name }}</div>
+                                            <div class="col-6 border border-dark p-2"><strong>Doc.No</strong> :
+                                                {{ $areaPart->document_number }}</div>
+                                                <div class="col-6 border border-dark p-2"><strong>Part Number</strong> :
+                                                    {{ $areaPart->part_number }}</div>
                                         <div class="col-6 border border-dark p-2"><strong>Effective Date</strong> :
                                             {{ $areaPart->effective_date }}</div>
                                         <div class="col-6 border border-dark p-2"><strong>Charackteristic</strong> :
@@ -160,57 +169,26 @@
                             <button type="button" class="btn btn-white" data-dismiss="modal">Kembali</button>
                             <a href="{{ url("/limit-sample/area-part/edit/$areaPart->id") }}"
                                 class="btn btn-secondary">Edit</a>
-                            <a href="{{ url('') }}" class="btn btn-danger">Hapus</a>
+                                <form action="{{ url("/limit-sample/areaPart/delete/$areaPart->id") }}" method="POST"
+                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
+                                    @csrf
+                                    @method('DELETE') <!-- Ini menandakan bahwa request ini adalah DELETE method -->
+                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                </form>
                         </div>
                     </div>
                 </div>
             </div>
         @endforeach
 
-    </section> --}}
-@endsection
+    </section>
 
-
-
-
-
-
-
-
-
-
-
-@section('script')
-    {{-- <script>
-    // Menangkap event klik pada gambar
-    document.getElementById('mapImage').addEventListener('click', function(event) {
-        // Mendapatkan ukuran asli gambar
-        const originalWidth = this.naturalWidth;
-        const originalHeight = this.naturalHeight;
-
-        // Mendapatkan ukuran yang ditampilkan
-        const displayedWidth = this.clientWidth;
-        const displayedHeight = this.clientHeight;
-
-        // Mendapatkan posisi klik
-        const rect = this.getBoundingClientRect();
-        const x = event.clientX - rect.left; // Koordinat X relatif terhadap gambar
-        const y = event.clientY - rect.top;  // Koordinat Y relatif terhadap gambar
-
-        // Menghitung rasio
-        const ratioX = originalWidth / displayedWidth;
-        const ratioY = originalHeight / displayedHeight;
-
-        // Menghitung koordinat asli
-        const originalX = Math.round(x * ratioX);
-        const originalY = Math.round(y * ratioY);
-
-        // Menghitung persentase
-        const percentageX = ((originalX / originalWidth) * 100).toFixed(2); // Persentase X
-        const percentageY = ((originalY / originalHeight) * 100).toFixed(2); // Persentase Y
-
-        // Menampilkan koordinat dan persentase
-        alert(`Koordinat Asli: \nTop: ${originalY}px \nLeft: ${originalX}px\n\nPersentase: \nTop: ${percentageY}% \nLeft: ${percentageX}%`);
-    });
-</script> --}}
+        </div>
+        <div class="text-center mb-5">
+            {{ $AreaParts->links() }}
+        </div>
+        <div class="text-center m-3">
+            <a href="{{ url("/limit-sample/part/$part->id") }}" class="btn btn-dark mr-2">Kembali</a>
+        </div>
+    </section>
 @endsection

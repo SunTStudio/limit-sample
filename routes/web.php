@@ -31,7 +31,7 @@ Route::post('/limit-sample/model/create',[ModelPartController::class, 'store'])-
 Route::get('/limit-sample/model/edit/{id}',[ModelPartController::class, 'edit'])->name('model.edit');
 Route::post('/limit-sample/model/edit/{id}',[ModelPartController::class, 'update'])->name('model.update');
 Route::get('/limit-sample/model/search/',[ModelPartController::class, 'search'])->name('model.search');
-
+Route::delete('/limit-sample/model/delete/{id}',[ModelPartController::class, 'destroy'])->name('model.delete');
 
 
 
@@ -46,14 +46,18 @@ Route::get('limit-sample/part/edit/{id}',[PartController::class, 'edit'])->name(
 Route::post('limit-sample/part/edit/{id}',[PartController::class, 'update'])->name('part.update');
 Route::get('/limit-sample/model/{id}/part/search/',[PartController::class, 'search'])->name('part.search');
 Route::delete('/limit-sample/model/part/delete/{id}',[PartController::class, 'destroy'])->name('areaPart.delete');
-
+Route::get('/limit-sample/part-area/kelola/{id}',[PartController::class, 'kelola'])->name('part.kelola');
+Route::post('/limit-sample/part-area/kelola/{id}',[PartController::class, 'kelolaStore'])->name('part.kelolaStore');
 
 //area Part
 
 Route::get('/limit-sample/part/{id}',[AreaPartController::class, 'index'])->name('areaPart.index');
+Route::get('/limit-sample/area-part/{id}',[AreaPartController::class, 'katalog'])->name('areaPart.katalog');
 Route::get('/limit-sample/area-part/create/{id}',[AreaPartController::class, 'create'])->name('areaPart.create');
 Route::post('/limit-sample/area-part/create/{id}',[AreaPartController::class, 'store'])->name('areaPart.store');
 Route::get('/limit-sample/area-part/edit/{id}',[AreaPartController::class, 'edit'])->name('areaPart.edit');
 Route::post('/limit-sample/area-part/edit/{id}',[AreaPartController::class, 'update'])->name('areaPart.update');
 Route::get('/limit-sample/areaPart/{id}',[AreaPartController::class, 'detail'])->name('areaPart.edit');
+Route::get('/limit-sample/areaPart/search/{id}',[AreaPartController::class, 'katalogSearch'])->name('katalog.search');
+Route::delete('/limit-sample/areaPart/delete/{id}',[AreaPartController::class, 'destroy'])->name('katalog.delete');
 

@@ -34,7 +34,7 @@
                         <h5>Form Tambah Area Part Baru</h5>
                     </div>
                     <div class="ibox-content">
-                        <form method="POST" action="{{ url("/limit-sample/area-part/create/$part->id") }}" enctype="multipart/form-data" >
+                        <form method="POST" action="{{ url("/limit-sample/area-part/create/$partArea->id") }}" enctype="multipart/form-data" >
                             @csrf
                             @error('name')
                                 <div class="text-danger">{{ $message }}</div>
@@ -44,16 +44,32 @@
                                 <div class="col-sm-10"><input type="text" class="form-control" name="model_part_id" value="{{ $part->modelPart->name }}"
                                         disabled></div>
                             </div>
-                            <div class="form-group  row"><label class="col-sm-2 col-form-label">Nama Part</label>
+                            <div class="form-group  row"><label class="col-sm-2 col-form-label">Jenis Part</label>
 
                                 <div class="col-sm-10"><input type="text" class="form-control" name="part_id" value="{{ $part->name }}"
                                         disabled></div>
                             </div>
-                            <div class="form-group  row"><label class="col-sm-2 col-form-label">Nama Area Part</label>
+                            <div class="form-group  row"><label class="col-sm-2 col-form-label">Nama Part</label>
 
-                                <div class="col-sm-10"><input type="text" name="name" class="form-control"></div>
+                                <div class="col-sm-10"><input  type="text" name="name" class="form-control"></div>
                             </div>
-                            <div class="form-group" id="data_1">
+                            <div class="form-group  row">
+                                <label class="col-sm-2 col-form-label">Part Number</label>
+
+                                <div class="col-sm-4"><input  type="text" name="part_number" class="form-control"></div>
+                                <label class="col-sm-2 col-form-label">Document Number</label>
+
+                                <div class="col-sm-4">
+                                    <input  type="text" name="document_number" class="form-control" value="AJI/QA/LS/0{{ $part->id }}/0{{ $lastAreaPartId }}" disabled>
+                                    <input  type="hidden" name="document_number" class="form-control" value="AJI/QA/LS/0{{ $part->id }}/0{{ $lastAreaPartId }}" ></div>
+                            </div>
+                            <div class="form-group  row"><label class="col-sm-2 col-form-label">Characteristik</label>
+
+                                <div class="col-sm-10"><input type="text" name="characteristics" class="form-control"></div>
+                            </div>
+                            <div class="form-group  row">
+
+                            <div id="data_1" class="col-sm-6 ">
                                 <label class="font-normal">Effective Date</label>
                                 <div class="input-group date">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -61,17 +77,15 @@
                                 </div>
                             </div>
 
-                            <div class="form-group" id="data_2">
+                            <div id="data_2" class="col-sm-6 ">
                                 <label class="font-normal">Expired Date</label>
                                 <div class="input-group date">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                     <input type="text" name="expired_date" class="form-control datepicker" value="03/04/2024">
                                 </div>
                             </div>
-                            <div class="form-group  row"><label class="col-sm-2 col-form-label">Characteristik</label>
+                        </div>
 
-                                <div class="col-sm-10"><input type="text" name="characteristics" class="form-control"></div>
-                            </div>
                             <div class="hr-line-dashed"></div>
                     </div>
                 </div>
@@ -113,7 +127,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-lg-12">
                 <div class="ibox ">
                     <div class="ibox-title">
@@ -150,51 +164,18 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-12">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <h5>Tandai Area part</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="map-container">
-                            <img id="mapImage" src="{{ asset("img/part/$part->foto_part") }}" alt="Area Map">
-                            @foreach ($areaParts as $areaPart )
-                            <!-- Tombol Visit dengan posisi tetap -->
-                            <button class="visit-btn"
-                                style="top: {{ $areaPart->koordinat_y }}; left: {{ $areaPart->koordinat_x }};
-                                @if ($areaPart->sec_head_approval_date == null)
-                                    background-color: yellow; color: black;
-                                @elseif($areaPart->dept_head_approval_date == null)
-                                    background-color: rgb(85, 85, 85); color: rgb(0, 0, 0);
-                                @else
-                                    background-color: black; color: white;
-                                @endif"
-                                type="button">
-                                {{ $loop->iteration }}
-                            </button>
-
-                            @endforeach
-                            <div id="buttonsContainer"></div>
-                            <input type="hidden" name="koordinat_y" id="btnY" value="">
-                            <input type="hidden" name="koordinat_x" id="btnX" value="">
-                        </div>
-                        {{-- <a class="zoom-btn btn btn-light" id="zoomInBtn">+</a>
-                        <a class="zoom-btn btn btn-light" id="zoomOutBtn">-</a> --}}
-
                         <div class="hr-line-dashed"></div>
-                        <div class="form-group row">
-                            <div class="col-sm-4 col-sm-offset-2">
-                                <a href="{{ url("/limit-sample/part/$part->id") }}" class="btn btn-white btn-sm">Batal</a>
-                                <button class="btn btn-primary btn-sm" type="submit">Tambah</button>
-                            </div>
+                    <div class="form-group row">
+                        <div class="col-sm-4 col-sm-offset-2">
+                            <a href="{{ url("/limit-sample/part/$part->id") }}" class="btn btn-white btn-sm">Batal</a>
+                            <button class="btn btn-primary btn-sm" type="submit">Tambah</button>
                         </div>
-                        </form>
+                    </div>
+                    </form>
                     </div>
                 </div>
             </div>
+
         </div>
 
 
@@ -203,85 +184,85 @@
 
 @section('script')
 <script>
-    let scale = 1; // Skala gambar
-    const mapContainer = document.getElementById('mapContainer');
-    const mapImage = document.getElementById('mapImage');
-    const buttonsContainer = document.getElementById('buttonsContainer'); // Ambil elemen untuk tombol
-    let btnY = document.getElementById('btnY');
-    let btnX = document.getElementById('btnX');
+//     let scale = 1; // Skala gambar
+//     const mapContainer = document.getElementById('mapContainer');
+//     const mapImage = document.getElementById('mapImage');
+//     const buttonsContainer = document.getElementById('buttonsContainer'); // Ambil elemen untuk tombol
+//     let btnY = document.getElementById('btnY');
+//     let btnX = document.getElementById('btnX');
 
-//     let currentButton = null; // Untuk melacak tombol yang ada
+// //     let currentButton = null; // Untuk melacak tombol yang ada
 
-//     function zoomIn() {
-//     scale += 0.1; // Tingkatkan skala
-//     mapImage.style.transform = `scale(${scale})`;
-//     updateButtonPosition('zoomIn'); // Update posisi tombol setelah zoom
-// }
+// //     function zoomIn() {
+// //     scale += 0.1; // Tingkatkan skala
+// //     mapImage.style.transform = `scale(${scale})`;
+// //     updateButtonPosition('zoomIn'); // Update posisi tombol setelah zoom
+// // }
 
-// function zoomOut() {
-//     scale = Math.max(scale - 0.1, 1); // Pastikan skala tidak kurang dari 1
-//     mapImage.style.transform = `scale(${scale})`;
-//     updateButtonPosition('zoomOut'); // Update posisi tombol setelah zoom
-// }
+// // function zoomOut() {
+// //     scale = Math.max(scale - 0.1, 1); // Pastikan skala tidak kurang dari 1
+// //     mapImage.style.transform = `scale(${scale})`;
+// //     updateButtonPosition('zoomOut'); // Update posisi tombol setelah zoom
+// // }
 
-//     // Fungsi untuk memperbarui posisi tombol sesuai skala zoom
-//     function updateButtonPosition(zoomDirection) {
-//     if (currentButton) {
-//         const rect = mapImage.getBoundingClientRect();
+// //     // Fungsi untuk memperbarui posisi tombol sesuai skala zoom
+// //     function updateButtonPosition(zoomDirection) {
+// //     if (currentButton) {
+// //         const rect = mapImage.getBoundingClientRect();
 
-//         // Ambil persentase posisi Y dan X yang sudah disimpan di dataset
-//         const percentageY = parseFloat(currentButton.dataset.percentageY);
-//         const percentageX = parseFloat(currentButton.dataset.percentageX);
+// //         // Ambil persentase posisi Y dan X yang sudah disimpan di dataset
+// //         const percentageY = parseFloat(currentButton.dataset.percentageY);
+// //         const percentageX = parseFloat(currentButton.dataset.percentageX);
 
-//         // Hitung posisi tombol dalam pixel berdasarkan persentase, tapi sesuaikan dengan skala zoom
-//         let topPosPx = (percentageY / 100) * rect.height;
-//         let leftPosPx = (percentageX / 100) * rect.width;
+// //         // Hitung posisi tombol dalam pixel berdasarkan persentase, tapi sesuaikan dengan skala zoom
+// //         let topPosPx = (percentageY / 100) * rect.height;
+// //         let leftPosPx = (percentageX / 100) * rect.width;
 
-//         // Tidak perlu menambah atau mengurangi posisi sesuai dengan zoom
-//         currentButton.style.top = `${topPosPx}px`;
-//         currentButton.style.left = `${leftPosPx}px`;
-//     }
-// }
+// //         // Tidak perlu menambah atau mengurangi posisi sesuai dengan zoom
+// //         currentButton.style.top = `${topPosPx}px`;
+// //         currentButton.style.left = `${leftPosPx}px`;
+// //     }
+// // }
 
-    // Event untuk menangkap klik dan menambahkan tombol
-    mapImage.addEventListener('click', function(event) {
-        const originalWidth = this.naturalWidth;
-        const originalHeight = this.naturalHeight;
+//     // Event untuk menangkap klik dan menambahkan tombol
+//     mapImage.addEventListener('click', function(event) {
+//         const originalWidth = this.naturalWidth;
+//         const originalHeight = this.naturalHeight;
 
-        const rect = this.getBoundingClientRect();
-        const x = event.clientX - rect.left; // Koordinat X relatif terhadap gambar
-        const y = event.clientY - rect.top;  // Koordinat Y relatif terhadap gambar
+//         const rect = this.getBoundingClientRect();
+//         const x = event.clientX - rect.left; // Koordinat X relatif terhadap gambar
+//         const y = event.clientY - rect.top;  // Koordinat Y relatif terhadap gambar
 
-        // Hitung persentase posisi klik terhadap gambar
-        const percentageX = ((x / rect.width) * 95).toFixed(2);
-        const percentageY = ((y / rect.height) * 95).toFixed(2);
+//         // Hitung persentase posisi klik terhadap gambar
+//         const percentageX = ((x / rect.width) * 95).toFixed(2);
+//         const percentageY = ((y / rect.height) * 95).toFixed(2);
 
-        // Bersihkan tombol yang sudah ada sebelumnya
-        buttonsContainer.innerHTML = '';
+//         // Bersihkan tombol yang sudah ada sebelumnya
+//         buttonsContainer.innerHTML = '';
 
-        // Tambahkan tombol baru dengan persentase
-        const button = document.createElement('a');
-        button.className = 'visit-btn';
-        button.style.top = `${(y / rect.height) * 95}%`; // Posisi dalam persentase
-        button.style.left = `${(x / rect.width) * 95}%`;
+//         // Tambahkan tombol baru dengan persentase
+//         const button = document.createElement('a');
+//         button.className = 'visit-btn';
+//         button.style.top = `${(y / rect.height) * 95}%`; // Posisi dalam persentase
+//         button.style.left = `${(x / rect.width) * 95}%`;
 
-        //setting value inputan btnY dan btnX
-        btnY.setAttribute('value',`${(y / rect.height) * 95}%`);
-        btnX.setAttribute('value',`${(x / rect.width) * 95}%`);
+//         //setting value inputan btnY dan btnX
+//         btnY.setAttribute('value',`${(y / rect.height) * 95}%`);
+//         btnX.setAttribute('value',`${(x / rect.width) * 95}%`);
 
-        // Simpan persentase posisi untuk keperluan zoom
-        button.dataset.percentageX = percentageX;
-        button.dataset.percentageY = percentageY;
+//         // Simpan persentase posisi untuk keperluan zoom
+//         button.dataset.percentageX = percentageX;
+//         button.dataset.percentageY = percentageY;
 
-        button.innerHTML = '<i class="fa fa-map-marker"></i>';
-        buttonsContainer.appendChild(button);
+//         button.innerHTML = '<i class="fa fa-map-marker"></i>';
+//         buttonsContainer.appendChild(button);
 
-        currentButton = button; // Simpan tombol saat ini untuk tracking
-    });
+//         currentButton = button; // Simpan tombol saat ini untuk tracking
+//     });
 
-    // Event listeners untuk tombol zoom
-    // document.getElementById('zoomInBtn').addEventListener('click', zoomIn);
-    // document.getElementById('zoomOutBtn').addEventListener('click', zoomOut);
+//     // Event listeners untuk tombol zoom
+//     // document.getElementById('zoomInBtn').addEventListener('click', zoomIn);
+//     // document.getElementById('zoomOutBtn').addEventListener('click', zoomOut);
 </script>
 
 

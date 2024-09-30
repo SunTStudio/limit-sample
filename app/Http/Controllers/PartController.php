@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ModelPart;
 use App\Models\Part;
+use App\Models\PartArea;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
@@ -151,6 +152,40 @@ class PartController extends Controller
         return redirect()->route('part.index',compact('id'));
     }
 
+    public function kelola(Request $request,$id)
+    {
+        $part = Part::find($id);
+        $model = ModelPart::find($part->model_part_id);
+        return view('part.partArea',compact('part','model'));
+    }
+
+    public function kelolaStore(Request $request,$id)
+    {
+        $count = $request->countArea;
+        $begin = 1;
+
+        if($count == null){
+            return back();
+        }
+
+        for($i = 1; $i <= $count; $i++){
+            if($request->{'nameArea'.$i} != null){
+                $data = [];
+                $data['nameArea'] = $request->{'nameArea'.$i};
+                $data['part_id'] = $id;
+                $data['koordinat_y'] = $request->{'koordinat_y'.$i};
+                $data['koordinat_x'] = $request->{'koordinat_x'.$i};
+                PartArea::create($data);
+            }
+        };
+
+
+        return redirect()->route('areaPart.index',['id' => $id]);
+
+
+
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -161,12 +196,12 @@ class PartController extends Controller
     {
         // Temukan data Part berdasarkan ID
         $part = Part::find($id);
+        $modelPart = ModelPart::find($part->model_part_id);
 
         // Cek apakah Part ditemukan
         if (!$part) {
-            return redirect()->route('part.index')->with('error', 'Part tidak ditemukan!');
+            return redirect()->route('part.index',["id" => $modelPart->id ])->with('error', 'Part tidak ditemukan!');
         }
-
         // Hapus file gambar jika ada
         $oldImage = $part->foto_part;
         $imagePath = public_path('img/part/' . $oldImage);
@@ -178,6 +213,6 @@ class PartController extends Controller
         // Hapus data dari database
         $part->delete();
 
-        return redirect()->route('part.index')->with('success', 'Part berhasil dihapus!');
+        return redirect()->route('part.index',["id" => $modelPart->id ])->with('success', 'Part berhasil dihapus!');
     }
 }

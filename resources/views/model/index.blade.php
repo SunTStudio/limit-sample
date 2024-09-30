@@ -49,16 +49,22 @@
                             <div class="product-desc">
                                 <a href="#" class="product-name"> {{ $model->name }}</a>
                                 <div class="m-t text-right d-flex justify-content-between">
+                                    <div>
 
                                     <a href="{{ url("/limit-sample/model/$model->id/part") }}"
                                         class="btn btn-xs btn-outline btn-primary">See Detail <i
                                             class="fa fa-long-arrow-right"></i> </a>
-                                    <div>
+                                    </div>
+
+                                    <div class="d-flex">
                                         <a href="{{ url("/limit-sample/model/edit/$model->id") }}"
-                                            class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
-                                        <a href="{{ url("/limit-sample/model/delete/$model->id") }}"
-                                            class="btn btn-xs btn-outline btn-primary">Delete <i class="fa fa-trash"></i>
-                                        </a>
+                                            class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i> </a>
+                                            <form action="{{ url("/limit-sample/model/delete/$model->id") }}" method="POST"
+                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus Model ini?');">
+                                                @csrf
+                                                @method('DELETE') <!-- Ini menandakan bahwa request ini adalah DELETE method -->
+                                                <button type="submit" class="btn btn-xs btn-outline btn-primary">Hapus <i class="fa fa-trash"></i></button>
+                                            </form>
                                     </div>
                                 </div>
                             </div>

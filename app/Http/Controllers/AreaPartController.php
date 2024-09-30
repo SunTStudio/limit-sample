@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AreaPart;
 use App\Models\ModelPart;
 use App\Models\Part;
+use App\Models\PartArea;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -19,8 +20,17 @@ class AreaPartController extends Controller
     {
         $part = Part::find($id);
         $model = ModelPart::find($part->model_part_id);
-        $areaParts = AreaPart::where('part_id', $id)->get();
-        return response()->view('areaPart.index', compact('part', 'areaParts', 'model'));
+        $partAreas = PartArea::where('part_id', $id)->get();
+        return response()->view('areaPart.index', compact('part', 'partAreas', 'model'));
+    }
+
+    public function katalog($id)
+    {
+        $partArea = PartArea::find($id);
+        $part = Part::find($partArea->part_id);
+        $model = ModelPart::find($part->model_part_id);
+        $AreaParts = AreaPart::where('part_area_id', $id)->simplePaginate();
+        return response()->view('areaPart.katalog', compact('part', 'partArea', 'model','AreaParts'));
     }
 
     /**
@@ -30,10 +40,20 @@ class AreaPartController extends Controller
      */
     public function create($id)
     {
-        $areaParts = AreaPart::where('part_id', $id)->get();
-        $part = Part::find($id);
+        $areaParts = AreaPart::where('part_area_id', $id)->get();
+        $partArea = PartArea::find($id);
+
+        //mengambil id data terakhir untuk membuat document number
+        $lastAreaPartId = AreaPart::latest()->pluck('id')->first();
+        //jika data null(pertama) beri nilai manual satu
+        if($lastAreaPartId == null){
+            $lastAreaPartId = 1;
+        }else{
+            $lastAreaPartId++;
+        }
+        $part = Part::find($partArea->part_id);
         $model = ModelPart::find($part->model_part_id);
-        return response()->view('areaPart.create', compact('part','areaParts','model'));
+        return response()->view('areaPart.create', compact('part','areaParts','partArea','model','lastAreaPartId'));
     }
 
     /**
@@ -44,8 +64,8 @@ class AreaPartController extends Controller
      */
     public function store(Request $request, $id)
     {
-        dd($request->all());
-        $part = Part::find($id);
+        $partArea = PartArea::find($id);
+        $part = Part::find($partArea->part_id);
 
         // Validasi data dari form
         $validatedData = $request->validate([
@@ -62,8 +82,8 @@ class AreaPartController extends Controller
             'foto_ke_dua' => 'required',
             'foto_ke_tiga' => 'required',
             'foto_ke_empat' => 'required',
-            'koordinat_x' => 'required',
-            'koordinat_y' => 'required',
+            'part_number' => 'required',
+            'document_number' => 'required',
         ]);
 
         $validatedData['effective_date'] = Carbon::createFromFormat('m/d/Y', $request->effective_date)->format('Y-m-d');
@@ -100,12 +120,13 @@ class AreaPartController extends Controller
 
         $validatedData['model_part_id'] = $part->modelPart->id;
         $validatedData['part_id'] = $part->id;
+        $validatedData['part_area_id'] = $partArea->id;
         $validatedData['submit_date'] = Carbon::now();
         // Simpan data ke database
         AreaPart::create($validatedData);
 
         // Redirect atau return ke halaman lain dengan pesan sukses
-        return redirect()->route('areaPart.index', ['id' => $validatedData['part_id']]);
+        return redirect()->route('areaPart.katalog', ['id' => $id]);
     }
 
     /**
@@ -160,8 +181,8 @@ class AreaPartController extends Controller
             'foto_ke_dua' => 'required',
             'foto_ke_tiga' => 'required',
             'foto_ke_empat' => 'required',
-            'koordinat_x' => 'required',
-            'koordinat_y' => 'required',
+            'part_number' => 'required',
+            'document_number' => 'required',
         ]);
 
         $validatedData['effective_date'] = Carbon::createFromFormat('m/d/Y', $request->effective_date)->format('Y-m-d');
@@ -233,12 +254,14 @@ class AreaPartController extends Controller
 
         $validatedData['model_part_id'] = $part->modelPart->id;
         $validatedData['part_id'] = $part->id;
+        $validatedData['part_area_id'] = $oldAreaPart->part_area_id;
         $validatedData['submit_date'] = $oldAreaPart->submit_date;
         // Simpan data ke database
         $oldAreaPart->update($validatedData);
 
         // Redirect atau return ke halaman lain dengan pesan sukses
-        return redirect()->route('areaPart.index', ['id' => $validatedData['part_id']]);
+        return redirect()->route('areaPart.katalog', ['id' => $oldAreaPart->part_area_id]);
+
     }
 
     /**
@@ -247,8 +270,25 @@ class AreaPartController extends Controller
      * @param  \App\Models\AreaPart  $areaPart
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AreaPart $areaPart)
+    public function destroy(Request $request,$id)
     {
-        //
+        $deleteData = AreaPart::find($id);
+        $partArea = PartArea::find($deleteData->part_area_id);
+        unlink(public_path('img/areaPart/' . $deleteData->foto_ke_satu));
+        unlink(public_path('img/areaPart/' . $deleteData->foto_ke_dua));
+        unlink(public_path('img/areaPart/' . $deleteData->foto_ke_tiga));
+        unlink(public_path('img/areaPart/' . $deleteData->foto_ke_empat));
+        $deleteData->delete();
+        return redirect()->route('areaPart.katalog', ['id' => $partArea->id]);
+    }
+
+    public function katalogSearch(Request $request,$id)
+    {
+        $partArea = PartArea::find($id);
+        $part = Part::find($partArea->part_id);
+        $model = ModelPart::find($part->model_part_id);
+        $AreaParts = AreaPart::where('part_area_id', $id)->where('name','LIKE',"%$request->searchKatalog%")->simplePaginate();
+        return response()->view('areaPart.katalog', compact('part', 'partArea', 'model','AreaParts'));
+
     }
 }

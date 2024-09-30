@@ -53,7 +53,21 @@
 
                                 <div class="col-sm-10"><input type="text" name="name" class="form-control" value="{{ $areaPart->name }}"></div>
                             </div>
-                            <div class="form-group" id="data_1">
+                            <div class="form-group  row">
+                                <label class="col-sm-2 col-form-label">Part Number</label>
+
+                                <div class="col-sm-4"><input  type="text" name="part_number" value="{{ $areaPart->part_number }}" class="form-control"></div>
+                                <label class="col-sm-2 col-form-label">Document Number</label>
+
+                                <div class="col-sm-4"><input  type="text" name="document_number" value="{{ $areaPart->document_number }}" class="form-control" disabled></div>
+                                <div class="col-sm-4"><input  type="hidden" name="document_number" value="{{ $areaPart->document_number }}" class="form-control"></div>
+                            </div>
+                            <div class="form-group  row"><label class="col-sm-2 col-form-label">Characteristik</label>
+
+                                <div class="col-sm-10"><input type="text" name="characteristics" class="form-control" value="{{ $areaPart->characteristics }}"></div>
+                            </div>
+                            <div class="form-group  row">
+                            <div class="col-sm-6" id="data_1">
                                 <label class="font-normal">Effective Date</label>
                                 <div class="input-group date">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -61,17 +75,15 @@
                                 </div>
                             </div>
 
-                            <div class="form-group" id="data_2">
+                            <div class="col-sm-6" id="data_2">
                                 <label class="font-normal">Expired Date</label>
                                 <div class="input-group date">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                     <input type="text" name="expired_date" class="form-control datepicker" value="{{ $areaPart->expired_date }}">
                                 </div>
                             </div>
-                            <div class="form-group  row"><label class="col-sm-2 col-form-label">Characteristik</label>
+                        </div>
 
-                                <div class="col-sm-10"><input type="text" name="characteristics" class="form-control" value="{{ $areaPart->characteristics }}"></div>
-                            </div>
                             <div class="hr-line-dashed"></div>
                     </div>
                 </div>
@@ -148,38 +160,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-12">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <h5>Tandai Area part</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <div class="map-container">
-                            <img id="mapImage" src="{{ asset('img/part/D26A.png') }}" alt="Area Map">
-                            <!-- Tombol Visit dengan posisi tetap -->
-                            <button class="visit-btn"
-                                style="top: {{ $areaPart->koordinat_y }}; left: {{ $areaPart->koordinat_x }};
-                                @if ($areaPart->sec_head_approval_date == null)
-                                    background-color: yellow; color: black;
-                                @elseif($areaPart->dept_head_approval_date == null)
-                                    background-color: rgb(85, 85, 85); color: rgb(0, 0, 0);
-                                @else
-                                    background-color: black; color: white;
-                                @endif"
-                                type="button">
-                                <i class="fa fa-map-marker"></i>
-                            </button>
-
-                            <div id="buttonsContainer"></div>
-                            <input type="hidden" name="koordinat_y" id="btnY" value="">
-                            <input type="hidden" name="koordinat_x" id="btnX" value="">
-                        </div>
-                        {{-- <a class="zoom-btn btn btn-light" id="zoomInBtn">+</a>
-                        <a class="zoom-btn btn btn-light" id="zoomOutBtn">-</a> --}}
-
                         <div class="hr-line-dashed"></div>
                         <div class="form-group row">
                             <div class="col-sm-4 col-sm-offset-2">

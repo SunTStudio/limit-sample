@@ -17,7 +17,10 @@ class CreateAreaPartsTable extends Migration
             $table->id();
             $table->foreignId('model_part_id')->constrained()->onDelete('cascade');
             $table->foreignId('part_id')->constrained()->onDelete('cascade');
+            $table->foreignId('part_area_id')->constrained()->onDelete('cascade');
             $table->string('name');
+            $table->string('part_number');
+            $table->string('document_number');
             $table->string('characteristics');
             $table->date('effective_date');
             $table->date('expired_date');
@@ -30,8 +33,6 @@ class CreateAreaPartsTable extends Migration
             $table->string('foto_ke_dua')->nullable();
             $table->string('foto_ke_tiga')->nullable();
             $table->string('foto_ke_empat')->nullable();
-            $table->string('koordinat_x')->nullable();
-            $table->string('koordinat_y')->nullable();
             $table->string('sec_head_approval_date')->nullable();
             $table->string('dept_head_approval_date')->nullable();
             $table->date('submit_date')->nullable();

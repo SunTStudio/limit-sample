@@ -20,4 +20,9 @@ class Part extends Model
     {
         return $this->hasMany(AreaPart::class, 'part_id');
     }
+
+    public function partArea()
+    {
+        return $this->hasMany(PartArea::class, 'part_id');
+    }
 }

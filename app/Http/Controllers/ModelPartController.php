@@ -123,8 +123,13 @@ class ModelPartController extends Controller
      * @param  \App\Models\ModelPart  $modelPart
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ModelPart $modelPart)
+    public function destroy(Request $request,$id)
     {
-        //
+        $deleteData = ModelPart::find($id);
+        if(file_exists(public_path('img/model/' . $deleteData->foto_model))){
+            unlink(public_path('img/model/' . $deleteData->foto_model));
+        }
+        $deleteData->delete();
+        return redirect()->route('model.index');
     }
 }

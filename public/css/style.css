@@ -42,9 +42,9 @@
 
 .visit-btn {
     position: absolute;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    padding: 0.5rem 1rem;
+    padding: 0.1rem 0.5rem;
     background-color: black;
     color: white;
     border: none;
@@ -59,7 +59,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-    font-size: 1rem ;
+    font-size: 1rem;
 }
 .circle {
     width: 20px;
@@ -77,18 +77,27 @@
     background-color: black;
 }
 
-#CopHeading{
-    font-size:2rem;
-    font-weight:800;
+#CopHeading {
+    font-size: 2rem;
+    font-weight: 800;
 }
-#CopSubHeading{
-    font-size:1rem;
-    font-weight:800;
+#CopSubHeading {
+    font-size: 1rem;
+    font-weight: 800;
 }
 
-.fotoLimitSample{
+.fotoLimitSample {
     height: 15rem;
 }
+
+.img-katalog{
+    height:10rem;
+    object-fit:cover;
+}
+
+
+
+// CSS Bawaan Template
 
 .glyphicon {
     position: relative;
@@ -1598,16 +1607,18 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
 
     .map-container {
         position: relative;
+        width: 100%; /* Atur lebar kontainer sesuai keinginan */
+        height: 400px; /* Tinggi tetap untuk kontainer */
         overflow: hidden; /* Mencegah elemen keluar dari kontainer */
     }
 
     .map-container img {
-        width: 100%;
-        height: auto;
+        width: 100%; /* Gambar akan menyesuaikan lebar kontainer */
+        height: auto; /* Tinggi akan disesuaikan untuk menjaga rasio aspek */
+        max-height: 100%; /* Gambar tidak lebih tinggi dari kontainer */
+        object-fit: cover; /* Gambar akan menutupi seluruh area kontainer */
         cursor: pointer; /* Menunjukkan bahwa gambar dapat diklik */
     }
-
-
 
 
 }
@@ -3697,13 +3708,13 @@ a.forum-item-title:hover {
     .forum-desc {
         float: none !important;
     }
-    #CopHeading{
-        font-size:1rem;
-        font-weight:800;
+    #CopHeading {
+        font-size: 1rem;
+        font-weight: 800;
     }
-    #CopSubHeading{
-        font-size:0.6rem;
-        font-weight:800;
+    #CopSubHeading {
+        font-size: 0.6rem;
+        font-weight: 800;
     }
 
     .legend-container {
@@ -3713,10 +3724,10 @@ a.forum-item-title:hover {
         display: flex;
         align-items: center;
         margin-bottom: 10px;
-        font-size: 0.6rem ;
+        font-size: 0.6rem;
     }
     .circle {
-        padding:0.3rem;
+        padding: 0.3rem;
         width: 20px;
         height: 20px;
         border-radius: 50%;
@@ -3734,7 +3745,7 @@ a.forum-item-title:hover {
         cursor: pointer;
     }
 
-    .fotoLimitSample{
+    .fotoLimitSample {
         height: 5rem;
     }
     .map-container img {

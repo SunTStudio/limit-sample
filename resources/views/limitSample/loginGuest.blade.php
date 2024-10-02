@@ -28,24 +28,25 @@
                 <img src="{{ asset('ajilogo.png') }}" alt="logo" width="100">
             </div>
             <h3>AJI INTERNAL PORTAL</h3>
-            <h4>LOGIN OPERATOR</h4>
-            <form class="m-t" role="form" method="post" action="{{ route('limitSample.loginProsses') }}">
+            <h4>LOGIN PENGUNJUNG</h4>
+            <form class="m-t" role="form" method="post" action="{{ route('limitSample.loginGuestProsses') }}">
                 <!-- <form class="m-t" role="form" method="post" action="/portal-web/public/login"> -->
                 @csrf
                 <div class="form-group">
-                    <input type="text" class="form-control" name="name" placeholder="Username"
-                        value="{{ old('name') }}" required>
+                    <input type="hidden" class="form-control" name="name" placeholder="Username" value="guest">
+                    <input type="text" class="form-control" name="guest_name" placeholder="NPK / Tanda Pengenal"
+                        value="" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+                    <input type="hidden" class="form-control" name="password" placeholder="Password" value="guest123">
                 </div>
                 <button type="submit" class="btn btn-info block full-width m-b"
                     style="background-color:#225879">Login</button>
                 {{-- <p class="text-muted text-center"><small>Do not have an account?</small></p>
                 <a class="btn btn-sm btn-white btn-block" href="{{route('NewProductPortalSignupController.create')}}">Create an account</a> --}}
             </form>
-            <p class="m-t"> <small>Masuk Sebagai Pengunjung? <a href="{{ route('loginGuest') }}">Klik
-                        Disini</a></small> </p>
+            <p class="m-t"> <small>Masuk Sebagai Operator? <a href="{{ route('login') }}">Klik Disini</a></small>
+            </p>
             <p class="m-t"> <small>AJI INTERNAL PORAL &copy;copyright 2022</small> </p>
         </div>
     </div>

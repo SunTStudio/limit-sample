@@ -25,7 +25,9 @@ class PartController extends Controller
 
     public function search(Request $request, $id)
     {
-        $parts = Part::where('name', 'LIKE', "%$request->searchPart%")->simplePaginate(4);
+        $parts = Part::where('model_part_id', $id)
+            ->where('name', 'LIKE', "%$request->searchPart%")
+            ->simplePaginate(4);
         $model = ModelPart::find($id);
 
         return view('part.index', compact('parts', 'model'));
@@ -48,7 +50,7 @@ class PartController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$id)
+    public function store(Request $request, $id)
     {
         // Temukan model berdasarkan ID
         $model = ModelPart::find($id);
@@ -83,7 +85,7 @@ class PartController extends Controller
             'model_part_id' => $id,
         ]);
 
-        return redirect()->route('part.index',['id' => $id]);
+        return redirect()->route('part.index', ['id' => $id]);
     }
 
     /**
@@ -103,11 +105,11 @@ class PartController extends Controller
      * @param  \App\Models\Part  $part
      * @return \Illuminate\Http\Response
      */
-    public function edit(Part $part,$id)
+    public function edit(Part $part, $id)
     {
         $part = Part::find($id);
-        $model = ModelPart::find(($part->model_part_id));
-        return response()->view('part.edit', compact('part','model'));
+        $model = ModelPart::find($part->model_part_id);
+        return response()->view('part.edit', compact('part', 'model'));
     }
 
     /**
@@ -117,12 +119,12 @@ class PartController extends Controller
      * @param  \App\Models\Part  $part
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Part $part,$id)
+    public function update(Request $request, Part $part, $id)
     {
         $oldPart = Part::find($id);
         $validatedData = $request->validate([
             'name' => 'required',
-            'foto_part' => 'required'
+            'foto_part' => 'required',
         ]);
 
         //Membuat Nama gambar Baru dan Memasukan gambar baru
@@ -131,13 +133,13 @@ class PartController extends Controller
         // Membaca gambar
         $originalImage = Image::make($image);
 
-         // Periksa tinggi dan lebar gambar
-         if ($originalImage->height() > $originalImage->width()) {
+        // Periksa tinggi dan lebar gambar
+        if ($originalImage->height() > $originalImage->width()) {
             // Rotate gambar 90 derajat jika tinggi lebih besar dari lebar
             $originalImage->rotate(90);
         }
 
-        $imageName = time().'.'.$image->getClientOriginalExtension();
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
         $originalImage->save(public_path('img/part/' . $imageName), 90);
         $validatedData['foto_part'] = $imageName;
         // Ambil gambar lama dari database
@@ -149,41 +151,49 @@ class PartController extends Controller
         }
         $oldPart->update($validatedData);
         $id = $oldPart->model_part_id;
-        return redirect()->route('part.index',compact('id'));
+        return redirect()->route('part.index', compact('id'));
     }
 
-    public function kelola(Request $request,$id)
+    public function kelola(Request $request, $id)
     {
         $part = Part::find($id);
+        $partAreas = PartArea::where('part_id', $id)->get();
+        $partAreasCount = PartArea::where('part_id', $id)->count();
         $model = ModelPart::find($part->model_part_id);
-        return view('part.partArea',compact('part','model'));
+        return view('part.partArea', compact('part', 'model', 'partAreas', 'partAreasCount'));
     }
 
-    public function kelolaStore(Request $request,$id)
+    public function kelolaStore(Request $request, $id)
     {
         $count = $request->countArea;
-        $begin = 1;
 
-        if($count == null){
+        if ($count == null) {
             return back();
         }
 
-        for($i = 1; $i <= $count; $i++){
-            if($request->{'nameArea'.$i} != null){
+        for ($i = 1; $i <= $count; $i++) {
+            if ($request->{'id' . $i} != null) {
+                $oldData = PartArea::find($request->{'id' . $i});
                 $data = [];
-                $data['nameArea'] = $request->{'nameArea'.$i};
+                $data['nameArea'] = $request->{'nameArea' . $i};
                 $data['part_id'] = $id;
-                $data['koordinat_y'] = $request->{'koordinat_y'.$i};
-                $data['koordinat_x'] = $request->{'koordinat_x'.$i};
+                $data['koordinat_y'] = $request->{'koordinat_y' . $i};
+                $data['koordinat_x'] = $request->{'koordinat_x' . $i};
+                $oldData->update($data);
+            } elseif ($request->{'idDel' . $i} != null) {
+                $oldData = PartArea::find($request->{'idDel' . $i});
+                $oldData->delete();
+            } elseif ($request->{'nameArea' . $i} != null) {
+                $data = [];
+                $data['nameArea'] = $request->{'nameArea' . $i};
+                $data['part_id'] = $id;
+                $data['koordinat_y'] = $request->{'koordinat_y' . $i};
+                $data['koordinat_x'] = $request->{'koordinat_x' . $i};
                 PartArea::create($data);
             }
-        };
+        }
 
-
-        return redirect()->route('areaPart.index',['id' => $id]);
-
-
-
+        return redirect()->route('areaPart.index', ['id' => $id]);
     }
 
     /**
@@ -200,7 +210,9 @@ class PartController extends Controller
 
         // Cek apakah Part ditemukan
         if (!$part) {
-            return redirect()->route('part.index',["id" => $modelPart->id ])->with('error', 'Part tidak ditemukan!');
+            return redirect()
+                ->route('part.index', ['id' => $modelPart->id])
+                ->with('error', 'Part tidak ditemukan!');
         }
         // Hapus file gambar jika ada
         $oldImage = $part->foto_part;
@@ -213,6 +225,8 @@ class PartController extends Controller
         // Hapus data dari database
         $part->delete();
 
-        return redirect()->route('part.index',["id" => $modelPart->id ])->with('success', 'Part berhasil dihapus!');
+        return redirect()
+            ->route('part.index', ['id' => $modelPart->id])
+            ->with('success', 'Part berhasil dihapus!');
     }
 }

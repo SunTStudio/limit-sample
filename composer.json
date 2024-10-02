@@ -11,7 +11,10 @@
         "intervention/image": "^2.7",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "maatwebsite/excel": "*",
+        "spatie/laravel-permission": "^6.9",
+        "zanysoft/laravel-zip": "^2.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

@@ -12,6 +12,7 @@
     <link href="{{ asset('css/animate.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/datapicker/datepicker3.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/plugins/jasny/jasny-bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/plugins/summernote/summernote-bs4.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     @yield('css')
@@ -26,19 +27,21 @@
                         <div class="dropdown profile-element">
                             <img alt="image" class="rounded-circle" src="{{ asset('img/profile_small.jpg') }}" />
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <span class="block m-t-xs font-bold">Editor</span>
-                                <span class="text-muted text-xs block">Editor</span>
+                                <span class="block m-t-xs font-bold">{{ ucwords(Auth::user()->name) }}</span>
+                                <span
+                                    class="text-muted text-xs block">{{ implode(', ', Auth::user()->getRoleNames()->toArray()) }}</span>
                             </a>
                         </div>
                         <div class="logo-element">
                             LS
                         </div>
                     </li>
-                    <li class="{{ Request::is('/*') ? 'active' : '' }}">
+                    {{-- <li class="{{ Request::is('/*') ? 'active' : '' }}">
                         <a href="{{ url('/') }}"><i class="fa fa-dashboard"></i><span class="nav-label">Dashboards</span></a>
-                    </li>
+                    </li> --}}
                     <li class="{{ Request::is('limit-sample*') ? 'active' : '' }}">
-                        <a href="{{ url('/limit-sample/model') }}"><i class="fa fa-th-large"></i><span class="nav-label">Limit Sample</span></a>
+                        <a href="{{ url('/limit-sample/model') }}"><i class="fa fa-th-large"></i><span
+                                class="nav-label">Limit Sample</span></a>
                     </li>
                     {{-- <li id="managementMenu">
                         <a href="#"><i class="fa fa-th-large"></i><span class="nav-label">Manajemen Perpus</span><span class="fa arrow"></span></a>
@@ -81,7 +84,8 @@
             <div class="row border-bottom mb-4">
                 <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
                     <div class="navbar-header">
-                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i
+                                class="fa fa-bars"></i> </a>
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
@@ -89,9 +93,12 @@
                         </li>
 
                         <li class="pr-3">
-                            <a href="login.html">
-                                <i class="fa fa-sign-out"></i> Log out
-                            </a>
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fa fa-sign-out"></i> Log out
+                                </button>
+                            </form>
                         </li>
                     </ul>
                 </nav>
@@ -104,7 +111,7 @@
             </div>
             <div class="footer">
                 <div class="float-right">
-                     <strong>Limit Sample</strong>
+                    <strong>Limit Sample</strong>
                 </div>
                 <div>
                     <strong>Copyright</strong> PT Astra Juoku Indonesia. &copy; 2024
@@ -125,7 +132,8 @@
     <!-- SUMMERNOTE -->
     <script src="{{ asset('js/plugins/summernote/summernote-bs4.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote-cleaner/0.7.0/summernote-cleaner.min.js"></script>
-
+    <!-- Jasny -->
+    <script src="{{ asset('js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
     <!-- Flot -->
     <script src="{{ asset('js/plugins/flot/jquery.flot.js') }}"></script>
     <script src="{{ asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
@@ -164,8 +172,8 @@
     @yield('script')
     <script>
         $('.custom-file-input').on('change', function() {
-       let fileName = $(this).val().split('\\').pop();
-       $(this).next('.custom-file-label').addClass("selected").html(fileName);
+            let fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass("selected").html(fileName);
         });
     </script>
     {{-- <script type="text/javascript">
@@ -178,4 +186,5 @@
         });
     </script> --}}
 </body>
+
 </html>

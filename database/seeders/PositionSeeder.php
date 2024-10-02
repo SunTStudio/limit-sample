@@ -27,6 +27,10 @@ class PositionSeeder extends Seeder
                 'Position' => 'Admin',
                 'code' => 'Admin'
             ],
+            [
+                'Position' => 'Guest',
+                'code' => 'Guest'
+            ],
         ]);
     }
 }

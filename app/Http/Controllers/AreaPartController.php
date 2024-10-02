@@ -8,6 +8,7 @@ use App\Models\Part;
 use App\Models\PartArea;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AreaPartController extends Controller
 {
@@ -29,8 +30,14 @@ class AreaPartController extends Controller
         $partArea = PartArea::find($id);
         $part = Part::find($partArea->part_id);
         $model = ModelPart::find($part->model_part_id);
-        $AreaParts = AreaPart::where('part_area_id', $id)->simplePaginate();
-        return response()->view('areaPart.katalog', compact('part', 'partArea', 'model','AreaParts'));
+
+        if (Auth::user()->hasRole('Guest')) {
+            $AreaParts = AreaPart::where('part_area_id', $id)->whereNotNull('sec_head_approval_date')->simplePaginate();
+        } else {
+            $AreaParts = AreaPart::where('part_area_id', $id)->simplePaginate();
+        }
+
+        return response()->view('areaPart.katalog', compact('part', 'partArea', 'model', 'AreaParts'));
     }
 
     /**
@@ -40,20 +47,23 @@ class AreaPartController extends Controller
      */
     public function create($id)
     {
+        // if(Auth::user()->hasRole('Guest')){
+        //     return redirect()->route('areaPart.katalog',['id' => $id]);
+        // }
         $areaParts = AreaPart::where('part_area_id', $id)->get();
         $partArea = PartArea::find($id);
 
         //mengambil id data terakhir untuk membuat document number
         $lastAreaPartId = AreaPart::latest()->pluck('id')->first();
         //jika data null(pertama) beri nilai manual satu
-        if($lastAreaPartId == null){
+        if ($lastAreaPartId == null) {
             $lastAreaPartId = 1;
-        }else{
+        } else {
             $lastAreaPartId++;
         }
         $part = Part::find($partArea->part_id);
         $model = ModelPart::find($part->model_part_id);
-        return response()->view('areaPart.create', compact('part','areaParts','partArea','model','lastAreaPartId'));
+        return response()->view('areaPart.create', compact('part', 'areaParts', 'partArea', 'model', 'lastAreaPartId'));
     }
 
     /**
@@ -129,6 +139,30 @@ class AreaPartController extends Controller
         return redirect()->route('areaPart.katalog', ['id' => $id]);
     }
 
+    public function approvalSecHead(Request $request, $id)
+    {
+        $areaPart = AreaPart::find($id);
+        $areaPart->update([
+            'sec_head_approval_date' => Carbon::now()->format('Y-m-d'),
+        ]);
+
+        return redirect()
+            ->route('areaPart.katalog', ['id' => $areaPart->part_area_id])
+            ->with('success', 'Limit Sample Berhasil di Approve');
+    }
+
+    public function approvalDeptHead(Request $request, $id)
+    {
+        $areaPart = AreaPart::find($id);
+        $areaPart->update([
+            'dept_head_approval_date' => Carbon::now()->format('Y-m-d'),
+        ]);
+
+        return redirect()
+            ->route('areaPart.katalog', ['id' => $areaPart->part_area_id])
+            ->with('success', 'Limit Sample Berhasil di Approve');
+    }
+
     /**
      * Display the specified resource.
      *
@@ -146,12 +180,12 @@ class AreaPartController extends Controller
      * @param  \App\Models\AreaPart  $areaPart
      * @return \Illuminate\Http\Response
      */
-    public function edit(AreaPart $areaPart,$id)
+    public function edit(AreaPart $areaPart, $id)
     {
         $areaPart = AreaPart::find($id);
         $part = Part::find($areaPart->part_id);
         $model = ModelPart::find($part->model_part_id);
-        return response()->view('areaPart.edit', compact('part','areaPart','model'));
+        return response()->view('areaPart.edit', compact('part', 'areaPart', 'model'));
     }
 
     /**
@@ -261,7 +295,6 @@ class AreaPartController extends Controller
 
         // Redirect atau return ke halaman lain dengan pesan sukses
         return redirect()->route('areaPart.katalog', ['id' => $oldAreaPart->part_area_id]);
-
     }
 
     /**
@@ -270,7 +303,7 @@ class AreaPartController extends Controller
      * @param  \App\Models\AreaPart  $areaPart
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
         $deleteData = AreaPart::find($id);
         $partArea = PartArea::find($deleteData->part_area_id);
@@ -282,13 +315,21 @@ class AreaPartController extends Controller
         return redirect()->route('areaPart.katalog', ['id' => $partArea->id]);
     }
 
-    public function katalogSearch(Request $request,$id)
+    public function katalogSearch(Request $request, $id)
     {
         $partArea = PartArea::find($id);
         $part = Part::find($partArea->part_id);
         $model = ModelPart::find($part->model_part_id);
-        $AreaParts = AreaPart::where('part_area_id', $id)->where('name','LIKE',"%$request->searchKatalog%")->simplePaginate();
-        return response()->view('areaPart.katalog', compact('part', 'partArea', 'model','AreaParts'));
-
+        if (Auth::user()->hasRole('Guest')) {
+            $AreaParts = AreaPart::where('part_area_id', $id)
+                ->whereNotNull('sec_head_approval_date')
+                ->where('name', 'LIKE', "%$request->searchKatalog%")
+                ->simplePaginate();
+        } else {
+            $AreaParts = AreaPart::where('part_area_id', $id)
+                ->where('name', 'LIKE', "%$request->searchKatalog%")
+                ->simplePaginate();
+        }
+        return response()->view('areaPart.katalog', compact('part', 'partArea', 'model', 'AreaParts'));
     }
 }

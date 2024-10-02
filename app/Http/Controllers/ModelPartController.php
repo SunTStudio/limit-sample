@@ -17,14 +17,13 @@ class ModelPartController extends Controller
     public function index()
     {
         $models = ModelPart::simplePaginate(4);
-        return response()->view('model.index',compact('models'));
+        return response()->view('model.index', compact('models'));
     }
 
     public function search(Request $request)
     {
-        $models = ModelPart::where('name','LIKE',"%$request->searchModel%")->simplePaginate(4);
-        return view('model.index',compact('models'));
-
+        $models = ModelPart::where('name', 'LIKE', "%$request->searchModel%")->simplePaginate(4);
+        return view('model.index', compact('models'));
     }
 
     /**
@@ -47,11 +46,11 @@ class ModelPartController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'foto_model' => 'required|image'
+            'foto_model' => 'required|image',
         ]);
 
         $image = $request->file('foto_model');
-        $imageName =time() . '.' . $image->getClientOriginalExtension();
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
         $image->move(public_path('img/model'), $imageName);
 
         ModelPart::create([
@@ -79,10 +78,10 @@ class ModelPartController extends Controller
      * @param  \App\Models\ModelPart  $modelPart
      * @return \Illuminate\Http\Response
      */
-    public function edit(ModelPart $modelPart,$id)
+    public function edit(ModelPart $modelPart, $id)
     {
         $model = ModelPart::find($id);
-        return response()->view('model.edit',compact('model'));
+        return response()->view('model.edit', compact('model'));
     }
 
     /**
@@ -92,18 +91,18 @@ class ModelPartController extends Controller
      * @param  \App\Models\ModelPart  $modelPart
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         $oldModel = ModelPart::find($id);
         $validatedData = $request->validate([
             'name' => 'required',
-            'foto_model' => 'required'
+            'foto_model' => 'required',
         ]);
 
         //Membuat Nama gambar Baru dan Memasukan gambar baru
         $image = $request->file('foto_model');
-        $imageName = time().'.'.$image->getClientOriginalExtension();
-        $image->move(public_path('img/model'),$imageName);
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('img/model'), $imageName);
         $validatedData['foto_model'] = $imageName;
         // Ambil gambar lama dari database
         $oldImage = $oldModel->foto_model;
@@ -123,10 +122,10 @@ class ModelPartController extends Controller
      * @param  \App\Models\ModelPart  $modelPart
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
         $deleteData = ModelPart::find($id);
-        if(file_exists(public_path('img/model/' . $deleteData->foto_model))){
+        if (file_exists(public_path('img/model/' . $deleteData->foto_model))) {
             unlink(public_path('img/model/' . $deleteData->foto_model));
         }
         $deleteData->delete();

@@ -18,22 +18,22 @@ class PartSeeder extends Seeder
             [
                 'model_part_id' => '1',
                 'name' => 'Reflektor',
-                'foto_part' => 'D26A.png'
+                'foto_part' => 'D26AV3.png'
             ],
             [
                 'model_part_id' => '1',
                 'name' => 'RCL',
-                'foto_part' => 'D26A.png'
+                'foto_part' => 'D26AV3.png'
             ],
             [
                 'model_part_id' => '1',
                 'name' => 'CBDG',
-                'foto_part' => 'D26A.png'
+                'foto_part' => 'D26AV3.png'
             ],
             [
                 'model_part_id' => '1',
                 'name' => 'BDG',
-                'foto_part' => 'D26A.png'
+                'foto_part' => 'D26AV3.png'
             ],
         ]);
     }

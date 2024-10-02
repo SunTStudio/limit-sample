@@ -36,7 +36,7 @@
 
 .map-container img {
     width: auto;
-    height: 30rem;
+    height: auto;
     cursor: pointer; /* Menunjukkan bahwa gambar dapat diklik */
 }
 

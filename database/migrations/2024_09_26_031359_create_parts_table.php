@@ -19,6 +19,7 @@ class CreatePartsTable extends Migration
             $table->string('name');
             $table->string('foto_part');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -52,7 +52,6 @@ class ExcelImportController extends Controller
             if ($index === 1 || $index === 2) {
                 continue; // Lewati baris pertama dan kedua
             }
-
             // // Ambil gambar berdasarkan koordinat gambar di lembar kerja
             // $fotoKeSatu = $this->uploadImageFromExcel($spreadsheet, $index + 2, 'L');
             // $fotoKeDua = $this->uploadImageFromExcel($spreadsheet, $index + 2, 'M');
@@ -66,6 +65,7 @@ class ExcelImportController extends Controller
             // Mengambil tanggal efektif dan kedaluwarsa
             $effective_date = $row['E'];
             $expired_date = $row['F'];
+            $lastAreaPartId = AreaPart::latest()->pluck('id')->first();
 
             AreaPart::create([
                 'model_part_id' => $modelPart->id,
@@ -73,7 +73,7 @@ class ExcelImportController extends Controller
                 'part_area_id' => $partArea->id,
                 'name' => $row['A'],
                 'part_number' => $row['B'],
-                'document_number' => $row['C'],
+                'document_number' => "AJI/LS/$modelPart->name/$part->name/0$lastAreaPartId",
                 'characteristics' => $row['D'],
                 'effective_date' => $effective_date,
                 'expired_date' => $expired_date,

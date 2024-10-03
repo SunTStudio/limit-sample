@@ -22,8 +22,21 @@ class ModelPartController extends Controller
 
     public function search(Request $request)
     {
-        $models = ModelPart::where('name', 'LIKE', "%$request->searchModel%")->simplePaginate(4);
-        return view('model.index', compact('models'));
+        // Cek apakah request adalah AJAX
+        if ($request->ajax()) {
+            // Jika AJAX, ambil parameter pencarian
+            $searchTerm = $request->input('query');
+            // Lakukan pencarian
+            $models  = ModelPart::where('name', 'LIKE', "%{$searchTerm}%")->get();
+
+            // Kembalikan hasil pencarian dalam format JSON
+            return response()->json($models);
+        } else {
+            // Jika bukan AJAX (form submit biasa)
+            $models = ModelPart::where('name', 'LIKE', "%$request->searchModel%")->simplePaginate(4);
+            // Kembalikan view dengan hasil pencarian
+            return view('model.index', compact('models'));
+        }
     }
 
     /**
@@ -67,10 +80,10 @@ class ModelPartController extends Controller
      * @param  \App\Models\ModelPart  $modelPart
      * @return \Illuminate\Http\Response
      */
-    public function show(ModelPart $modelPart)
-    {
-        //
-    }
+    // public function show(ModelPart $modelPart)
+    // {
+    //     //
+    // }
 
     /**
      * Show the form for editing the specified resource.

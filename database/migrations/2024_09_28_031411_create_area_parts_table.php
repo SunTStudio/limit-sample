@@ -29,6 +29,10 @@ class CreateAreaPartsTable extends Migration
             $table->string('appearance');
             $table->string('jumlah');
             $table->text('metode_pengecekan');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->text('penolakan')->nullable();
+            $table->date('penocolumn: lakan_date')->nullable();
+            $table->string('status');
             $table->string('foto_ke_satu')->nullable();
             $table->string('foto_ke_dua')->nullable();
             $table->string('foto_ke_tiga')->nullable();
@@ -36,7 +40,7 @@ class CreateAreaPartsTable extends Migration
             $table->string('sec_head_approval_date')->nullable();
             $table->string('dept_head_approval_date')->nullable();
             $table->date('submit_date')->nullable();
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -25,12 +25,22 @@ class PartController extends Controller
 
     public function search(Request $request, $id)
     {
-        $parts = Part::where('model_part_id', $id)
-            ->where('name', 'LIKE', "%$request->searchPart%")
-            ->simplePaginate(4);
-        $model = ModelPart::find($id);
+        if ($request->ajax()) {
+            // Jika AJAX, ambil parameter pencarian
+            $searchTerm = $request->input('query');
+            // Lakukan pencarian
+            $parts  = Part::where('name', 'LIKE', "%{$searchTerm}%")->get();
 
-        return view('part.index', compact('parts', 'model'));
+            // Kembalikan hasil pencarian dalam format JSON
+            return response()->json($parts);
+        } else {
+            $parts = Part::where('model_part_id', $id)
+                ->where('name', 'LIKE', "%$request->searchPart%")
+                ->simplePaginate(4);
+            $model = ModelPart::find($id);
+
+            return view('part.index', compact('parts', 'model'));
+        }
     }
 
     /**
@@ -94,10 +104,10 @@ class PartController extends Controller
      * @param  \App\Models\Part  $part
      * @return \Illuminate\Http\Response
      */
-    public function show(Part $part)
-    {
-        //
-    }
+    // public function show(Part $part)
+    // {
+    //     //
+    // }
 
     /**
      * Show the form for editing the specified resource.

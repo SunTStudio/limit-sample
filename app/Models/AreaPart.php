@@ -5,13 +5,19 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AreaPart extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $guarded = [
         'id'
     ];
+
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     public function modelPart()
     {

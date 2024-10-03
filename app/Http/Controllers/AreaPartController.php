@@ -6,6 +6,7 @@ use App\Models\AreaPart;
 use App\Models\ModelPart;
 use App\Models\Part;
 use App\Models\PartArea;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,11 @@ class AreaPartController extends Controller
     {
         $part = Part::find($id);
         $model = ModelPart::find($part->model_part_id);
-        $partAreas = PartArea::where('part_id', $id)->get();
+        if(auth()->user()->hasRole('Guest')){
+            $partAreas = PartArea::has('areaPart')->whereHas('areaPart', fn($query) => $query->whereNotNull('sec_head_approval_date'))->where('part_id', $id)->get();
+        }else{
+            $partAreas = PartArea::where('part_id', $id)->get();
+        }
         return response()->view('areaPart.index', compact('part', 'partAreas', 'model'));
     }
 
@@ -129,6 +134,7 @@ class AreaPartController extends Controller
         }
 
         $validatedData['model_part_id'] = $part->modelPart->id;
+        $validatedData['status'] = 'create';
         $validatedData['part_id'] = $part->id;
         $validatedData['part_area_id'] = $partArea->id;
         $validatedData['submit_date'] = Carbon::now();
@@ -144,6 +150,7 @@ class AreaPartController extends Controller
         $areaPart = AreaPart::find($id);
         $areaPart->update([
             'sec_head_approval_date' => Carbon::now()->format('Y-m-d'),
+            'status' => 'approve',
         ]);
 
         return redirect()
@@ -169,10 +176,10 @@ class AreaPartController extends Controller
      * @param  \App\Models\AreaPart  $areaPart
      * @return \Illuminate\Http\Response
      */
-    public function show(AreaPart $areaPart)
-    {
-        //
-    }
+    // public function show(AreaPart $areaPart)
+    // {
+    //     //
+    // }
 
     /**
      * Show the form for editing the specified resource.
@@ -186,6 +193,63 @@ class AreaPartController extends Controller
         $part = Part::find($areaPart->part_id);
         $model = ModelPart::find($part->model_part_id);
         return response()->view('areaPart.edit', compact('part', 'areaPart', 'model'));
+    }
+
+    public function tolakSecHead(Request $request,$id){
+        $areaPart = AreaPart::find($id);
+        $partArea = PartArea::find($areaPart->part_area_id);
+        $part = Part::find($areaPart->part_id);
+        $model = ModelPart::find($part->model_part_id);
+        return response()->view('areaPart.tolakLimitSample', compact('part', 'areaPart', 'model','partArea'));
+
+    }
+
+    public function tolakSecHeadProsses(Request $request,$id){
+        $validatedData = $request->validate([
+            'user_id' => 'required',
+            'penolakan' => 'required'
+        ]);
+        $areaPart = AreaPart::find($id);
+        $validatedData['sec_head_approval_date'] = null;
+        $validatedData['dept_head_approval_date'] = null;
+        $validatedData['status'] = 'tolak';
+        $areaPart->update($validatedData);
+        $partArea = PartArea::find($areaPart->part_area_id);
+        $part = Part::find($areaPart->part_id);
+        $model = ModelPart::find($part->model_part_id);
+        return redirect()
+            ->route('areaPart.katalog', ['id' => $areaPart->part_area_id])
+            ->with('success', 'Limit Sample Berhasil di Approve');
+
+    }
+
+
+    public function tolakDeptHead(Request $request,$id){
+        $areaPart = AreaPart::find($id);
+        $partArea = PartArea::find($areaPart->part_area_id);
+        $part = Part::find($areaPart->part_id);
+        $model = ModelPart::find($part->model_part_id);
+        return response()->view('areaPart.tolakLimitSample', compact('part', 'areaPart', 'model','partArea'));
+
+    }
+
+    public function tolakDeptHeadProsses(Request $request,$id){
+        $validatedData = $request->validate([
+            'user_id' => 'required',
+            'penolakan' => 'required'
+        ]);
+        $areaPart = AreaPart::find($id);
+        $validatedData['sec_head_approval_date'] = null;
+        $validatedData['dept_head_approval_date'] = null;
+        $validatedData['status'] = 'tolak';
+        $areaPart->update($validatedData);
+        $partArea = PartArea::find($areaPart->part_area_id);
+        $part = Part::find($areaPart->part_id);
+        $model = ModelPart::find($part->model_part_id);
+        return redirect()
+            ->route('areaPart.katalog', ['id' => $areaPart->part_area_id])
+            ->with('success', 'Limit Sample Berhasil di Approve');
+
     }
 
     /**
@@ -288,6 +352,7 @@ class AreaPartController extends Controller
 
         $validatedData['model_part_id'] = $part->modelPart->id;
         $validatedData['part_id'] = $part->id;
+        $validatedData['status'] = 'update';
         $validatedData['part_area_id'] = $oldAreaPart->part_area_id;
         $validatedData['submit_date'] = $oldAreaPart->submit_date;
         // Simpan data ke database
@@ -320,16 +385,35 @@ class AreaPartController extends Controller
         $partArea = PartArea::find($id);
         $part = Part::find($partArea->part_id);
         $model = ModelPart::find($part->model_part_id);
-        if (Auth::user()->hasRole('Guest')) {
-            $AreaParts = AreaPart::where('part_area_id', $id)
-                ->whereNotNull('sec_head_approval_date')
-                ->where('name', 'LIKE', "%$request->searchKatalog%")
-                ->simplePaginate();
-        } else {
-            $AreaParts = AreaPart::where('part_area_id', $id)
-                ->where('name', 'LIKE', "%$request->searchKatalog%")
-                ->simplePaginate();
+        if($request->ajax()){
+            // Jika AJAX, ambil parameter pencarian
+            $searchTerm = $request->input('query');
+            if (Auth::user()->hasRole('Guest')) {
+                $AreaParts = AreaPart::where('part_area_id', $id)
+                    ->whereNotNull('sec_head_approval_date')
+                    ->where('name', 'LIKE', "%$searchTerm%")
+                    ->get();
+            } else {
+                $AreaParts = AreaPart::with(['users.position', 'modelPart'])->where('part_area_id', $id)
+                    ->where('name', 'LIKE', "%$searchTerm%")
+                    ->get();
+            }
+            return response()->json($AreaParts);
+
+        }else{
+
+            if (Auth::user()->hasRole('Guest')) {
+                $AreaParts = AreaPart::where('part_area_id', $id)
+                    ->whereNotNull('sec_head_approval_date')
+                    ->where('name', 'LIKE', "%$request->searchKatalog%")
+                    ->simplePaginate();
+            } else {
+                $AreaParts = AreaPart::where('part_area_id', $id)
+                    ->where('name', 'LIKE', "%$request->searchKatalog%")
+                    ->simplePaginate();
+            }
+            return response()->view('areaPart.katalog', compact('part', 'partArea', 'model', 'AreaParts'));
+
         }
-        return response()->view('areaPart.katalog', compact('part', 'partArea', 'model', 'AreaParts'));
     }
 }

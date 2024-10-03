@@ -20,6 +20,7 @@ class CreatePartAreasTable extends Migration
             $table->string('koordinat_x')->nullable();
             $table->string('koordinat_y')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

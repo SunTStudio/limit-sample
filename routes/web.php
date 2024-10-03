@@ -58,7 +58,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/limit-sample/part/{id}', [AreaPartController::class, 'index'])->name('areaPart.index');
     Route::get('/limit-sample/area-part/{id}', [AreaPartController::class, 'katalog'])->name('areaPart.katalog');
-    Route::get('/limit-sample/areaPart/search/{id}', [AreaPartController::class, 'katalogSearch'])->name('katalog.search');
+    Route::get('/limit-sample/area-part/search/{id}', [AreaPartController::class, 'katalogSearch'])->name('katalog.search');
     Route::get('/limit-sample/areaPart/{id}', [AreaPartController::class, 'detail'])->name('areaPart.edit');
 
     Route::middleware('role:Admin')->group(function () {
@@ -73,10 +73,12 @@ Route::middleware('auth')->group(function () {
     //approval
     Route::middleware('role:Section Head')->group(function () {
         Route::get('/limit-sample/area-part/approve/sechead/{id}', [AreaPartController::class, 'approvalSecHead'])->name('katalog.approve.secHead');
-        Route::get('/limit-sample/area-part/tolak/sechead/{id}', [AreaPartController::class, 'approvalSecHead'])->name('katalog.approve.secHead');
+        Route::get('/limit-sample/area-part/tolak/sechead/{id}', [AreaPartController::class, 'tolakSecHead'])->name('katalog.tolak.secHead');
+        Route::post('/limit-sample/area-part/tolak/sechead/{id}', [AreaPartController::class, 'tolakSecHeadProsses'])->name('katalog.tolak.secHead');
     });
     Route::middleware('role:Departement Head')->group(function () {
         Route::get('/limit-sample/area-part/approve/depthead/{id}', [AreaPartController::class, 'approvalDeptHead'])->name('katalog.approve.deptHead');
-        Route::get('/limit-sample/area-part/tolak/depthead/{id}', [AreaPartController::class, 'approvalDeptHead'])->name('katalog.approve.deptHead');
+        Route::get('/limit-sample/area-part/tolak/depthead/{id}', [AreaPartController::class, 'tolakDeptHead'])->name('katalog.tolak.deptHead');
+        Route::post('/limit-sample/area-part/tolak/depthead/{id}', [AreaPartController::class, 'tolakDeptHeadProsses'])->name('katalog.tolak.deptHead');
     });
 });

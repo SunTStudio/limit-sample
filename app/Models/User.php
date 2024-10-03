@@ -47,5 +47,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Position::class, 'position_id');
     }
+    public function areaPart()
+    {
+        return $this->hasMany(AreaPart::class, 'user_id');
+    }
 
 }

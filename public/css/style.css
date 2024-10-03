@@ -23,12 +23,29 @@
     height: 20rem;
 }
 
+.autocomplete-container {
+    position: relative;
+}
+
+#autocomplete-results {
+    position: absolute;
+    z-index: 1000; /* Ensure it floats above other content */
+    width: 100%; /* Match the width of the input */
+    overflow-y: auto; /* Enable scrolling if the list is long */
+    border: 0.5px solid #ccc; /* Optional: border for the dropdown */
+    border-radius: 0 0 5px 5px; /* Match input border radius */
+    margin-top: -1px; /* To prevent double border */
+}
+
 #part .product-imitation img {
     width: 100%;
     object-fit: cover;
     height: 9rem;
 }
-
+#toolsCard .btn {
+    font-size: 0.65rem;
+    padding: 0.2rem;
+}
 .map-container {
     position: relative;
     overflow: hidden; /* Mencegah elemen keluar dari kontainer */
@@ -82,7 +99,7 @@
     font-weight: 800;
 }
 #CopSubHeading {
-    font-size: 1rem;
+    font-size: 2rem;
     font-weight: 800;
 }
 
@@ -90,12 +107,10 @@
     height: 15rem;
 }
 
-.img-katalog{
-    height:10rem;
-    object-fit:cover;
+.img-katalog {
+    height: 10rem;
+    object-fit: cover;
 }
-
-
 
 // CSS Bawaan Template
 
@@ -1619,8 +1634,6 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
         object-fit: cover; /* Gambar akan menutupi seluruh area kontainer */
         cursor: pointer; /* Menunjukkan bahwa gambar dapat diklik */
     }
-
-
 }
 .menu-visible-lg,
 .menu-visible-md {

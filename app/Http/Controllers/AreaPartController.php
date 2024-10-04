@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AreaPart;
+use App\Models\Characteristics;
 use App\Models\ModelPart;
 use App\Models\Part;
 use App\Models\PartArea;
@@ -22,7 +23,7 @@ class AreaPartController extends Controller
     {
         $part = Part::find($id);
         $model = ModelPart::find($part->model_part_id);
-        if(auth()->user()->hasRole('Guest')){
+        if(in_array('Guest', session('roles', []))){
             $partAreas = PartArea::has('areaPart')->whereHas('areaPart', fn($query) => $query->whereNotNull('sec_head_approval_date'))->where('part_id', $id)->get();
         }else{
             $partAreas = PartArea::where('part_id', $id)->get();
@@ -35,14 +36,14 @@ class AreaPartController extends Controller
         $partArea = PartArea::find($id);
         $part = Part::find($partArea->part_id);
         $model = ModelPart::find($part->model_part_id);
-
-        if (Auth::user()->hasRole('Guest')) {
+        $characteristics = Characteristics::all();
+        if (in_array('Guest', session('roles', []))) {
             $AreaParts = AreaPart::where('part_area_id', $id)->whereNotNull('sec_head_approval_date')->simplePaginate();
         } else {
             $AreaParts = AreaPart::where('part_area_id', $id)->simplePaginate();
         }
 
-        return response()->view('areaPart.katalog', compact('part', 'partArea', 'model', 'AreaParts'));
+        return response()->view('areaPart.katalog', compact('part', 'partArea', 'model', 'AreaParts','characteristics'));
     }
 
     /**
@@ -52,7 +53,7 @@ class AreaPartController extends Controller
      */
     public function create($id)
     {
-        // if(Auth::user()->hasRole('Guest')){
+        // if(in_array('Guest', session('roles', []))){
         //     return redirect()->route('areaPart.katalog',['id' => $id]);
         // }
         $areaParts = AreaPart::where('part_area_id', $id)->get();
@@ -206,13 +207,15 @@ class AreaPartController extends Controller
 
     public function tolakSecHeadProsses(Request $request,$id){
         $validatedData = $request->validate([
-            'user_id' => 'required',
+            'penolak_id' => 'required',
             'penolakan' => 'required'
         ]);
         $areaPart = AreaPart::find($id);
         $validatedData['sec_head_approval_date'] = null;
         $validatedData['dept_head_approval_date'] = null;
         $validatedData['status'] = 'tolak';
+        $validatedData['penolak_posisi'] = implode(', ', session('roles'));
+        $validatedData['penolakan_date'] =Carbon::now()->format('Y-m-d');
         $areaPart->update($validatedData);
         $partArea = PartArea::find($areaPart->part_area_id);
         $part = Part::find($areaPart->part_id);
@@ -235,13 +238,15 @@ class AreaPartController extends Controller
 
     public function tolakDeptHeadProsses(Request $request,$id){
         $validatedData = $request->validate([
-            'user_id' => 'required',
+            'penolak_id' => 'required',
             'penolakan' => 'required'
         ]);
         $areaPart = AreaPart::find($id);
         $validatedData['sec_head_approval_date'] = null;
         $validatedData['dept_head_approval_date'] = null;
         $validatedData['status'] = 'tolak';
+        $validatedData['penolak_posisi'] = implode(', ', session('roles'));
+        $validatedData['penolakan_date'] =Carbon::now()->format('Y-m-d');
         $areaPart->update($validatedData);
         $partArea = PartArea::find($areaPart->part_area_id);
         $part = Part::find($areaPart->part_id);
@@ -388,13 +393,13 @@ class AreaPartController extends Controller
         if($request->ajax()){
             // Jika AJAX, ambil parameter pencarian
             $searchTerm = $request->input('query');
-            if (Auth::user()->hasRole('Guest')) {
+            if (in_array('Guest', session('roles', []))) {
                 $AreaParts = AreaPart::where('part_area_id', $id)
                     ->whereNotNull('sec_head_approval_date')
                     ->where('name', 'LIKE', "%$searchTerm%")
                     ->get();
             } else {
-                $AreaParts = AreaPart::with(['users.position', 'modelPart'])->where('part_area_id', $id)
+                $AreaParts = AreaPart::with(['modelPart'])->where('part_area_id', $id)
                     ->where('name', 'LIKE', "%$searchTerm%")
                     ->get();
             }
@@ -402,7 +407,7 @@ class AreaPartController extends Controller
 
         }else{
 
-            if (Auth::user()->hasRole('Guest')) {
+            if (in_array('Guest', session('roles', []))) {
                 $AreaParts = AreaPart::where('part_area_id', $id)
                     ->whereNotNull('sec_head_approval_date')
                     ->where('name', 'LIKE', "%$request->searchKatalog%")
@@ -415,5 +420,31 @@ class AreaPartController extends Controller
             return response()->view('areaPart.katalog', compact('part', 'partArea', 'model', 'AreaParts'));
 
         }
+    }
+
+    public function download($filename)
+    {
+        // Tentukan path file, sesuaikan dengan lokasi file Anda
+        $filePath = public_path('template/' . $filename);
+
+        // Periksa apakah file ada
+        if (file_exists($filePath)) {
+            return response()->download($filePath);
+        }
+
+        return abort(404, 'File not found.');
+    }
+
+    public function addCharacteristic(Request $request)
+    {
+        // Retrieve the 'newChar' parameter from the request
+        $newChar = $request->input('newChar');
+        Characteristics::create([
+            'name' => $newChar,
+        ]);
+
+        $allChar = Characteristics::all();
+
+        return response()->json($allChar);
     }
 }

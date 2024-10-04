@@ -38,9 +38,8 @@
 }
 
 #part .product-imitation img {
-    width: 100%;
     object-fit: cover;
-    height: 9rem;
+    height: 15rem;
 }
 #toolsCard .btn {
     font-size: 0.65rem;
@@ -3765,6 +3764,11 @@ a.forum-item-title:hover {
         width: 100%;
         height: auto;
         cursor: pointer; /* Menunjukkan bahwa gambar dapat diklik */
+    }
+
+    #part .product-imitation img {
+        object-fit: cover;
+        height: 10rem;
     }
 }
 /* New Timeline style */

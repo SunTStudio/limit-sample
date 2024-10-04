@@ -18,15 +18,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/login', [LoginController::class, 'login'])->name('login');
-Route::post('/login', [LoginController::class, 'authenticate'])->name('limitSample.loginProsses');
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('limitSample.loginProsses');
+// Route::post('/login', [LoginController::class, 'authenticate'])->name('limitSample.loginProsses');
 Route::get('/login-guest', [LoginController::class, 'loginGuest'])->name('loginGuest');
 Route::post('/login-guest', [LoginController::class, 'authenticateGuest'])->name('limitSample.loginGuestProsses');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['verify.token'])->group(function () {
     Route::get('/', [LoginController::class, 'dashboard'])->name('limitSample.dashboard');
     Route::get('/limit-sample', [LoginController::class, 'dashboard'])->name('limitSample.dashboard');
+    Route::get('/access-denied', [LoginController::class, 'accessDenied'])->name('access-denied');
 
     // Model
 
@@ -68,15 +70,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/limit-sample/area-part/edit/{id}', [AreaPartController::class, 'update'])->name('areaPart.update');
         Route::delete('/limit-sample/areaPart/delete/{id}', [AreaPartController::class, 'destroy'])->name('katalog.delete');
         Route::post('excel/import/{id}', [ExcelImportController::class, 'import'])->name('excel.import');
+        Route::get('/download-file/{filename}', [AreaPartController::class, 'download'])->name('file.download');
+        Route::get('/limit-sample/area-part/{id}/addCharacteristic', [AreaPartController::class, 'addCharacteristic'])->name('katalog.addCharacteristic');
+
     });
 
     //approval
-    Route::middleware('role:Section Head')->group(function () {
+    Route::middleware('role:Supervisor')->group(function () {
         Route::get('/limit-sample/area-part/approve/sechead/{id}', [AreaPartController::class, 'approvalSecHead'])->name('katalog.approve.secHead');
         Route::get('/limit-sample/area-part/tolak/sechead/{id}', [AreaPartController::class, 'tolakSecHead'])->name('katalog.tolak.secHead');
         Route::post('/limit-sample/area-part/tolak/sechead/{id}', [AreaPartController::class, 'tolakSecHeadProsses'])->name('katalog.tolak.secHead');
     });
-    Route::middleware('role:Departement Head')->group(function () {
+    Route::middleware('role:Department Head')->group(function () {
         Route::get('/limit-sample/area-part/approve/depthead/{id}', [AreaPartController::class, 'approvalDeptHead'])->name('katalog.approve.deptHead');
         Route::get('/limit-sample/area-part/tolak/depthead/{id}', [AreaPartController::class, 'tolakDeptHead'])->name('katalog.tolak.deptHead');
         Route::post('/limit-sample/area-part/tolak/depthead/{id}', [AreaPartController::class, 'tolakDeptHeadProsses'])->name('katalog.tolak.deptHead');

@@ -24,39 +24,28 @@
 
 @section('content')
     <section id="part">
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
-        @if (auth()->user()->hasRole('Admin'))
-            <div class="row justify-content-center">
-                <div class="col-lg-5 col-8 rounded  mb-3">
-                    <div class="autocomplete-container position-relative">
-                        <form action="{{ route('part.search', ['id' => $model->id]) }}" method="GET">
-                            <div class="input-group">
-                                <input placeholder="Search Part" id="search"  autocomplete="off" type="text" name="searchPart"
-                                    class="form-control form-control-sm">
-                                <span class="input-group-append">
-                                    <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i></button>
-                                </span>
-                            </div>
-                            <ul id="autocomplete-results" class="list-group bg-white" style="list-style: none;"></ul>
-                        </form>
-                    </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-8 rounded  mb-3">
+                <div class="autocomplete-container position-relative">
+                    <form action="{{ route('part.search', ['id' => $model->id]) }}" method="GET">
+                        <div class="input-group">
+                            <input placeholder="Search Part" id="search" autocomplete="off" type="text"
+                                name="searchPart" class="form-control form-control-sm">
+                            <span class="input-group-append">
+                                <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                        <ul id="autocomplete-results" class="list-group bg-white" style="list-style: none;"></ul>
+                    </form>
                 </div>
+            </div>
+            @hasRole('Admin')
                 <div class="col-lg-2 col-10 text-center  mb-3">
                     <a href="{{ url("limit-sample/model/$model->id/part/create") }}" class="btn btn-secondary ">Tambah Part
                         <i class="fa fa-plus"></i></a>
                 </div>
-            </div>
-        @endif
+            @endhasRole
+        </div>
         <div class="row justify-content-center" id="partCard">
             @foreach ($parts as $part)
                 <div class="col-lg-6 col-12 p-2">
@@ -74,10 +63,10 @@
                                     <a href="{{ url("/limit-sample/part/$part->id") }}"
                                         class="btn btn-xs btn-outline btn-primary">Lihat <i
                                             class="fa fa-long-arrow-right"></i> </a>
-                                    @if (auth()->user()->hasRole('Admin'))
+                                    @hasRole('Admin')
                                         <a href="{{ url("/limit-sample/part/edit/$part->id") }}"
                                             class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
-                                    @endif
+                                    @endhasRole
                                 </div>
                             </div>
                         </div>
@@ -108,10 +97,10 @@
             $('#autocomplete-results').empty(); // Clear autocomplete results
             let click = true;
             // Manually trigger the search AJAX call
-            performSearch(searchValue,click);
+            performSearch(searchValue, click);
         }
 
-        function performSearch(query,click) {
+        function performSearch(query, click) {
             if (query.length > 0) {
                 $.ajax({
                     url: "{{ route('part.search', ['id' => $model->id]) }}",
@@ -145,9 +134,9 @@
                                             <a href="#" class="product-name">${item.name}</a>
                                             <div class="m-t text-right">
                                                 <a href="{{ url('/limit-sample/part/') }}/${item.id}" class="btn btn-xs btn-outline btn-primary">Lihat <i class="fa fa-long-arrow-right"></i> </a>
-                                                @if (auth()->user()->hasRole('Admin'))
+                                                @hasRole('Admin')
                                                     <a href="{{ url('/limit-sample/part/edit/') }}/${item.id}" class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
-                                                @endif
+                                                @endhasRole
                                             </div>
                                         </div>
                                     </div>
@@ -156,9 +145,9 @@
                         `);
                         });
 
-                        if(click == true){
-                                $('#autocomplete-results').empty();
-                            }
+                        if (click == true) {
+                            $('#autocomplete-results').empty();
+                        }
                     }
                 });
             } else {
@@ -171,9 +160,8 @@
             $('#search').on('keyup', function() {
                 let click = false;
                 var query = $(this).val();
-                performSearch(query,click); // Call performSearch on keyup
+                performSearch(query, click); // Call performSearch on keyup
             });
         });
     </script>
 @endsection
-

@@ -38,16 +38,16 @@
                         <h5>Form Penolakan Limit Sample</h5>
                     </div>
                     <div class="ibox-content">
-                        @if (Auth::user()->hasRole('Section Head'))
+                        @if (in_array('Supervisor', session('roles', [])))
                         <form method="POST" action="{{ url("/limit-sample/area-part/tolak/sechead/$areaPart->id") }}" enctype="multipart/form-data">
-                            @elseif (Auth::user()->hasRole('Departement Head'))
+                            @elseif (in_array('Department Head', session('roles', [])))
                             <form method="POST" action="{{ url("/limit-sample/area-part/tolak/depthead/$areaPart->id") }}" enctype="multipart/form-data">
                         @endif
                             @csrf
                             <div class="form-group  row"><label class="col-sm-2 col-form-label">Catatan Penolakan</label>
 
                                 <div class="col-sm-10"><input type="text" name="penolakan" class="form-control"></div>
-                                <input type="hidden" name="user_id" class="form-control" value="{{ Auth::user()->id }}">
+                                <input type="hidden" name="penolak_id" class="form-control" value="{{ session('user')['id'] }}">
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group row">

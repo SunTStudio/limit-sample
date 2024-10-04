@@ -27,9 +27,8 @@
                         <div class="dropdown profile-element">
                             <img alt="image" class="rounded-circle" src="{{ asset('img/profile_small.jpg') }}" />
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <span class="block m-t-xs font-bold">{{ ucwords(Auth::user()->name) }}</span>
-                                <span
-                                    class="text-muted text-xs block">{{ implode(', ', Auth::user()->getRoleNames()->toArray()) }}</span>
+                                <span class="block m-t-xs font-bold">{{ ucwords(session('user')['name']) }}</span>
+                                <span class="text-muted text-xs block">{{ implode(', ', session('roles')) }}</span>
                             </a>
                         </div>
                         <div class="logo-element">
@@ -93,9 +92,9 @@
                         </li>
 
                         <li class="pr-3">
-                            <form action="{{ route('logout') }}" method="POST">
+                            <form action="{{ route('logout') }}" method="POST" id="logoutForm">
                                 @csrf
-                                <button type="submit" class="btn btn-danger">
+                                <button type="submit" class="btn btn-danger" id="logoutBtn">
                                     <i class="fa fa-sign-out"></i> Log out
                                 </button>
                             </form>
@@ -107,6 +106,17 @@
 
             @yield('header')
             <div class="wrapper wrapper-content">
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 @yield('content')
             </div>
             <div class="footer">
@@ -174,6 +184,11 @@
         $('.custom-file-input').on('change', function() {
             let fileName = $(this).val().split('\\').pop();
             $(this).next('.custom-file-label').addClass("selected").html(fileName);
+        });
+    </script>
+    <script>
+        document.getElementById('logoutForm').addEventListener('submit', function() {
+            document.getElementById('logoutBtn').disabled = true;
         });
     </script>
     {{-- <script type="text/javascript">

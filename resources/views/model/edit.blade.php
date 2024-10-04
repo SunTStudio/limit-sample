@@ -33,7 +33,11 @@
                             @csrf
                             <div class="form-group  row"><label class="col-sm-2 col-form-label">Nama Model</label>
                                 <div class="col-sm-10"><input type="text" name="name" class="form-control"
-                                        value="{{ $model->name }}"></div>
+                                        value="{{ $model->name }}">
+                                        @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
                             </div>
                             <div class="form-group  row">
                                 <label class="col-sm-2 col-form-label">Foto Model</label>
@@ -42,6 +46,9 @@
                                         <input id="logo" type="file" name="foto_model" class="custom-file-input">
                                         <label for="logo" class="custom-file-label">Choose file...</label>
                                     </div>
+                                    @error('foto_model')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>

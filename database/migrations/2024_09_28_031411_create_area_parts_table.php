@@ -29,10 +29,11 @@ class CreateAreaPartsTable extends Migration
             $table->string('appearance');
             $table->string('jumlah');
             $table->text('metode_pengecekan');
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('penolak_id')->nullable();
+            $table->string('penolak_posisi')->nullable();
             $table->text('penolakan')->nullable();
-            $table->date('penocolumn: lakan_date')->nullable();
-            $table->string('status');
+            $table->date('penolakan_date')->nullable();
+            $table->string('status')->default('create');
             $table->string('foto_ke_satu')->nullable();
             $table->string('foto_ke_dua')->nullable();
             $table->string('foto_ke_tiga')->nullable();

@@ -67,19 +67,19 @@
         <div class="row mb-4 mt-4 p-3">
             <div class="col-lg-12">
                 <div class="text-center d-flex justify-content-center">
-                    @if (auth()->user()->hasRole('Admin'))
+                    @hasRole('Admin')
                         <a href="{{ url("/limit-sample/part-area/kelola/$part->id") }}"
                             class="btn btn-secondary mr-2">Kelola Part Area</a>
-                    @endif
+                    @endhasRole
                     <a href="{{ url("/limit-sample/model/$model->id/part") }}" class="btn btn-dark mr-2">Kembali</a>
-                    @if (auth()->user()->hasRole('Admin'))
+                    @hasRole('Admin')
                         <form action="{{ url("/limit-sample/model/part/delete/$part->id") }}" method="POST"
                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus part ini?');">
                             @csrf
                             @method('DELETE') <!-- Ini menandakan bahwa request ini adalah DELETE method -->
                             <button type="submit" class="btn btn-danger">Hapus</button>
                         </form>
-                    @endif
+                    @endhasRole
                 </div>
             </div>
         </div>

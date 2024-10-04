@@ -33,12 +33,12 @@
                     </form>
                 </div>
             </div>
-            @if (auth()->user()->hasRole('Admin'))
+            @hasRole('Admin')
                 <div class="col-lg-2 col-10 text-center  mb-3">
                     <a href="{{ url('/limit-sample/model/create') }}" class="btn btn-secondary ">Tambah Model <i
                             class="fa fa-plus"></i></a>
                 </div>
-            @endif
+            @endhasRole()
         </div>
 
         <div class="row justify-content-center" id="modelCard">
@@ -59,14 +59,16 @@
                                         <a href="{{ url("/limit-sample/model/$model->id/part") }}"
                                             class="btn btn-xs btn-outline btn-primary">See Detail <i
                                                 class="fa fa-long-arrow-right"></i> </a>
-                                        @if (auth()->user()->hasRole('Admin'))
+                                                @hasRole('Admin')
+
                                             <a href="{{ url("/limit-sample/model/edit/$model->id") }}"
                                                 class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                     class="fa fa-edit"></i>
                                             </a>
-                                        @endif
+                                        @endhasRole
                                     </div>
-                                    @if (auth()->user()->hasRole('Admin'))
+                                    @hasRole('Admin')
+
                                         <div class="d-flex">
 
                                             <form action="{{ url("/limit-sample/model/delete/$model->id") }}" method="POST"
@@ -78,7 +80,7 @@
                                                         class="fa fa-trash"></i></button>
                                             </form>
                                         </div>
-                                    @endif
+                                    @endhasRole
                                 </div>
                             </div>
                         </div>
@@ -141,11 +143,13 @@
                                                 <div class="m-t text-right d-flex justify-content-between align-items-center">
                                                     <div>
                                                         <a href="{{ url('/limit-sample/model/') }}/${item.id}/part" class="btn btn-xs btn-outline btn-primary">See Detail <i class="fa fa-long-arrow-right"></i></a>
-                                                        @if (auth()->user()->hasRole('Admin'))
+                                                                    @hasRole('Admin')
+
                                                             <a href="{{ url('/limit-sample/model/edit/') }}/${item.id}" class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i></a>
-                                                        @endif
+                                                        @endhasRole
                                                     </div>
-                                                    @if (auth()->user()->hasRole('Admin'))
+                                                                @hasRole('Admin')
+
                                                         <div>
                                                             <form action="{{ url('/limit-sample/model/delete/') }}/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Model ini?');">
                                                                 @csrf
@@ -153,7 +157,7 @@
                                                                 <button type="submit" class="btn btn-xs btn-outline btn-danger">Hapus <i class="fa fa-trash"></i></button>
                                                             </form>
                                                         </div>
-                                                    @endif
+                                                    @endhasRole
                                                 </div>
                                             </div>
                                         </div>

@@ -14,10 +14,10 @@ class AreaPart extends Model
         'id'
     ];
 
-    public function users()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+    // public function users()
+    // {
+    //     return $this->belongsTo(User::class, 'user_id');
+    // }
 
     public function modelPart()
     {

@@ -42,7 +42,11 @@
                             <div class="form-group  row"><label class="col-sm-2 col-form-label">Nama Part</label>
 
                                 <div class="col-sm-10"><input type="text" name="name" class="form-control"
-                                        value="{{ $part->name }}"></div>
+                                        value="{{ $part->name }}">
+                                        @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                    </div>
                             </div>
                             <div class="form-group  row">
                                 <label class="col-sm-2 col-form-label">Foto Part</label>
@@ -51,6 +55,9 @@
                                         <input id="logo" name="foto_part" type="file" class="custom-file-input">
                                         <label for="logo" class="custom-file-label">Choose file...</label>
                                     </div>
+                                    @error('foto_part')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>

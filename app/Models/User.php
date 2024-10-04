@@ -34,6 +34,16 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function hasRole($role)
+    {
+        // Mengambil peran pengguna dari sesi
+        $roles = session('roles', []);
+
+        // Menggunakan in_array untuk memeriksa apakah peran ada dalam sesi
+        return in_array($role, $roles);
+    }
+
+
     /**
      * The attributes that should be cast.
      *
@@ -47,9 +57,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Position::class, 'position_id');
     }
-    public function areaPart()
-    {
-        return $this->hasMany(AreaPart::class, 'user_id');
-    }
+    // public function areaPart()
+    // {
+    //     return $this->hasMany(AreaPart::class, 'user_id');
+    // }
 
 }

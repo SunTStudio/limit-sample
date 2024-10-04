@@ -52,6 +52,17 @@
 
 @section('content')
     <section class="bg-white m-0 p-0">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         <form method="POST" action="{{ url("/limit-sample/part-area/kelola/$part->id") }}">
             @csrf
             <div class="image-container text-center bg-white tooltip-demo" id="imageContainer">

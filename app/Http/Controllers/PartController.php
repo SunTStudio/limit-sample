@@ -95,7 +95,7 @@ class PartController extends Controller
             'model_part_id' => $id,
         ]);
 
-        return redirect()->route('part.index', ['id' => $id]);
+        return redirect()->route('part.index', ['id' => $id])->with('success','Part Berhasil Dibuat!');
     }
 
     /**
@@ -161,7 +161,7 @@ class PartController extends Controller
         }
         $oldPart->update($validatedData);
         $id = $oldPart->model_part_id;
-        return redirect()->route('part.index', compact('id'));
+        return redirect()->route('part.index', compact('id'))->with('success','Part Berhasil diPerbarui!');
     }
 
     public function kelola(Request $request, $id)
@@ -203,7 +203,7 @@ class PartController extends Controller
             }
         }
 
-        return redirect()->route('areaPart.index', ['id' => $id]);
+        return redirect()->route('areaPart.index', ['id' => $id])->with('success','Katalog Area Part Berhasil diTambah!');
     }
 
     /**

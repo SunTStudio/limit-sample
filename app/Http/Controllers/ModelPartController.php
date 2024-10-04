@@ -16,7 +16,7 @@ class ModelPartController extends Controller
      */
     public function index()
     {
-        $models = ModelPart::simplePaginate(4);
+        $models = ModelPart::simplePaginate(8);
         return response()->view('model.index', compact('models'));
     }
 
@@ -33,7 +33,7 @@ class ModelPartController extends Controller
             return response()->json($models);
         } else {
             // Jika bukan AJAX (form submit biasa)
-            $models = ModelPart::where('name', 'LIKE', "%$request->searchModel%")->simplePaginate(4);
+            $models = ModelPart::where('name', 'LIKE', "%$request->searchModel%")->simplePaginate(8);
             // Kembalikan view dengan hasil pencarian
             return view('model.index', compact('models'));
         }
@@ -71,7 +71,7 @@ class ModelPartController extends Controller
             'foto_model' => $imageName,
         ]);
 
-        return redirect()->route('model.index');
+        return redirect()->route('model.index')->with('success','Model Berhasil Dibuat!');
     }
 
     /**
@@ -126,7 +126,7 @@ class ModelPartController extends Controller
         }
         $oldModel->update($validatedData);
 
-        return redirect()->route('model.index');
+        return redirect()->route('model.index')->with('success','Model Berhasil diUpdate!');
     }
 
     /**
@@ -142,6 +142,6 @@ class ModelPartController extends Controller
             unlink(public_path('img/model/' . $deleteData->foto_model));
         }
         $deleteData->delete();
-        return redirect()->route('model.index');
+        return redirect()->route('model.index')->with('success','Model Berhasil diHapus!');
     }
 }

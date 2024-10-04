@@ -92,7 +92,7 @@ class ExcelImportController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('success', 'Data imported successfully.');
+        return redirect()->back()->with('success', 'Data imported Berhasil.');
     }
 
     private function uploadImageFromExcel($spreadsheet, $rowIndex, $column)

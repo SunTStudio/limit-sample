@@ -62,9 +62,9 @@
 
                                 <div class="col-sm-4">
                                     <input type="text" name="document_number" class="form-control"
-                                        value="AJI/LS/0{{ $model->id }}/0{{ $part->id }}/0{{ $lastAreaPartId }}" disabled>
+                                        value="AJI/LS/{{ $model->name }}/{{ $part->name }}/{{ $partArea->nameArea }}/0{{ $lastAreaPartId }}" disabled>
                                     <input type="hidden" name="document_number" class="form-control"
-                                        value="AJI/LS/0{{ $model->id }}/0{{ $part->id }}/0{{ $lastAreaPartId }}">
+                                        value="AJI/LS/{{ $model->name }}/{{ $part->name }}/{{ $partArea->nameArea }}/0{{ $lastAreaPartId }}">
                                 </div>
                             </div>
                             <div class="form-group  row"><label class="col-sm-2 col-form-label">Characteristik</label>

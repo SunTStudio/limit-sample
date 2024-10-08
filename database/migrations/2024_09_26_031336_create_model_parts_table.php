@@ -19,6 +19,7 @@ class CreateModelPartsTable extends Migration
             $table->string('foto_model');
             $table->timestamps();
             $table->softDeletes();
+            $table->integer('count_visit')->default(0);
         });
     }
 

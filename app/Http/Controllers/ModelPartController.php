@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guest;
 use App\Models\ModelPart;
 use App\Models\Part;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +17,10 @@ class ModelPartController extends Controller
      */
     public function index()
     {
+
         $models = ModelPart::simplePaginate(8);
+
+        
         return response()->view('model.index', compact('models'));
     }
 

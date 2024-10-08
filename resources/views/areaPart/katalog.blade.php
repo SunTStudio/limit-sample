@@ -38,7 +38,7 @@
                         </div>
                         <a href="{{ route('file.download', ['filename' => 'template-import.xlsx']) }}"
                             class="btn btn-primary">Download Template</a>
-                        <div class="fileinput fileinput-new border border-secondary rounded" data-provides="fileinput">
+                        <div class="fileinput fileinput-new border border-secondary rounded mt-2" data-provides="fileinput">
                             <span class="btn btn-default btn-file"><span class="fileinput-new">Select file Excel</span>
                                 <span class="fileinput-exists">Change</span><input type="file" name="excel_file" /></span>
                             <span class="fileinput-filename"></span>
@@ -375,7 +375,8 @@
                                     @hasRole('Admin')
                                         <a href="{{ url("/limit-sample/area-part/edit/$areaPart->id") }}"
                                             class="btn btn-secondary">Edit</a>
-                                        <a href="{{ route('areaPart.exportPDF', $areaPart->id) }}" target="_blank" class="btn btn-primary">
+                                        <a href="{{ route('areaPart.exportPDF', $areaPart->id) }}" target="_blank"
+                                            class="btn btn-primary">
                                             Download PDF
                                         </a>
                                         <form action="{{ url("/limit-sample/areaPart/delete/$areaPart->id") }}"
@@ -398,7 +399,7 @@
         <div class="text-center mb-5">
             {{ $AreaParts->links() }}
         </div>
-        <div class="text-center m-3">
+        <div class="text-center m-5">
             <a href="{{ url("/limit-sample/part/$part->id") }}" class="btn btn-dark mr-2">Kembali</a>
         </div>
     </section>
@@ -587,14 +588,14 @@
                                                                     <p><strong>Approval</strong></p>
                                                                     <br>
                                                                     ${item.sec_head_approval_date ? `
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date} </strong></p>
-                                                                                                ` : ` `}
+                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date} </strong></p>
+                                                                                                    ` : ` `}
 
                                                                     ${item.status == 'tolak' && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                ` : `<br><br>`}
+                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                    ` : `<br><br>`}
                                                                     <br>
                                                                     <p><strong>Section Head</strong></p>
                                                                 </div>
@@ -602,13 +603,13 @@
                                                                     <p><strong>Approval</strong></p>
                                                                     <br>
                                                                     ${item.dept_head_approval_date ? `
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
-                                                                                                ` : ` `}
+                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
+                                                                                                    ` : ` `}
                                                                     ${item.status == 'tolak' && item.penolak_posisi == 'Department Head' ? `
-                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                ` : `<br><br>`}
+                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                    ` : `<br><br>`}
                                                                     <br>
                                                                     <p><strong>Departemen Head</strong></p>
                                                                 </div>
@@ -616,36 +617,36 @@
                                                         </div>
                                                         ${item.status == 'tolak'?
                                                         `<div class="col-12 bg-white text-left p-2 border border-dark text-dark">
-                                                                                    <p> <strong> Informasi Penolakan</strong></p>
-                                                                                    <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
-                                                                                    <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
-                                                                                    <br>
+                                                                                        <p> <strong> Informasi Penolakan</strong></p>
+                                                                                        <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
+                                                                                        <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
+                                                                                        <br>
 
-                                                                                </div>`
+                                                                                    </div>`
                                                         :` `}
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer" style="display: flex; justify-content: center;">
                                                     <button type="button" class="btn btn-white" data-dismiss="modal">Kembali</button>
                                                     ${dataRoles == 'Supervisor' && item.sec_head_approval_date == null && item.status != 'tolak'? `
-                                                                                    <a href="/limit-sample/area-part/tolak/sechead/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                    <a href="/limit-sample/area-part/approve/sechead/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                ` : ''}
+                                                                                        <a href="/limit-sample/area-part/tolak/sechead/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                        <a href="/limit-sample/area-part/approve/sechead/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                    ` : ''}
                                                     ${dataRoles == 'Department Head' && item.dept_head_approval_date == null && item.status != 'tolak'? `
-                                                                                    <a href="/limit-sample/area-part/tolak/depthead/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                    <a href="/limit-sample/area-part/approve/depthead/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                ` : ''}
+                                                                                        <a href="/limit-sample/area-part/tolak/depthead/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                        <a href="/limit-sample/area-part/approve/depthead/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                    ` : ''}
                                                     ${dataRoles == 'Admin' ? `
-                                                                                    <a href="/limit-sample/area-part/edit/${item.id}" class="btn btn-secondary">Edit</a>
-                                                                                    <a href="{{ route('areaPart.exportPDF', $areaPart->id) }}" target="_blank" class="btn btn-primary">
-                                                                                        Download PDF
-                                                                                    </a>
-                                                                                    <form action="/limit-sample/areaPart/delete/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
-                                                                                        <input type="hidden" name="_token" value="${item.csrf_token}">
-                                                                                        <input type="hidden" name="_method" value="DELETE">
-                                                                                        <button type="submit" class="btn btn-danger">Hapus</button>
-                                                                                    </form>
-                                                                                ` : ''}
+                                                                                        <a href="/limit-sample/area-part/edit/${item.id}" class="btn btn-secondary">Edit</a>
+                                                                                        <a href="/area-part/export-pdf/${item.id}" target="_blank" class="btn btn-primary">
+                                                                                            Download PDF
+                                                                                        </a>
+                                                                                        <form action="/limit-sample/areaPart/delete/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
+                                                                                            <input type="hidden" name="_token" value="${item.csrf_token}">
+                                                                                            <input type="hidden" name="_method" value="DELETE">
+                                                                                            <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                                        </form>
+                                                                                    ` : ''}
                                                 </div>
                                             </div>
                                         </div>
@@ -869,14 +870,14 @@
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
                                                                 ${item.sec_head_approval_date ? `
-                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date} </strong></p>
-                                                                                            ` : ` `}
+                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date} </strong></p>
+                                                                                                ` : ` `}
 
                                                                 ${item.status == 'tolak' && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                            ` : `<br><br>`}
+                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                ` : `<br><br>`}
                                                                 <br>
                                                                 <p><strong>Section Head</strong></p>
                                                             </div>
@@ -884,13 +885,13 @@
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
                                                                 ${item.dept_head_approval_date ? `
-                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
-                                                                                            ` : ` `}
+                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
+                                                                                                ` : ` `}
                                                                 ${item.status == 'tolak' && item.penolak_posisi == 'Department Head' ? `
-                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                            ` : `<br><br>`}
+                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                ` : `<br><br>`}
                                                                 <br>
                                                                 <p><strong>Departemen Head</strong></p>
                                                             </div>
@@ -898,36 +899,36 @@
                                                     </div>
                                                     ${item.status == 'tolak'?
                                                     `<div class="col-12 bg-white text-left p-2 border border-dark text-dark">
-                                                                                <p> <strong> Informasi Penolakan</strong></p>
-                                                                                <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
-                                                                                <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
-                                                                                <br>
+                                                                                    <p> <strong> Informasi Penolakan</strong></p>
+                                                                                    <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
+                                                                                    <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
+                                                                                    <br>
 
-                                                                            </div>`
+                                                                                </div>`
                                                     :` `}
                                                 </div>
                                             </div>
                                             <div class="modal-footer" style="display: flex; justify-content: center;">
                                                 <button type="button" class="btn btn-white" data-dismiss="modal">Kembali</button>
                                                 ${dataRoles == 'Supervisor' && item.sec_head_approval_date == null && item.status != 'tolak'? `
-                                                                                <a href="/limit-sample/area-part/tolak/sechead/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                <a href="/limit-sample/area-part/approve/sechead/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                            ` : ''}
+                                                                                    <a href="/limit-sample/area-part/tolak/sechead/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                    <a href="/limit-sample/area-part/approve/sechead/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                ` : ''}
                                                 ${dataRoles == 'Department Head' && item.dept_head_approval_date == null && item.status != 'tolak'? `
-                                                                                <a href="/limit-sample/area-part/tolak/depthead/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                <a href="/limit-sample/area-part/approve/depthead/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                            ` : ''}
+                                                                                    <a href="/limit-sample/area-part/tolak/depthead/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                    <a href="/limit-sample/area-part/approve/depthead/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                ` : ''}
                                                 ${dataRoles == 'Admin' ? `
-                                                                                <a href="/limit-sample/area-part/edit/${item.id}" class="btn btn-secondary">Edit</a>
-                                                                                <a href="{{ route('areaPart.exportPDF', $areaPart->id) }}" target="_blank" class="btn btn-primary">
-                                                                                    Download PDF
-                                                                                </a>
-                                                                                <form action="/limit-sample/areaPart/delete/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
-                                                                                    <input type="hidden" name="_token" value="${item.csrf_token}">
-                                                                                    <input type="hidden" name="_method" value="DELETE">
-                                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
-                                                                                </form>
-                                                                            ` : ''}
+                                                                                    <a href="/limit-sample/area-part/edit/${item.id}" class="btn btn-secondary">Edit</a>
+                                                                                    <a href="/area-part/export-pdf/${item.id}" target="_blank" class="btn btn-primary">
+                                                                                        Download PDF
+                                                                                    </a>
+                                                                                    <form action="/limit-sample/areaPart/delete/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
+                                                                                        <input type="hidden" name="_token" value="${item.csrf_token}">
+                                                                                        <input type="hidden" name="_method" value="DELETE">
+                                                                                        <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                                    </form>
+                                                                                ` : ''}
                                             </div>
                                         </div>
                                     </div>

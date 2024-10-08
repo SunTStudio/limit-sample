@@ -91,10 +91,14 @@ class LoginController extends Controller
 
                 // Redirect based on roles
                 $roles = session('roles', []);
-                Guest::create([
-                    'guest_name' => $request->guest_name,
-                    'login_date' => Carbon::now()->format('Y-m-d'),
-                ]);
+                // if(Guest::where('guest_name' , $request->guest_name)->first() == null)
+                // {
+                    Guest::create([
+                        'guest_name' => $request->guest_name,
+                        'login_date' => Carbon::now()->format('Y-m-d'),
+                    ]);
+                // }
+                $guestName = $request->guest_name;
                 // //buat instance baru untuk auth tanpa menyimpannya
                 // if ($userData) {
                 //     // Jika tidak ada di database, buat instance baru tanpa menyimpannya
@@ -104,6 +108,15 @@ class LoginController extends Controller
                 //     $user->email = $userData['email'];
                 //     $user->password = $userData['password']; // Pastikan password terenkripsi
                 // }
+
+                //Menghitung jumlah kunjungan Guest tersebut
+                    $guest = Guest::where('guest_name',$guestName)->first();
+                    $count = $guest->count_visit;
+                                $count++;
+                                $guest->update([
+                                    'count_visit' => $count,
+                                ]);
+
                 // //login auth
                 // Auth::login($user);
                 return redirect()->route('limitSample.dashboard')->with('success', 'Login successful.');
@@ -174,6 +187,8 @@ class LoginController extends Controller
                 // $user->email = $userData['email'];
                 // $user->password = $userData['password'];
                 // // You don't need to set the password here if it's not used
+
+
 
                 // // Log the user in using their details (this method creates a session)
                 // Auth::login($user); // 'true' for remember me

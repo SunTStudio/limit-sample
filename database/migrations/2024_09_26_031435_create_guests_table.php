@@ -17,6 +17,7 @@ class CreateGuestsTable extends Migration
             $table->id();
             $table->string('guest_name');
             $table->string('login_date');
+            $table->integer('count_visit')->nullable();
             $table->timestamps();
         });
     }

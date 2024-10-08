@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AreaPartController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ModelPartController;
@@ -24,9 +25,10 @@ Route::post('/login', [LoginController::class, 'login'])->name('limitSample.logi
 Route::get('/login-guest', [LoginController::class, 'loginGuest'])->name('loginGuest');
 Route::post('/login-guest', [LoginController::class, 'authenticateGuest'])->name('limitSample.loginGuestProsses');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/visits-data', [DashboardController::class, 'getVisitsData']);
 
 Route::middleware(['verify.token'])->group(function () {
-    Route::get('/', [LoginController::class, 'dashboard'])->name('limitSample.dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('limitSample.dashboard');
     Route::get('/limit-sample', [LoginController::class, 'dashboard'])->name('limitSample.dashboard');
     Route::get('/access-denied', [LoginController::class, 'accessDenied'])->name('access-denied');
 
@@ -76,6 +78,9 @@ Route::middleware(['verify.token'])->group(function () {
         Route::get('/limit-sample/area-part/{id}/addCharacteristic', [AreaPartController::class, 'addCharacteristic'])->name('katalog.addCharacteristic');
         Route::get('/limit-sample/area-part/{id}/delCharacteristic', [AreaPartController::class, 'delCharacteristic'])->name('katalog.delCharacteristic');
         Route::get('/area-part/export-pdf/{id}', [AreaPartController::class, 'exportPDF'])->name('areaPart.exportPDF');
+        Route::get('/activity', [DashboardController::class, 'activity'])->name('limitSample.activity');
+        Route::get('/getDatatables', [DashboardController::class, 'getDatatables'])->name('guests.datatables');
+
     });
 
     //approval
@@ -89,4 +94,6 @@ Route::middleware(['verify.token'])->group(function () {
         Route::get('/limit-sample/area-part/tolak/depthead/{id}', [AreaPartController::class, 'tolakDeptHead'])->name('katalog.tolak.deptHead');
         Route::post('/limit-sample/area-part/tolak/depthead/{id}', [AreaPartController::class, 'tolakDeptHeadProsses'])->name('katalog.tolak.deptHead');
     });
+
+
 });

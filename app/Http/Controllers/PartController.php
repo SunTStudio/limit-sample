@@ -20,6 +20,13 @@ class PartController extends Controller
     {
         $parts = Part::where('model_part_id', $id)->simplePaginate(4);
         $model = ModelPart::find($id);
+        if(in_array('Guest', session('roles', []))){
+            $count = $model->count_visit;
+                        $count++;
+                        $model->update([
+                            'count_visit' => $count,
+                        ]);
+        }
         return response()->view('part.index', compact('parts', 'model'));
     }
 

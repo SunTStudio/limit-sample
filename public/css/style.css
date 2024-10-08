@@ -111,6 +111,8 @@
     object-fit: cover;
 }
 
+
+
 // CSS Bawaan Template
 
 .glyphicon {
@@ -3769,6 +3771,17 @@ a.forum-item-title:hover {
     #part .product-imitation img {
         object-fit: cover;
         height: 10rem;
+    }
+    #rekapA{
+        font-size:0.5rem;
+    }
+
+    #rekapB{
+        margin-bottom:1rem;
+    }
+
+    #rekapC{
+        margin-bottom:2rem;
     }
 }
 /* New Timeline style */

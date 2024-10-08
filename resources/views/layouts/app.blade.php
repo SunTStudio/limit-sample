@@ -25,7 +25,6 @@
                 <ul class="nav metismenu" id="side-menu">
                     <li class="nav-header">
                         <div class="dropdown profile-element">
-                            <img alt="image" class="rounded-circle" src="{{ asset('img/profile_small.jpg') }}" />
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="block m-t-xs font-bold">{{ ucwords(session('user')['name']) }}</span>
                                 <span class="text-muted text-xs block">{{ implode(', ', session('roles')) }}</span>
@@ -35,13 +34,20 @@
                             LS
                         </div>
                     </li>
-                    {{-- <li class="{{ Request::is('/*') ? 'active' : '' }}">
-                        <a href="{{ url('/') }}"><i class="fa fa-dashboard"></i><span class="nav-label">Dashboards</span></a>
-                    </li> --}}
+                    @hasRole('Admin')
+                    <li class="{{ Request::is('/*') ? 'active' : '' }}">
+                        <a href="{{ url('/') }}"><i class="fa fa-dashboard"></i><span class="nav-label">Dashboard</span></a>
+                    </li>
+                    @endhasRole
                     <li class="{{ Request::is('limit-sample*') ? 'active' : '' }}">
                         <a href="{{ url('/limit-sample/model') }}"><i class="fa fa-th-large"></i><span
                                 class="nav-label">Limit Sample</span></a>
                     </li>
+                    @hasRole('Admin')
+                    <li class="{{ Request::is('activity') ? 'active' : '' }}">
+                        <a href="{{ url('/activity') }}"><i class="fa fa-user-o"></i><span class="nav-label">Activity</span></a>
+                    </li>
+                    @endhasRole
                     {{-- <li id="managementMenu">
                         <a href="#"><i class="fa fa-th-large"></i><span class="nav-label">Manajemen Perpus</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">

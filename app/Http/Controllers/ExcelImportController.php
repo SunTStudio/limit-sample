@@ -66,6 +66,11 @@ class ExcelImportController extends Controller
             $effective_date = $row['E'];
             $expired_date = $row['F'];
             $lastAreaPartId = AreaPart::latest()->pluck('id')->first();
+            if ($lastAreaPartId == null) {
+                $lastAreaPartId = 1;
+            } else {
+                $lastAreaPartId++;
+            }
 
             AreaPart::create([
                 'model_part_id' => $modelPart->id,
@@ -73,7 +78,7 @@ class ExcelImportController extends Controller
                 'part_area_id' => $partArea->id,
                 'name' => $row['A'],
                 'part_number' => $row['B'],
-                'document_number' => "AJI/LS/$modelPart->name/$part->name/0$lastAreaPartId",
+                'document_number' => "AJI/LS/$modelPart->name/$part->name/$partArea->nameArea/0$lastAreaPartId",
                 'characteristics' => $row['D'],
                 'effective_date' => $effective_date,
                 'expired_date' => $expired_date,

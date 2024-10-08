@@ -1,52 +1,176 @@
 @extends('layouts.app')
 
+@section('css')
+    <style>
+        .tables-container p {
+            font-size: 0.7rem;
+            margin: 0;
+        }
+        .tables-container {
+            display: flex;
+            justify-content: space-around;
+        }
+        table {
+            width: 30%;
+        }
+    </style>
+@endsection
+@section('header')
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Limit Sample - <strong>Dashboard</strong> </h2>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active">
+                    <strong href="index.html">Dashboard</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+    </div>
+@endsection
 @section('content')
-    {{-- <div class="row d-flex text-center border border-dark  m-0 p-0 align-items-center" style="background-color: #002060; border-width: 4px;">
-        <div class="col-2 p-3 m-0" style="background-color: #ffffff;">
-            <img src="{{ asset('img/limitSample/logoLimitSample.png') }}" class="img-fluid"
-                alt="">
+    <div class="row  m-3 ">
+        <div class="col-sm-7 col-12">
+            <div class="row justify-content-between" id="rekapA">
+                <div class="col-4">
+                    <div class="text-center bg-white p-2">
+                        <p class="m-0"> <strong> Expired </strong></p>
+                        <hr class="m-1">
+                        <p class="h3 m-0">{{ $expired }}</p>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="text-center bg-white p-2">
+                        <p class="m-0"> <strong> Will Expired </strong></p>
+                        <hr class="m-1">
+                        <p class="h3 m-0">{{ $willExpired }}</p>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="text-center bg-white p-2">
+                        <p class="m-0"> <strong> Today Visitor  </strong></p>
+                        <hr class="m-1">
+                        <p class="h3 m-0">{{ $TodayVisitWeb }}</p>
+                    </div>
+                </div>
             </div>
-        <div class="col-8" style="background-color: #002060;">
-            <p class="h1 m-0" style="color: yellow;"><strong> LIMIT SAMPLE </strong></p>
-        </div>
-        <div class="col-2 m-0" style="background-color: #002060;">
-            <h3 style="color: yellow;">D26A</h3>
-        </div>
-        <div class="col-12">
-            <div class="row text-left bg-white text-dark">
-                <div class="col-6 border border-dark p-2"><strong>Part Name</strong>             : Reflector Assy, Reflex RH/ LH</div>
-                <div class="col-6 border border-dark p-2"><strong>Effective Date</strong>                    : 	March 17, 2022</div>
-                <div class="col-6 border border-dark p-2"><strong>Charackteristic</strong>       : Dented Area Housing</div>
-                <div class="col-6 border border-dark p-2"><strong>Expired Date</strong>                      : 	March 16, 2023</div>
-            </div>
-        </div>
-        <div class="col-12">
-            <div class="row bg-white">
-                <div class="col-6 p-3 border border-dark"><img src="{{ asset('img/areaPart/konten1.jpg') }}" alt="" class="img-fluid"></div>
-                <div class="col-6 p-3 border border-dark"><img src="{{ asset('img/areaPart/konten2.jpg') }}" alt="" class="img-fluid"></div>
-                <div class="col-6 p-3 border border-dark"><img src="{{ asset('img/areaPart/konten3.jpg') }}" alt="" class="img-fluid"></div>
-                <div class="col-6 p-3 border border-dark"><img src="{{ asset('img/areaPart/konten4.jpg') }}" alt="" class="img-fluid"></div>
-            </div>
-        </div>
-        <div class="col-12 text-left p-2 border border-dark text-dark" style="background-color: #ffffff;">
-            <p > <strong> A.Detail</strong></p>
-            <p>Kondisi limit maksimum diperbolehkan adanya  dented pada area belakang ( Housing ).</p>
-            <div class="detail pl-3">
-                <p><span><strong>1.	Appearance             </strong>: </span>Dented pada area belakang ( housing ), (Lihat Gambar "OK")</p>
-                <p><span><strong>2.	Dimension              </strong>: </span>Max 4.5 mm</p>
-                <p><span><strong>3.	Jumlah                 </strong>: </span>2 pcs pada area belakang (housing)</p>
+            <div class="row" id="rekapB">
+                <div class="col mt-3 mr-3 ml-3 p-3 bg-white">
+                    <div id="chartContainer" style="height: 250px; width: 100%;"></div>
+                </div>
             </div>
         </div>
-        <div class="col-12 text-left p-2 border border-dark text-dark" style="background-color: #ffffff;">
-            <p > <strong> B.Metode Pengecekan</strong></p>
-            <div class="metodePengecekan pl-3">
-                <p>1.	Cek dibawah cahaya lampu warna putih. (lihat gambar B.1)
-                    2.	Cek area belakan/ bagian housing dekat dengan locking. (lihat gambar OK & Gambar B2)
-                    3.	Check kondisi dented, apabila melebihi dari ketentuan Limit, part dijudgement NG
-                    Sample NG               :
-                    1. Dimensi             : Dented dengan kondisi diameter lebih dari 4.5 mm
-                    </p>
+        <div class="col-sm-5 col-12 bg-white p-3" id="rekapC">
+
+            <h3 class="text-center">Top Visiting Page</h3>
+            <div class="tables-container">
+                <!-- Tabel Model -->
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($models as $model)
+                        <tr>
+                            <td>
+                                <p><strong>{{ $model->name }}</strong></p>
+                                <p>({{ $model->count_visit }} kali)</p>
+                            </td>
+                        </tr>
+                        @endforeach
+
+                    </tbody>
+                </table>
+
+                <!-- Tabel Part -->
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th>Part</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($parts as $part)
+                        <tr>
+                            <td>
+                                <p><strong>{{ $part->name }}</strong></p>
+                                <p>({{ $part->count_visit }} kali)</p>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+                <!-- Tabel Area Part -->
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th>Area Part</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($partAreas as $partArea)
+                        <tr>
+                            <td>
+                                <p><strong>{{ $partArea->nameArea }}</strong></p>
+                                <p>({{ $partArea->count_visit }} kali)</p>
+                            </td>
+                        </tr>
+                        @endforeach
+
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div> --}}
+    </div>
+@endsection
+
+@section('script')
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Menggunakan AJAX untuk mengambil data
+        $.ajax({
+            url: '/visits-data', // URL endpoint API
+            type: 'GET', // Tipe request
+            dataType: 'json', // Tipe data yang diharapkan
+            success: function(data) {
+                const dataPoints = data.map(item => ({
+                    x: new Date(item.date), // Mengonversi tanggal ke format Date
+                    y: item.total // Total kunjungan
+                }));
+
+                // Buat grafik
+                const chart = new CanvasJS.Chart("chartContainer", {
+                    title: {
+                        text: "Grafik Kunjungan Website Mingguan"
+                    },
+                    axisX: {
+                        title: "Tanggal",
+                        valueFormatString: "DD MMM"
+                    },
+                    axisY: {
+                        title: "Total Kunjungan",
+                        includeZero: true
+                    },
+                    data: [{
+                        type: "line", // Tipe grafik
+                        dataPoints: dataPoints // Data untuk grafik
+                    }]
+                });
+
+                // Render grafik
+                chart.render();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error); // Menangani kesalahan
+            }
+        });
+    });
+</script>
 @endsection

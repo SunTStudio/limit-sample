@@ -30,6 +30,11 @@ class AreaPartController extends Controller
         $model = ModelPart::find($part->model_part_id);
         if(in_array('Guest', session('roles', []))){
             $partAreas = PartArea::has('areaPart')->whereHas('areaPart', fn($query) => $query->whereNotNull('sec_head_approval_date'))->where('part_id', $id)->get();
+            $count = $part->count_visit;
+            $count++;
+            $part->update([
+                'count_visit' => $count,
+            ]);
         }else{
             $partAreas = PartArea::where('part_id', $id)->get();
         }
@@ -43,6 +48,15 @@ class AreaPartController extends Controller
         $part = Part::find($partArea->part_id);
         $model = ModelPart::find($part->model_part_id);
         $characteristics = Characteristics::all();
+
+        if(in_array('Guest', session('roles', []))){
+            $count = $partArea->count_visit;
+                        $count++;
+                        $partArea->update([
+                            'count_visit' => $count,
+                        ]);
+        }
+
         if (in_array('Guest', session('roles', []))) {
             $AreaParts = AreaPart::where('part_area_id', $id)->whereNotNull('sec_head_approval_date')->simplePaginate();
         } else {
@@ -429,10 +443,13 @@ class AreaPartController extends Controller
     {
         $deleteData = AreaPart::find($id);
         $partArea = PartArea::find($deleteData->part_area_id);
+        if(file_exists(public_path('img/areaPart/' . $deleteData->foto_ke_satu)) != false){
         unlink(public_path('img/areaPart/' . $deleteData->foto_ke_satu));
         unlink(public_path('img/areaPart/' . $deleteData->foto_ke_dua));
         unlink(public_path('img/areaPart/' . $deleteData->foto_ke_tiga));
         unlink(public_path('img/areaPart/' . $deleteData->foto_ke_empat));
+        }
+
         $deleteData->delete();
         return redirect()->route('areaPart.katalog', ['id' => $partArea->id]);
     }

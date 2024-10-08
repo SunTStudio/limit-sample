@@ -20,7 +20,7 @@ class CreateAreaPartsTable extends Migration
             $table->foreignId('part_area_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('part_number');
-            $table->string('document_number');
+            $table->string('document_number')->default(1);
             $table->string('characteristics');
             $table->date('effective_date');
             $table->date('expired_date');
@@ -43,6 +43,8 @@ class CreateAreaPartsTable extends Migration
             $table->date('submit_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
+            $table->integer('count_visit')->default(0);
+
         });
     }
 

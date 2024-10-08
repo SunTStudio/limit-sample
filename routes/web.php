@@ -62,6 +62,8 @@ Route::middleware(['verify.token'])->group(function () {
     Route::get('/limit-sample/area-part/{id}', [AreaPartController::class, 'katalog'])->name('areaPart.katalog');
     Route::get('/limit-sample/area-part/search/{id}', [AreaPartController::class, 'katalogSearch'])->name('katalog.search');
     Route::get('/limit-sample/areaPart/{id}', [AreaPartController::class, 'detail'])->name('areaPart.edit');
+    Route::get('/limit-sample/area-part/search/{id}', [AreaPartController::class, 'katalogSearch'])->name('katalog.search');
+    Route::get('/limit-sample/area-part/{id}/getDataCharacteristic', [AreaPartController::class, 'getDataCharacteristic'])->name('katalog.getDataCharacteristic');
 
     Route::middleware('role:Admin')->group(function () {
         Route::get('/limit-sample/area-part/create/{id}', [AreaPartController::class, 'create'])->name('areaPart.create');
@@ -72,7 +74,8 @@ Route::middleware(['verify.token'])->group(function () {
         Route::post('excel/import/{id}', [ExcelImportController::class, 'import'])->name('excel.import');
         Route::get('/download-file/{filename}', [AreaPartController::class, 'download'])->name('file.download');
         Route::get('/limit-sample/area-part/{id}/addCharacteristic', [AreaPartController::class, 'addCharacteristic'])->name('katalog.addCharacteristic');
-
+        Route::get('/limit-sample/area-part/{id}/delCharacteristic', [AreaPartController::class, 'delCharacteristic'])->name('katalog.delCharacteristic');
+        Route::get('/area-part/export-pdf/{id}', [AreaPartController::class, 'exportPDF'])->name('areaPart.exportPDF');
     });
 
     //approval

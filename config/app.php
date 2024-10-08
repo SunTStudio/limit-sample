@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'link_website' => env('LINK_WEBSITE', 'http://10.14.179.250:1111'),
 
     /*
     |--------------------------------------------------------------------------
@@ -235,6 +236,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Zip' => ZanySoft\Zip\Facades\Zip::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
 ];

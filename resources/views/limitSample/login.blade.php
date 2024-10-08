@@ -19,10 +19,10 @@
 
     <div class="ibox-content middle-box text-center loginscreen animated fadeInDown mt-5">
         @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
+            <div class="alert alert-success">
+                <ul class="p-0">
                     @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
+                        <li style="list-style: none;">{{ $error }}</li>
                     @endforeach
                 </ul>
             </div>

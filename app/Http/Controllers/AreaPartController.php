@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NeedApprovalMail;
+use App\Mail\TolakLimitSampleMail;
 use App\Models\AreaPart;
 use App\Models\Characteristics;
 use App\Models\ModelPart;
 use App\Models\Part;
 use App\Models\PartArea;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class AreaPartController extends Controller
 {
@@ -33,6 +38,7 @@ class AreaPartController extends Controller
 
     public function katalog($id)
     {
+
         $partArea = PartArea::find($id);
         $part = Part::find($partArea->part_id);
         $model = ModelPart::find($part->model_part_id);
@@ -142,8 +148,31 @@ class AreaPartController extends Controller
         // Simpan data ke database
         AreaPart::create($validatedData);
 
+        //kirim data yang sudah dibuat ke email untuk review sec head and Dept Head
+        $emailData = AreaPart::latest()->first();
+
+        //mengambil nama Dept Head
+        $semuaUsers = session('all_users');
+        foreach($semuaUsers as $semuaUser)
+        {
+
+            if($semuaUser['position_id'] == 1 && $semuaUser['detail_dept_id'] == 15 && $semuaUser['dept_id'] == 13 )
+            {
+                //send Mail Ke Sec Head dan Dept Head
+                Mail::to($semuaUser['email'])->send(new NeedApprovalMail($emailData,$semuaUser['name']));
+            }
+            else if($semuaUser['position_id'] == 2 && $semuaUser['detail_dept_id'] == 15 && $semuaUser['dept_id'] == 13 )
+            {
+                //send Mail Ke Sec Head dan Dept Head
+                Mail::to($semuaUser['email'])->send(new NeedApprovalMail($emailData,$semuaUser['name']));
+            }
+        };
+
+
+
+
         // Redirect atau return ke halaman lain dengan pesan sukses
-        return redirect()->route('areaPart.katalog', ['id' => $id]);
+        return redirect()->route('areaPart.katalog', ['id' => $id])->with('success', 'Limit Sample Berhasil di Tambahkan!');
     }
 
     public function approvalSecHead(Request $request, $id)
@@ -220,9 +249,32 @@ class AreaPartController extends Controller
         $partArea = PartArea::find($areaPart->part_area_id);
         $part = Part::find($areaPart->part_id);
         $model = ModelPart::find($part->model_part_id);
+
+        //kirim data yang sudah dibuat ke email untuk informasi Penolakan ke sec head and Dept Head
+        $emailData = AreaPart::find($id);
+        //mengambil nama Dept Head
+        $semuaUsers = session('all_users');
+        foreach($semuaUsers as $semuaUser)
+        {
+
+            if($semuaUser['position_id'] == 1 && $semuaUser['detail_dept_id'] == 15 && $semuaUser['dept_id'] == 13 )
+            {
+                //send Mail ke Dept Head
+                Mail::to($semuaUser['email'])->send(new TolakLimitSampleMail($emailData,$semuaUser['name']));
+            }
+            else if($semuaUser['position_id'] == 2 && $semuaUser['detail_dept_id'] == 15 && $semuaUser['dept_id'] == 13 )
+            {
+                //send Mail Ke Sec Head
+                Mail::to($semuaUser['email'])->send(new TolakLimitSampleMail($emailData,$semuaUser['name']));
+            }
+            else if($semuaUser['username'] == 'adminLS'){
+                //send Mail ke Admin
+                Mail::to($semuaUser['email'])->send(new TolakLimitSampleMail($emailData,$semuaUser['name']));
+            }
+        };
         return redirect()
             ->route('areaPart.katalog', ['id' => $areaPart->part_area_id])
-            ->with('success', 'Limit Sample Berhasil di Approve');
+            ->with('success', 'Limit Sample Berhasil di Tolak');
 
     }
 
@@ -394,7 +446,7 @@ class AreaPartController extends Controller
             // Jika AJAX, ambil parameter pencarian
             $searchTerm = $request->input('query');
             if (in_array('Guest', session('roles', []))) {
-                $AreaParts = AreaPart::where('part_area_id', $id)
+                $AreaParts = AreaPart::with(['modelPart'])->where('part_area_id', $id)
                     ->whereNotNull('sec_head_approval_date')
                     ->where('name', 'LIKE', "%$searchTerm%")
                     ->get();
@@ -408,18 +460,29 @@ class AreaPartController extends Controller
         }else{
 
             if (in_array('Guest', session('roles', []))) {
-                $AreaParts = AreaPart::where('part_area_id', $id)
+                $AreaParts = AreaPart::with(['modelPart'])->where('part_area_id', $id)
                     ->whereNotNull('sec_head_approval_date')
                     ->where('name', 'LIKE', "%$request->searchKatalog%")
                     ->simplePaginate();
             } else {
-                $AreaParts = AreaPart::where('part_area_id', $id)
+                $AreaParts = AreaPart::with(['modelPart'])->where('part_area_id', $id)
                     ->where('name', 'LIKE', "%$request->searchKatalog%")
                     ->simplePaginate();
             }
-            return response()->view('areaPart.katalog', compact('part', 'partArea', 'model', 'AreaParts'));
+            $characteristics = Characteristics::all();
+            return response()->view('areaPart.katalog', compact('part', 'partArea', 'model', 'AreaParts','characteristics'));
 
         }
+    }
+
+    public function getDataCharacteristic(Request $request,$id)
+    {
+        $partArea = PartArea::find($id);
+        $part = Part::find($partArea->part_id);
+        $model = ModelPart::find($part->model_part_id);
+        $sortChar = $request->sortChar;
+        $AreaParts = AreaPart::with(['modelPart'])->where('part_area_id',$partArea->id)->where('characteristics','LIKE',"%$sortChar%")->get();
+        return response()->json($AreaParts);
     }
 
     public function download($filename)
@@ -446,5 +509,32 @@ class AreaPartController extends Controller
         $allChar = Characteristics::all();
 
         return response()->json($allChar);
+    }
+
+    public function delCharacteristic(Request $request)
+    {
+        // Retrieve the 'newChar' parameter from the request
+        $delIdChar = $request->input('delChar');
+        $delChar = Characteristics::find($delIdChar);
+        $delChar->delete();
+        $allChar = Characteristics::all();
+
+        return response()->json($allChar);
+    }
+
+    public function exportPDF($id)
+    {
+        ini_set('max_execution_time', 120);
+        // Ambil data areaPart berdasarkan ID
+        $areaPart = AreaPart::find($id);
+
+        // Jika Anda ingin menambahkan data dari session
+        // $allUsers = session('all_users', []);
+
+        // Buat PDF dari view
+        $pdf = FacadePdf::loadView('pdf.export', array('areaPart' => $areaPart))->setPaper('a4', 'landscape');
+
+        // Atur nama file untuk PDF
+        return $pdf->stream('area_part_' . $areaPart->id . '.pdf');
     }
 }

@@ -9878,10 +9878,7 @@ body.md-skin {
 }
 /* Only demo */
 @media (max-width: 1000px) {
-    .welcome-message {
-        display: none;
-    }
-}
+
 @media print {
     nav.navbar-static-side {
         display: none;

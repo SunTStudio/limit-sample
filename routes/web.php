@@ -66,6 +66,7 @@ Route::middleware(['verify.token'])->group(function () {
     Route::get('/limit-sample/areaPart/{id}', [AreaPartController::class, 'detail'])->name('areaPart.edit');
     Route::get('/limit-sample/area-part/search/{id}', [AreaPartController::class, 'katalogSearch'])->name('katalog.search');
     Route::get('/limit-sample/area-part/{id}/getDataCharacteristic', [AreaPartController::class, 'getDataCharacteristic'])->name('katalog.getDataCharacteristic');
+    Route::get('/limit-sample/area-part/{id}/count', [AreaPartController::class, 'katalogCount'])->name('katalog.count');
 
     Route::middleware('role:Admin')->group(function () {
         Route::get('/limit-sample/area-part/create/{id}', [AreaPartController::class, 'create'])->name('areaPart.create');
@@ -80,6 +81,10 @@ Route::middleware(['verify.token'])->group(function () {
         Route::get('/area-part/export-pdf/{id}', [AreaPartController::class, 'exportPDF'])->name('areaPart.exportPDF');
         Route::get('/activity', [DashboardController::class, 'activity'])->name('limitSample.activity');
         Route::get('/getDatatables', [DashboardController::class, 'getDatatables'])->name('guests.datatables');
+        Route::get('/all-expired', [DashboardController::class, 'allExpired'])->name('limitSample.allExpired');
+        Route::get('/will-expired', [DashboardController::class, 'willExpired'])->name('limitSample.willExpired');
+        Route::get('/arsip', [DashboardController::class, 'arsip'])->name('limitSample.arsip');
+        Route::get('/arsipModal', [DashboardController::class, 'arsipModal'])->name('limitSample.arsipModal');
 
     });
 

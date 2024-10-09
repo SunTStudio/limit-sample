@@ -154,8 +154,8 @@
                                 <div class="row mt-3 align-items-center justify-content-between">
                                     <div class="col-3">
                                         <a data-toggle="modal" data-target="#{{ $areaPart->id }}"
-                                            class="btn btn-xs btn-outline mb-1 btn-primary">Lihat <i
-                                                class="fa fa-long-arrow-right"></i> </a>
+                                            class="btn btn-xs btn-outline mb-1 btn-primary" onclick="countAreaPart({{ $areaPart->id }})">Lihat <i
+                                                class="fa fa-long-arrow-right" ></i> </a>
                                     </div>
                                     <div class="col-8 text-right " id="toolsCard">
                                         @if (in_array('Supervisor', session('roles', [])) &&
@@ -497,7 +497,7 @@
                                                     </div>
                                                     <div class="row mt-3 align-items-center justify-content-between">
                                                         <div class="col-3">
-                                                            <a data-toggle="modal" data-target="#${areaPart.id}" class="btn btn-xs btn-outline mb-1 btn-primary">Lihat <i class="fa fa-long-arrow-right"></i></a>
+                                                            <a data-toggle="modal" data-target="#${areaPart.id}" class="btn btn-xs btn-outline mb-1 btn-primary" onclick="countAreaPart(${areaPart.id})">Lihat <i class="fa fa-long-arrow-right"></i></a>
                                                         </div>
                                                         <div class="col-8 text-right" id="toolsCard">
 
@@ -779,7 +779,7 @@
                                                 </div>
                                                 <div class="row mt-3 align-items-center justify-content-between">
                                                     <div class="col-3">
-                                                        <a data-toggle="modal" data-target="#${areaPart.id}" class="btn btn-xs btn-outline mb-1 btn-primary">Lihat <i class="fa fa-long-arrow-right"></i></a>
+                                                        <a data-toggle="modal" data-target="#${areaPart.id}" class="btn btn-xs btn-outline mb-1 btn-primary" onclick="countAreaPart(${areaPart.id})">Lihat <i class="fa fa-long-arrow-right"></i></a>
                                                     </div>
                                                     <div class="col-8 text-right" id="toolsCard">
 
@@ -990,5 +990,22 @@
                 }
             });
         });
+
+
+        function countAreaPart(idAreaPart){
+            var partArea = {{ $partArea->id }};
+            $.ajax({
+                url:"{{ route('katalog.count', ['id' => $partArea->id]) }}",
+                type:"GET",
+                data:{
+                    id:partArea,
+                    idCount:idAreaPart
+                },
+                success:function(response) {
+                    // console.log('Sukses');
+                    // console.log(response);
+                }
+            });
+        }
     </script>
 @endsection

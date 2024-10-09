@@ -47,6 +47,17 @@
                     <li class="{{ Request::is('activity') ? 'active' : '' }}">
                         <a href="{{ url('/activity') }}"><i class="fa fa-user-o"></i><span class="nav-label">Activity</span></a>
                     </li>
+                    <li class="{{ Request::is('*expired') ? 'active' : '' }}">
+                        <a href="#"><i class="fa fa-warning"></i> <span class="nav-label">Expired</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li class="{{ Request::is('all-expired') ? 'active' : '' }}"><a href="{{ route('limitSample.allExpired') }}">Sudah Expired</a></li>
+                            <li class="{{ Request::is('will-expired') ? 'active' : '' }}"><a href="{{ route('limitSample.willExpired') }}">Akan Expired</a></li>
+                            {{-- <li><a href="carousel.html">Dilaporkan</a></li> --}}
+                        </ul>
+                    </li>
+                    <li class="{{ Request::is('arsip') ? 'active' : '' }}">
+                        <a href="{{ url('/arsip') }}"><i class="fa fa-history"></i><span class="nav-label">Arsip</span></a>
+                    </li>
                     @endhasRole
                     {{-- <li id="managementMenu">
                         <a href="#"><i class="fa fa-th-large"></i><span class="nav-label">Manajemen Perpus</span><span class="fa arrow"></span></a>
@@ -94,7 +105,7 @@
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
-                            <span class="m-r-sm text-muted welcome-message">Welcome to Limit Sample</span>
+                            <span class="m-r-sm text-muted welcome-message">{{ ucwords(session('user')['name']) }}</span>
                         </li>
 
                         <li class="pr-3">
@@ -137,7 +148,7 @@
     </div>
 
     <!-- Mainly scripts -->
-    <script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> <!-- Updated jQuery version -->
     <script src="{{ asset('js/popper.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>

@@ -554,4 +554,14 @@ class AreaPartController extends Controller
         // Atur nama file untuk PDF
         return $pdf->stream('area_part_' . $areaPart->id . '.pdf');
     }
+
+    public function katalogCount(Request $request, $idCount){
+        $areaPart = AreaPart::find($idCount);
+        $count = $areaPart->count_visit;
+        $count++;
+        $areaPart->update([
+            'count_visit' =>  $count,
+        ]);
+        return response()->json();
+    }
 }

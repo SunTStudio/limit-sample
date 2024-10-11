@@ -20,7 +20,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
+// Route::post('/login', [LoginController::class, 'authenticate'])->name('limitSample.loginProsses');
 Route::post('/login', [LoginController::class, 'login'])->name('limitSample.loginProsses');
+Route::get('/limit-sample/login-external', [LoginController::class, 'externalLogin'])->name('limitSample.externalLogin');
+Route::post('/directToExternalSite', [LoginController::class, 'directToExternalSite'])->name('limitSample.directToExternalSite');
+
 // Route::post('/login', [LoginController::class, 'authenticate'])->name('limitSample.loginProsses');
 Route::get('/login-guest', [LoginController::class, 'loginGuest'])->name('loginGuest');
 Route::post('/login-guest', [LoginController::class, 'authenticateGuest'])->name('limitSample.loginGuestProsses');
@@ -73,20 +77,19 @@ Route::middleware(['verify.token'])->group(function () {
         Route::post('/limit-sample/area-part/create/{id}', [AreaPartController::class, 'store'])->name('areaPart.store');
         Route::get('/limit-sample/area-part/edit/{id}', [AreaPartController::class, 'edit'])->name('areaPart.edit');
         Route::post('/limit-sample/area-part/edit/{id}', [AreaPartController::class, 'update'])->name('areaPart.update');
-        Route::delete('/limit-sample/areaPart/delete/{id}', [AreaPartController::class, 'destroy'])->name('katalog.delete');
         Route::post('excel/import/{id}', [ExcelImportController::class, 'import'])->name('excel.import');
         Route::get('/download-file/{filename}', [AreaPartController::class, 'download'])->name('file.download');
         Route::get('/limit-sample/area-part/{id}/addCharacteristic', [AreaPartController::class, 'addCharacteristic'])->name('katalog.addCharacteristic');
         Route::get('/limit-sample/area-part/{id}/delCharacteristic', [AreaPartController::class, 'delCharacteristic'])->name('katalog.delCharacteristic');
         Route::get('/area-part/export-pdf/{id}', [AreaPartController::class, 'exportPDF'])->name('areaPart.exportPDF');
-        Route::get('/activity', [DashboardController::class, 'activity'])->name('limitSample.activity');
-        Route::get('/getDatatables', [DashboardController::class, 'getDatatables'])->name('guests.datatables');
-        Route::get('/all-expired', [DashboardController::class, 'allExpired'])->name('limitSample.allExpired');
-        Route::get('/will-expired', [DashboardController::class, 'willExpired'])->name('limitSample.willExpired');
-        Route::get('/arsip', [DashboardController::class, 'arsip'])->name('limitSample.arsip');
-        Route::get('/arsipModal', [DashboardController::class, 'arsipModal'])->name('limitSample.arsipModal');
-
     });
+    Route::delete('/limit-sample/areaPart/delete/{id}', [AreaPartController::class, 'destroy'])->name('katalog.delete');
+    Route::get('/activity', [DashboardController::class, 'activity'])->name('limitSample.activity');
+    Route::get('/getDatatables', [DashboardController::class, 'getDatatables'])->name('guests.datatables');
+    Route::get('/all-expired', [DashboardController::class, 'allExpired'])->name('limitSample.allExpired');
+    Route::get('/will-expired', [DashboardController::class, 'willExpired'])->name('limitSample.willExpired');
+    Route::get('/arsip', [DashboardController::class, 'arsip'])->name('limitSample.arsip');
+    Route::get('/arsipModal', [DashboardController::class, 'arsipModal'])->name('limitSample.arsipModal');
 
     //approval
     Route::middleware('role:Supervisor')->group(function () {

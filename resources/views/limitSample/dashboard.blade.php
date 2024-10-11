@@ -36,28 +36,51 @@
     <div class="row  m-3 ">
         <div class="col-sm-6 col-12">
             <div class="row justify-content-between" id="rekapA">
-                <div class="col-4">
+                <div class="col m-0 p-1 pl-3">
                     <div class="text-center bg-white p-2">
                         <a href="{{ route('limitSample.allExpired') }}">
-                            <p class="m-0 text-danger"> <strong> Expired </strong></p>
+                            <p class="m-0 text-danger"> <strong> Sample <br> Expired </strong></p>
                             <hr class="m-1">
                             <p class="h3 m-0 text-danger">{{ $expired }}</p>
                         </a>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col m-0 p-1">
                     <a href="{{ route('limitSample.willExpired') }}">
                     <div class="text-center bg-white p-2">
-                        <p class="m-0"> <strong> Will Expired </strong></p>
+                        <p class="m-0"> <strong> Will <br> Expired </strong></p>
                         <hr class="m-1">
                         <p class="h3 m-0">{{ $willExpired }}</p>
                     </div>
                 </a>
                 </div>
-                <div class="col-4">
+                
+                @if(in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15')
+                <div class="col m-0 p-1 ">
                     <a href="{{ route('limitSample.activity') }}">
                     <div class="text-center bg-white p-2">
-                        <p class="m-0"> <strong> Today Visitor </strong></p>
+                        <p class="m-0"> <strong> Need <br> Approve </strong></p>
+                        <hr class="m-1">
+                        <p class="h3 m-0">{{ $NeedApproveSecHead }}</p>
+                    </div>
+                    </a>
+                </div>
+                @endif
+                @if(in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15')
+                <div class="col m-0 p-1">
+                    <a href="{{ route('limitSample.activity') }}">
+                    <div class="text-center bg-white p-2">
+                        <p class="m-0"> <strong> Need Approve </strong></p>
+                        <hr class="m-1">
+                        <p class="h3 m-0">{{ $NeedApproveDeptHead }}</p>
+                    </div>
+                    </a>
+                </div>
+                @endif
+                <div class="col m-0 p-1 pr-3">
+                    <a href="{{ route('limitSample.activity') }}">
+                    <div class="text-center bg-white p-2">
+                        <p class="m-0"> <strong> Today <br> Visitor </strong></p>
                         <hr class="m-1">
                         <p class="h3 m-0">{{ $TodayVisitWeb }}</p>
                     </div>

@@ -15,6 +15,7 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
     'link_website' => env('LINK_WEBSITE', 'http://10.14.179.250:1111'),
+    'api_base_url' => env('API_BASE_URL', 'http://10.14.179.250:2222'),
 
     /*
     |--------------------------------------------------------------------------
@@ -179,6 +180,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         ZanySoft\Zip\ZipServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
     ],
 
     /*

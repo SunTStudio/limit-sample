@@ -22,9 +22,11 @@ class DashboardController extends Controller
         $AreaParts = AreaPart::orderByDesc('count_visit')->simplePaginate(6);
         $partAreas = PartArea::orderByDesc('count_visit')->simplePaginate(6);
         $expired = AreaPart::where('expired_date', '<', Carbon::today()->format('Y-m-d'))->count();
-        $willExpired = AreaPart::whereBetween('expired_date', [Carbon::now()->addDays(1)->format('Y-m-d'), Carbon::now()->addDays(1)->format('Y-m-d'), Carbon::now()->addDays(2)])->count();
-
-        return view('limitSample.dashboard', compact('models','AreaParts', 'parts', 'partAreas', 'expired', 'willExpired', 'TodayVisitWeb'));
+        $willExpired = AreaPart::whereBetween('expired_date', [Carbon::now()->format('Y-m-d'), Carbon::now()->addDays(5)->format('Y-m-d')])->count();
+        $NeedApproveSecHead = AreaPart::whereNull('sec_head_approval_date')->where('expired_date', '>', Carbon::now()->format('Y-m-d'))->count();
+        
+        $NeedApproveDeptHead = AreaPart::whereNotNull('sec_head_approval_date')->whereNull('dept_head_approval_date')->where('expired_date', '>', Carbon::today()->format('Y-m-d'))->count();
+        return view('limitSample.dashboard', compact('models','NeedApproveSecHead','NeedApproveDeptHead','AreaParts', 'parts', 'partAreas', 'expired', 'willExpired', 'TodayVisitWeb'));
     }
 
     public function getVisitsData(Request $request)

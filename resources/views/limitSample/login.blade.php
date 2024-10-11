@@ -16,7 +16,6 @@
 </head>
 
 <body class="gray-bg">
-
     <div class="ibox-content middle-box text-center loginscreen animated fadeInDown mt-5">
         @if ($errors->any())
             <div class="alert alert-success">
@@ -49,8 +48,7 @@
                 {{-- <p class="text-muted text-center"><small>Do not have an account?</small></p>
                 <a class="btn btn-sm btn-white btn-block" href="{{route('NewProductPortalSignupController.create')}}">Create an account</a> --}}
             </form>
-            <p class="m-t"> <small>Masuk Sebagai Pengunjung? <a href="{{ route('loginGuest') }}">Klik
-                        Disini</a></small> </p>
+            <a class=" btn btn-secondary" href="{{ route('loginGuest') }}"> <small>Masuk Sebagai Pengunjung</small> </a>
             <p class="m-t"> <small>AJI INTERNAL PORAL &copy;copyright 2022</small> </p>
         </div>
     </div>

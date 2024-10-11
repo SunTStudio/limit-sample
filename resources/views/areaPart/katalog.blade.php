@@ -1,5 +1,18 @@
 @extends('layouts.app')
 
+@section('css')
+<link href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/css/lightbox.min.css" rel="stylesheet" />
+<style>
+    
+    .lb-nav a.lb-prev {
+        width: 15%;
+    }
+
+    .lb-nav a.lb-next {
+        width: 15%;
+    }
+</style>
+@endsection
 @section('header')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
@@ -154,16 +167,19 @@
                                 <div class="row mt-3 align-items-center justify-content-between">
                                     <div class="col-3">
                                         <a data-toggle="modal" data-target="#{{ $areaPart->id }}"
-                                            class="btn btn-xs btn-outline mb-1 btn-primary" onclick="countAreaPart({{ $areaPart->id }})">Lihat <i
-                                                class="fa fa-long-arrow-right" ></i> </a>
+                                            class="btn btn-xs btn-outline mb-1 btn-primary"
+                                            onclick="countAreaPart({{ $areaPart->id }})">Lihat <i
+                                                class="fa fa-long-arrow-right"></i> </a>
                                     </div>
                                     <div class="col-8 text-right " id="toolsCard">
                                         @if (in_array('Supervisor', session('roles', [])) &&
+                                                session('user')['detail_dept_id'] == '15' &&
                                                 $areaPart->sec_head_approval_date == null &&
                                                 $areaPart->status != 'tolak')
                                             <button type="button" class="btn btn-primary mb-1">Need Approve</button>
                                         @endif
                                         @if (in_array('Department Head', session('roles', [])) &&
+                                                session('user')['detail_dept_id'] == '15' &&
                                                 $areaPart->sec_head_approval_date != null &&
                                                 $areaPart->dept_head_approval_date == null &&
                                                 $areaPart->status != 'tolak')
@@ -216,13 +232,10 @@
                                                     {{ $areaPart->name }}</div>
                                                 <div class="col-6 border border-dark p-2"><strong>Doc.No</strong> :
                                                     {{ $areaPart->document_number }}</div>
-                                                <div class="col-6 border border-dark p-2"><strong>Part Number</strong> :
-                                                    {{ $areaPart->part_number }}</div>
                                                 <div class="col-6 border border-dark p-2"><strong>Effective Date</strong> :
                                                     {{ $areaPart->effective_date }}</div>
-                                                <div class="col-6 border border-dark p-2"><strong>Charackteristic</strong>
-                                                    :
-                                                    {{ $areaPart->characteristics }}</div>
+                                                <div class="col-6 border border-dark p-2"><strong>Part Number</strong> :
+                                                    {{ $areaPart->part_number }}</div>
                                                 <div class="col-6 border border-dark p-2">
                                                     @if ($areaPart->expired_date < now()->toDateString())
                                                         <strong style="color:red;">Expired Date :
@@ -232,24 +245,34 @@
                                                         {{ $areaPart->expired_date }}
                                                     @endif
                                                 </div>
+                                                <div class="col-6 border border-dark p-2"></div>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="row bg-white">
-                                                <div class="col-6 p-3 border border-dark "><img
-                                                        src="{{ asset("img/areaPart/$areaPart->foto_ke_satu") }}"
-                                                        alt="" class="fotoLimitSample"></div>
-                                                <div class="col-6 p-3 border border-dark "><img
-                                                        src="{{ asset("img/areaPart/$areaPart->foto_ke_dua") }}"
-                                                        alt="" class="fotoLimitSample"></div>
-                                                <div class="col-6 p-3 border border-dark "><img
-                                                        src="{{ asset("img/areaPart/$areaPart->foto_ke_tiga") }}"
-                                                        alt="" class="fotoLimitSample"></div>
-                                                <div class="col-6 p-3 border border-dark "><img
-                                                        src="{{ asset("img/areaPart/$areaPart->foto_ke_empat") }}"
-                                                        alt="" class="fotoLimitSample"></div>
+                                                <div class="col-6 p-3 border border-dark">
+                                                    <a href="{{ asset('img/areaPart/' . $areaPart->foto_ke_satu) }}" data-lightbox="foto{{$areaPart->id}}" data-title="Foto 1 ">
+                                                        <img src="{{ asset('img/areaPart/' . $areaPart->foto_ke_satu) }}" alt="" class="fotoLimitSample">
+                                                    </a>
+                                                </div>
+                                                <div class="col-6 p-3 border border-dark">
+                                                    <a href="{{ asset('img/areaPart/' . $areaPart->foto_ke_dua) }}" data-lightbox="foto{{$areaPart->id}}" data-title="Foto 2 ">
+                                                        <img src="{{ asset('img/areaPart/' . $areaPart->foto_ke_dua) }}" alt="" class="fotoLimitSample">
+                                                    </a>
+                                                </div>
+                                                <div class="col-6 p-3 border border-dark">
+                                                    <a href="{{ asset('img/areaPart/' . $areaPart->foto_ke_tiga) }}" data-lightbox="foto{{$areaPart->id}}" data-title="Foto 3 ">
+                                                        <img src="{{ asset('img/areaPart/' . $areaPart->foto_ke_tiga) }}" alt="" class="fotoLimitSample">
+                                                    </a>
+                                                </div>
+                                                <div class="col-6 p-3 border border-dark">
+                                                    <a href="{{ asset('img/areaPart/' . $areaPart->foto_ke_empat) }}" data-lightbox="foto{{$areaPart->id}}" data-title="Foto 4 ">
+                                                        <img src="{{ asset('img/areaPart/' . $areaPart->foto_ke_empat) }}" alt="" class="fotoLimitSample">
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
+                                        
                                         <div class="col-12 text-left p-2 border border-dark text-dark"
                                             style="background-color: #ffffff;">
                                             <p> <strong> A.Detail</strong></p>
@@ -301,10 +324,10 @@
                                                         <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>
                                                                 Pada {{ $areaPart->sec_head_approval_date }} </strong></p>
                                                     @elseif ($areaPart->status == 'tolak' && $areaPart->penolak_posisi == 'Supervisor')
-                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>
+                                                        <p style="color: rgb(207, 0, 0);" class="p-0 m-0"><strong>
                                                                 DiTolak
                                                             </strong></p>
-                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>
+                                                        <p style="color: rgb(207, 0, 0);" class="p-0 m-0"><strong>
                                                                 Oleh {{ $penolakName }} </strong></p>
                                                     @else
                                                         <br>
@@ -324,10 +347,10 @@
                                                         <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>
                                                                 Pada {{ $areaPart->dept_head_approval_date }} </strong></p>
                                                     @elseif ($areaPart->status == 'tolak' && $areaPart->penolak_posisi == 'Department Head')
-                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>
+                                                        <p style="color: rgb(207, 0, 0);" class="p-0 m-0"><strong>
                                                                 DiTolak
                                                             </strong></p>
-                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>
+                                                        <p style="color: rgb(207, 0, 0);" class="p-0 m-0"><strong>
                                                                 Oleh {{ $penolakName }} </strong></p>
                                                     @else
                                                         <br>
@@ -351,12 +374,16 @@
 
                                             </div>
                                         @endif
-
+                                        <div class="col-12 bg-white text-left p-2 m-0 border border-dark text-dark">
+                                            <p class="m-0"> Charackteristic :<strong>
+                                                    {{ $areaPart->characteristics }}</strong>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer" style="display: flex; justify-content: center;">
                                     <button type="button" class="btn btn-white" data-dismiss="modal">Kembali</button>
                                     @if (in_array('Supervisor', session('roles', [])) &&
+                                            session('user')['detail_dept_id'] == '15' &&
                                             $areaPart->sec_head_approval_date == null &&
                                             $areaPart->status != 'tolak')
                                         <a href="{{ url("/limit-sample/area-part/tolak/sechead/$areaPart->id") }}"
@@ -365,6 +392,7 @@
                                             class="btn btn-secondary">Approve</a>
                                     @endif
                                     @if (in_array('Department Head', session('roles', [])) &&
+                                            session('user')['detail_dept_id'] == '15' &&
                                             $areaPart->sec_head_approval_date != null &&
                                             $areaPart->status != 'tolak')
                                         <a href="{{ url("/limit-sample/area-part/tolak/depthead/$areaPart->id") }}"
@@ -379,6 +407,10 @@
                                             class="btn btn-primary">
                                             Download PDF
                                         </a>
+                                    @endhasRole
+                                        @if(in_array('Supervisor', session('roles', [])) &&
+                                        session('user')['detail_dept_id'] == '15' || in_array('Department Head', session('roles', [])) &&
+                                        session('user')['detail_dept_id'] == '15')
                                         <form action="{{ url("/limit-sample/areaPart/delete/$areaPart->id") }}"
                                             method="POST"
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
@@ -386,7 +418,7 @@
                                             @method('DELETE') <!-- Ini menandakan bahwa request ini adalah DELETE method -->
                                             <button type="submit" class="btn btn-danger">Hapus</button>
                                         </form>
-                                    @endhasRole
+                                        @endif
                                 </div>
                             </div>
                         </div>
@@ -408,6 +440,7 @@
 
 
 @section('script')
+<script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/js/lightbox.min.js"></script>
     <script>
         function addCharacteristic() {
             let newCharacteristic = document.getElementById('newCharacteristic');
@@ -460,6 +493,7 @@
         function getDataCharacteristic(sort) {
             var partArea = {{ $partArea->id }};
             var roles = @json(session('roles'));
+            var user = @json(session('user'));
             $.ajax({
                 url: "{{ route('katalog.getDataCharacteristic', ['id' => $partArea->id]) }}",
                 type: "GET",
@@ -501,10 +535,10 @@
                                                         </div>
                                                         <div class="col-8 text-right" id="toolsCard">
 
-                                                            ${dataRoles == 'Supervisor' && areaPart.sec_head_approval_date == null && areaPart.status != 'tolak' ?
+                                                            ${dataRoles == 'Supervisor' && user.detail_dept_id == '15' && areaPart.sec_head_approval_date == null && areaPart.status != 'tolak' ?
                                                                 '<button type="button" class="btn btn-primary mb-1">Need Approve</button>' :
                                                                 ''}
-                                                            ${dataRoles == 'Department Head' && areaPart.sec_head_approval_date != null && areaPart.dept_head_approval_date == null && areaPart.status != 'tolak' ?
+                                                            ${dataRoles == 'Department Head' && user.detail_dept_id == '15' && areaPart.sec_head_approval_date != null && areaPart.dept_head_approval_date == null && areaPart.status != 'tolak' ?
                                                                 '<button type="button" class="btn btn-primary mb-1">Need Approve</button>' :
                                                                 ''}
                                                             ${areaPart.status == 'tolak'?
@@ -550,13 +584,13 @@
                                                                 <div class="col-6 border border-dark p-2"><strong>Doc.No</strong>: ${item.document_number}</div>
                                                                 <div class="col-6 border border-dark p-2"><strong>Part Number</strong>: ${item.part_number}</div>
                                                                 <div class="col-6 border border-dark p-2"><strong>Effective Date</strong>: ${item.effective_date}</div>
-                                                                <div class="col-6 border border-dark p-2"><strong>Characteristic</strong>: ${item.characteristics}</div>
                                                                 <div class="col-6 border border-dark p-2">
                                                                     <strong>Expired Date</strong>:
                                                                     <span style="color:${item.expired_date < new Date().toISOString().split('T')[0] ? 'red' : 'inherit'};">
                                                                         ${item.expired_date}
                                                                     </span>
                                                                 </div>
+                                                                <div class="col-6 border border-dark p-2"><strong></div>
                                                             </div>
                                                         </div>
                                                         <div class="col-12">
@@ -588,14 +622,14 @@
                                                                     <p><strong>Approval</strong></p>
                                                                     <br>
                                                                     ${item.sec_head_approval_date ? `
-                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date} </strong></p>
-                                                                                                    ` : ` `}
+                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date} </strong></p>
+                                                                                                                ` : ` `}
 
                                                                     ${item.status == 'tolak' && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                    ` : `<br><br>`}
+                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                                ` : `<br><br>`}
                                                                     <br>
                                                                     <p><strong>Section Head</strong></p>
                                                                 </div>
@@ -603,13 +637,13 @@
                                                                     <p><strong>Approval</strong></p>
                                                                     <br>
                                                                     ${item.dept_head_approval_date ? `
-                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
-                                                                                                    ` : ` `}
+                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
+                                                                                                                ` : ` `}
                                                                     ${item.status == 'tolak' && item.penolak_posisi == 'Department Head' ? `
-                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                    ` : `<br><br>`}
+                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                                ` : `<br><br>`}
                                                                     <br>
                                                                     <p><strong>Departemen Head</strong></p>
                                                                 </div>
@@ -617,36 +651,42 @@
                                                         </div>
                                                         ${item.status == 'tolak'?
                                                         `<div class="col-12 bg-white text-left p-2 border border-dark text-dark">
-                                                                                        <p> <strong> Informasi Penolakan</strong></p>
-                                                                                        <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
-                                                                                        <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
-                                                                                        <br>
+                                                                                                    <p> <strong> Informasi Penolakan</strong></p>
+                                                                                                    <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
+                                                                                                    <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
+                                                                                                    <br>
 
-                                                                                    </div>`
+                                                                                                </div>`
                                                         :` `}
+                                                        <div class="col-12 bg-white text-left p-2 m-0 border border-dark text-dark">
+                                                        <p class="m-0"> Charackteristic :<strong> ${item.characteristics }</strong>
+                                                    </div>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer" style="display: flex; justify-content: center;">
                                                     <button type="button" class="btn btn-white" data-dismiss="modal">Kembali</button>
-                                                    ${dataRoles == 'Supervisor' && item.sec_head_approval_date == null && item.status != 'tolak'? `
-                                                                                        <a href="/limit-sample/area-part/tolak/sechead/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                        <a href="/limit-sample/area-part/approve/sechead/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                    ` : ''}
-                                                    ${dataRoles == 'Department Head' && item.dept_head_approval_date == null && item.status != 'tolak'? `
-                                                                                        <a href="/limit-sample/area-part/tolak/depthead/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                        <a href="/limit-sample/area-part/approve/depthead/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                    ` : ''}
+                                                    ${dataRoles == 'Supervisor' && user.detail_dept_id == '15' && item.sec_head_approval_date == null && item.status != 'tolak'? `
+                                                                                                    <a href="/limit-sample/area-part/tolak/sechead/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                                    <a href="/limit-sample/area-part/approve/sechead/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                                ` : ''}
+                                                    ${dataRoles == 'Department Head' && user.detail_dept_id == '15' && item.dept_head_approval_date == null && item.status != 'tolak'? `
+                                                                                                    <a href="/limit-sample/area-part/tolak/depthead/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                                    <a href="/limit-sample/area-part/approve/depthead/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                                ` : ''}
                                                     ${dataRoles == 'Admin' ? `
-                                                                                        <a href="/limit-sample/area-part/edit/${item.id}" class="btn btn-secondary">Edit</a>
-                                                                                        <a href="/area-part/export-pdf/${item.id}" target="_blank" class="btn btn-primary">
-                                                                                            Download PDF
-                                                                                        </a>
-                                                                                        <form action="/limit-sample/areaPart/delete/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
-                                                                                            <input type="hidden" name="_token" value="${item.csrf_token}">
-                                                                                            <input type="hidden" name="_method" value="DELETE">
-                                                                                            <button type="submit" class="btn btn-danger">Hapus</button>
-                                                                                        </form>
-                                                                                    ` : ''}
+                                                                                                    <a href="/limit-sample/area-part/edit/${item.id}" class="btn btn-secondary">Edit</a>
+                                                                                                    <a href="/area-part/export-pdf/${item.id}" target="_blank" class="btn btn-primary">
+                                                                                                        Download PDF
+                                                                                                    </a>
+                                                                                                    ` : ''}
+                                                                                             ${dataRoles == 'Admin' || dataRoles == 'Supervisor' && user.detail_dept_id == '15' || dataRoles == 'Department Head' && user.detail_dept_id == '15'  ? `
+                                                                                                    <form action="/limit-sample/areaPart/delete/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
+                                                                                                        <input type="hidden" name="_token" value="${item.csrf_token}">
+                                                                                                        <input type="hidden" name="_method" value="DELETE">
+                                                                                                        <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                                                    </form>
+                                                                                                    ` : ''}
+                                                                                        
                                                 </div>
                                             </div>
                                         </div>
@@ -721,6 +761,7 @@
         var partArea = {{ $partArea->id }};
         const dataRoles = @json(session('roles'));
         const userAll = @json(session('all_users'));
+        var user = @json(session('user'));
 
         function replaceSearch(searchValue) {
             let search = document.getElementById('search');
@@ -733,6 +774,8 @@
         }
 
         function performSearch(query, click) {
+            var user = @json(session('user'));
+
             if (query.length >= 0) {
                 $.ajax({
                     url: "{{ route('katalog.search', ['id' => $partArea->id]) }}",
@@ -783,10 +826,10 @@
                                                     </div>
                                                     <div class="col-8 text-right" id="toolsCard">
 
-                                                        ${dataRoles == 'Supervisor' && areaPart.sec_head_approval_date == null && areaPart.status != 'tolak' ?
+                                                        ${dataRoles == 'Supervisor' && user.detail_dept_id == '15' && areaPart.sec_head_approval_date == null && areaPart.status != 'tolak' ?
                                                             '<button type="button" class="btn btn-primary mb-1">Need Approve</button>' :
                                                             ''}
-                                                        ${dataRoles == 'Department Head' && areaPart.sec_head_approval_date != null && areaPart.dept_head_approval_date == null && areaPart.status != 'tolak' ?
+                                                        ${dataRoles == 'Department Head' && user.detail_dept_id == '15' && areaPart.sec_head_approval_date != null && areaPart.dept_head_approval_date == null && areaPart.status != 'tolak' ?
                                                             '<button type="button" class="btn btn-primary mb-1">Need Approve</button>' :
                                                             ''}
                                                         ${areaPart.status == 'tolak'?
@@ -832,13 +875,13 @@
                                                             <div class="col-6 border border-dark p-2"><strong>Doc.No</strong>: ${item.document_number}</div>
                                                             <div class="col-6 border border-dark p-2"><strong>Part Number</strong>: ${item.part_number}</div>
                                                             <div class="col-6 border border-dark p-2"><strong>Effective Date</strong>: ${item.effective_date}</div>
-                                                            <div class="col-6 border border-dark p-2"><strong>Characteristic</strong>: ${item.characteristics}</div>
                                                             <div class="col-6 border border-dark p-2">
                                                                 <strong>Expired Date</strong>:
                                                                 <span style="color:${item.expired_date < new Date().toISOString().split('T')[0] ? 'red' : 'inherit'};">
                                                                     ${item.expired_date}
                                                                 </span>
                                                             </div>
+                                                            <div class="col-6 border border-dark p-2"><strong></div>
                                                         </div>
                                                     </div>
                                                     <div class="col-12">
@@ -870,14 +913,14 @@
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
                                                                 ${item.sec_head_approval_date ? `
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date} </strong></p>
-                                                                                                ` : ` `}
+                                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date} </strong></p>
+                                                                                                            ` : ` `}
 
                                                                 ${item.status == 'tolak' && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                ` : `<br><br>`}
+                                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                            ` : `<br><br>`}
                                                                 <br>
                                                                 <p><strong>Section Head</strong></p>
                                                             </div>
@@ -885,13 +928,13 @@
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
                                                                 ${item.dept_head_approval_date ? `
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
-                                                                                                ` : ` `}
+                                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
+                                                                                                            ` : ` `}
                                                                 ${item.status == 'tolak' && item.penolak_posisi == 'Department Head' ? `
-                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                ` : `<br><br>`}
+                                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                            ` : `<br><br>`}
                                                                 <br>
                                                                 <p><strong>Departemen Head</strong></p>
                                                             </div>
@@ -899,36 +942,41 @@
                                                     </div>
                                                     ${item.status == 'tolak'?
                                                     `<div class="col-12 bg-white text-left p-2 border border-dark text-dark">
-                                                                                    <p> <strong> Informasi Penolakan</strong></p>
-                                                                                    <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
-                                                                                    <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
-                                                                                    <br>
+                                                                                                <p> <strong> Informasi Penolakan</strong></p>
+                                                                                                <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
+                                                                                                <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
+                                                                                                <br>
 
-                                                                                </div>`
+                                                                                            </div>`
                                                     :` `}
+                                                    <div class="col-12 bg-white text-left p-2 m-0 border border-dark text-dark">
+                                                        <p class="m-0"> Charackteristic :<strong> ${item.characteristics }</strong>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer" style="display: flex; justify-content: center;">
                                                 <button type="button" class="btn btn-white" data-dismiss="modal">Kembali</button>
-                                                ${dataRoles == 'Supervisor' && item.sec_head_approval_date == null && item.status != 'tolak'? `
-                                                                                    <a href="/limit-sample/area-part/tolak/sechead/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                    <a href="/limit-sample/area-part/approve/sechead/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                ` : ''}
-                                                ${dataRoles == 'Department Head' && item.dept_head_approval_date == null && item.status != 'tolak'? `
-                                                                                    <a href="/limit-sample/area-part/tolak/depthead/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                    <a href="/limit-sample/area-part/approve/depthead/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                ` : ''}
+                                                ${dataRoles == 'Supervisor' && user.detail_dept_id == '15' && item.sec_head_approval_date == null && item.status != 'tolak'? `
+                                                                                                <a href="/limit-sample/area-part/tolak/sechead/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                                <a href="/limit-sample/area-part/approve/sechead/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                            ` : ''}
+                                                ${dataRoles == 'Department Head' && user.detail_dept_id == '15' && item.dept_head_approval_date == null && item.status != 'tolak'? `
+                                                                                                <a href="/limit-sample/area-part/tolak/depthead/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                                <a href="/limit-sample/area-part/approve/depthead/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                            ` : ''}
                                                 ${dataRoles == 'Admin' ? `
-                                                                                    <a href="/limit-sample/area-part/edit/${item.id}" class="btn btn-secondary">Edit</a>
-                                                                                    <a href="/area-part/export-pdf/${item.id}" target="_blank" class="btn btn-primary">
-                                                                                        Download PDF
-                                                                                    </a>
-                                                                                    <form action="/limit-sample/areaPart/delete/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
-                                                                                        <input type="hidden" name="_token" value="${item.csrf_token}">
-                                                                                        <input type="hidden" name="_method" value="DELETE">
-                                                                                        <button type="submit" class="btn btn-danger">Hapus</button>
-                                                                                    </form>
-                                                                                ` : ''}
+                                                                                                <a href="/limit-sample/area-part/edit/${item.id}" class="btn btn-secondary">Edit</a>
+                                                                                                <a href="/area-part/export-pdf/${item.id}" target="_blank" class="btn btn-primary">
+                                                                                                    Download PDF
+                                                                                                </a>
+                                                                                                ` : ''}
+                                                                                            ${dataRoles == 'Admin' || dataRoles == 'Supervisor' && user.detail_dept_id == '15' || dataRoles == 'Department Head' && user.detail_dept_id == '15' ? `
+                                                                                                <form action="/limit-sample/areaPart/delete/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
+                                                                                                    <input type="hidden" name="_token" value="${item.csrf_token}">
+                                                                                                    <input type="hidden" name="_method" value="DELETE">
+                                                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                                                </form>
+                                                                                            ` : ''}
                                             </div>
                                         </div>
                                     </div>
@@ -992,16 +1040,16 @@
         });
 
 
-        function countAreaPart(idAreaPart){
+        function countAreaPart(idAreaPart) {
             var partArea = {{ $partArea->id }};
             $.ajax({
-                url:"{{ route('katalog.count', ['id' => $partArea->id]) }}",
-                type:"GET",
-                data:{
-                    id:partArea,
-                    idCount:idAreaPart
+                url: "{{ route('katalog.count', ['id' => $partArea->id]) }}",
+                type: "GET",
+                data: {
+                    id: partArea,
+                    idCount: idAreaPart
                 },
-                success:function(response) {
+                success: function(response) {
                     // console.log('Sukses');
                     // console.log(response);
                 }

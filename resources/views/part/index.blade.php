@@ -54,7 +54,7 @@
 
 
                             <div class="product-imitation">
-                                <img src="{{ asset("img/part/$part->foto_part") }}" class="img-fluid" alt="">
+                                <a href="{{ url("/limit-sample/part/$part->id") }}"><img src="{{ asset("img/part/$part->foto_part") }}" class="img-fluid" alt=""></a>
                             </div>
                             <div class="product-desc p-3">
                                 <a href="#" class="product-name"> {{ $part->name }}</a>

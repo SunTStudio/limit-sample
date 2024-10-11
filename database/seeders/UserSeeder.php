@@ -18,13 +18,13 @@ class UserSeeder extends Seeder
     {
         //buat role
         Role::firstOrCreate(['name' => 'Admin']);
-        Role::firstOrCreate(['name' => 'Section Head']);
-        Role::firstOrCreate(['name' => 'Departement Head']);
+        Role::firstOrCreate(['name' => 'Supervisor']);
+        Role::firstOrCreate(['name' => 'Department Head']);
         Role::firstOrCreate(['name' => 'Guest']);
 
         // Seed users
         $risky = User::create([
-            'name' => 'risky',
+            'username' => 'admin',
             'email' => 'mahsunmuh0@gmail.com',
             'password' => Hash::make('admin123'),
             'NPK' => '000001',
@@ -32,23 +32,25 @@ class UserSeeder extends Seeder
         ]);
 
         $teguh = User::create([
-            'name' => 'teguh',
+            'username' => 'spvQC',
             'email' => 'mahsunmuh0@gmail.com',
             'password' => Hash::make('admin123'),
             'NPK' => '000002',
             'position_id' => '1',
+            'detail_dept_id' => 15,
         ]);
 
         $agus = User::create([
-            'name' => 'agus.tri',
+            'username' => 'deptHeadQC',
             'email' => 'mahsunmuh0@gmail.com',
             'password' => Hash::make('admin123'),
             'NPK' => '000003',
             'position_id' => '2',
+            'detail_dept_id' => 15,
         ]);
 
         $guest = User::create([
-            'name' => 'guest',
+            'username' => 'guest',
             'email' => 'guest@gmail.com',
             'password' => Hash::make('guest123'),
             'NPK' => '000000',
@@ -59,8 +61,8 @@ class UserSeeder extends Seeder
 
         // Assign roles to users
         $risky->assignRole('Admin');
-        $teguh->assignRole('Section Head');
-        $agus->assignRole('Departement Head');
+        $teguh->assignRole('Supervisor');
+        $agus->assignRole('Department Head');
         $guest->assignRole('Guest');
     }
 }

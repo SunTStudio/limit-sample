@@ -51,6 +51,7 @@
     <script src="https://cdn.datatables.net/responsive/2.4.0/js/responsive.bootstrap.min.js"></script>
 
     <script>
+        var dataRoles = "{{ implode(',', session('roles', [])) }}";
         $(document).ready(function() {
             var table = $('#expired').DataTable({
                 responsive: true,
@@ -121,9 +122,10 @@
                                 <a href="/limit-sample/area-part/${row.part_area_id}" class="btn btn-sm btn-primary m-1">
                                     See Detail
                                 </a>
+                                ${dataRoles == 'Admin' ? `
                                 <a href="/limit-sample/area-part/edit/${data}" class="btn btn-sm btn-primary m-1">
                                     Edit
-                                </a>
+                                </a>`: ''}
                             </div>`;
                         }
                     }

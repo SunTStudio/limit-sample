@@ -38,9 +38,9 @@
                         <h5>Form Penolakan Limit Sample</h5>
                     </div>
                     <div class="ibox-content">
-                        @if (in_array('Supervisor', session('roles', [])))
+                        @if (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15' )
                         <form method="POST" action="{{ url("/limit-sample/area-part/tolak/sechead/$areaPart->id") }}" enctype="multipart/form-data">
-                            @elseif (in_array('Department Head', session('roles', [])))
+                            @elseif (in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15' )
                             <form method="POST" action="{{ url("/limit-sample/area-part/tolak/depthead/$areaPart->id") }}" enctype="multipart/form-data">
                         @endif
                             @csrf

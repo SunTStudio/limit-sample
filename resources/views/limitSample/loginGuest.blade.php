@@ -45,8 +45,7 @@
                 {{-- <p class="text-muted text-center"><small>Do not have an account?</small></p>
                 <a class="btn btn-sm btn-white btn-block" href="{{route('NewProductPortalSignupController.create')}}">Create an account</a> --}}
             </form>
-            <p class="m-t"> <small>Masuk Sebagai Operator? <a href="{{ route('login') }}">Klik Disini</a></small>
-            </p>
+            <a class=" btn btn-secondary" href="{{ route('login') }}"> <small>Masuk Sebagai Operator</small> </a>
             <p class="m-t"> <small>AJI INTERNAL PORAL &copy;copyright 2022</small> </p>
         </div>
     </div>

@@ -34,16 +34,25 @@
                             LS
                         </div>
                     </li>
-                    @hasRole('Admin')
+                    @if (
+                        in_array('Admin', session('roles', [])) ||
+                        (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') ||
+                        (in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15')
+                    )
+
                     <li class="{{ Request::is('/*') ? 'active' : '' }}">
                         <a href="{{ url('/') }}"><i class="fa fa-dashboard"></i><span class="nav-label">Dashboard</span></a>
                     </li>
-                    @endhasRole
+                    @endif
                     <li class="{{ Request::is('limit-sample*') ? 'active' : '' }}">
                         <a href="{{ url('/limit-sample/model') }}"><i class="fa fa-th-large"></i><span
                                 class="nav-label">Limit Sample</span></a>
                     </li>
-                    @hasRole('Admin')
+                    @if (
+                        in_array('Admin', session('roles', [])) ||
+                        (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') ||
+                        (in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15')
+                    )
                     <li class="{{ Request::is('activity') ? 'active' : '' }}">
                         <a href="{{ url('/activity') }}"><i class="fa fa-user-o"></i><span class="nav-label">Activity</span></a>
                     </li>
@@ -58,7 +67,7 @@
                     <li class="{{ Request::is('arsip') ? 'active' : '' }}">
                         <a href="{{ url('/arsip') }}"><i class="fa fa-history"></i><span class="nav-label">Arsip</span></a>
                     </li>
-                    @endhasRole
+                    @endif
                     {{-- <li id="managementMenu">
                         <a href="#"><i class="fa fa-th-large"></i><span class="nav-label">Manajemen Perpus</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse">
@@ -107,7 +116,9 @@
                         <li>
                             <span class="m-r-sm text-muted welcome-message">{{ ucwords(session('user')['name']) }}</span>
                         </li>
-
+                        <li class="pr-3 d-inline">
+                            <a href="{{ url('http://10.14.179.250:2222/dashboard') }}" class="p-0 pt-2"><button  class="btn btn-secondary">Ke Portal</button></a>
+                        </li>
                         <li class="pr-3">
                             <form action="{{ route('logout') }}" method="POST" id="logoutForm">
                                 @csrf
@@ -141,7 +152,7 @@
                     <strong>Limit Sample</strong>
                 </div>
                 <div>
-                    <strong>Copyright</strong> PT Astra Juoku Indonesia. &copy; 2024
+                    <strong>Copyright</strong> Portal Astra Juoku Indonesia. &copy; 2024
                 </div>
             </div>
         </div>

@@ -26,23 +26,30 @@ class LoginController extends Controller
         return view('layouts.404');
     }
 
-    // public function authenticate(Request $request)
-    // {
-    //     $credentials = $request->validate([
-    //         'name' => ['required'],
-    //         'password' => ['required'],
-    //     ]);
+    public function authenticate(Request $request)
+    {
+        $credentials = $request->validate([
+            'username' => ['required'],
+            'password' => ['required'],
+        ]);
 
-    //     if (Auth::attempt($credentials)) {
-    //         $request->session()->regenerate();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
 
-    //         return redirect()->intended('dashboard');
-    //     }
+            if($request->username == 'guest'){
+                Guest::create([
+                    'guest_name' => $request->guest_name,
+                    'login_date' => Carbon::now()->format('Y-m-d'),
+                ]);
+            }
 
-    //     return back()->withErrors([
-    //         'name' => 'Username atau Password tidak benar!',
-    //     ]);
-    // }
+            return redirect()->intended('dashboard');
+        }
+
+        return back()->withErrors([
+            'name' => 'Username atau Password tidak benar!',
+        ]);
+    }
 
     public function authenticateGuest(Request $request)
     {
@@ -93,10 +100,10 @@ class LoginController extends Controller
                 $roles = session('roles', []);
                 // if(Guest::where('guest_name' , $request->guest_name)->first() == null)
                 // {
-                    Guest::create([
-                        'guest_name' => $request->guest_name,
-                        'login_date' => Carbon::now()->format('Y-m-d'),
-                    ]);
+                Guest::create([
+                    'guest_name' => $request->guest_name,
+                    'login_date' => Carbon::now()->format('Y-m-d'),
+                ]);
                 // }
                 $guestName = $request->guest_name;
                 // //buat instance baru untuk auth tanpa menyimpannya
@@ -110,12 +117,12 @@ class LoginController extends Controller
                 // }
 
                 //Menghitung jumlah kunjungan Guest tersebut
-                    $guest = Guest::where('guest_name',$guestName)->first();
-                    $count = $guest->count_visit;
-                                $count++;
-                                $guest->update([
-                                    'count_visit' => $count,
-                                ]);
+                $guest = Guest::where('guest_name', $guestName)->first();
+                $count = $guest->count_visit;
+                $count++;
+                $guest->update([
+                    'count_visit' => $count,
+                ]);
 
                 // //login auth
                 // Auth::login($user);
@@ -135,6 +142,106 @@ class LoginController extends Controller
                 ->withErrors(['message' => 'An error occurred: ' . $e->getMessage()]);
         }
     }
+
+    //login dengan portal AJI
+    public function directToExternalSite(Request $request)
+    {
+        $token = $request->token;
+        $request->session()->put('token', $token);
+        $client = new Client();
+
+        $response = $client->get(env('API_BASE_URL') . '/api/user', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'Accept' => 'application/json',
+            ],
+        ]);
+
+        $data = json_decode($response->getBody()->getContents(), true);
+        if (isset($data['status']) && $data['status'] === 'success') {
+            $userData = $data['user'];
+            // Save token and user data to session
+            $request->session()->put('user', $userData);
+
+            // Synchronize roles
+            $this->syncRoles($userData['id'], $token);
+
+            // Synchronize permissions
+            $permissions = $this->syncPermissions($token);
+
+            if ($permissions === null) {
+                return redirect()
+                    ->back()
+                    ->withErrors(['message' => 'Failed to fetch permissions.']);
+            }
+
+            $request->session()->put('permissions', $permissions);
+            $this->fetchUserData($request, $token);
+
+            // // Create a user instance manually
+            // $user = new User(); // Use your User model namespace
+            // $user->id = $userData['id']; // Ensure this ID matches your API user ID
+            // $user->name = $userData['name'];
+            // $user->email = $userData['email'];
+            // $user->password = $userData['password'];
+            // // You don't need to set the password here if it's not used
+
+            // // Log the user in using their details (this method creates a session)
+            // Auth::login($user); // 'true' for remember me
+            if ($userData['detail_dept_id'] != 15 && $userData['username'] != 'AdminLS') {
+                Guest::create([
+                    'guest_name' => $userData['npk'],
+                    'login_date' => Carbon::now()->format('Y-m-d'),
+                ]);
+                $guest = Guest::where('guest_name', $userData['username'])->first();
+                $count = $guest->count_visit;
+                $count++;
+                $guest->update([
+                    'count_visit' => $count,
+                ]);
+            }
+
+            // Redirect based on roles
+            return redirect()->route('limitSample.dashboard')->with('success', 'Login successful.');
+        } else {
+            return redirect()
+                ->back()
+                ->withErrors(['message' => 'Invalid credentials.']);
+        }
+    }
+
+    //login dari PORTAL
+    // public function externalLogin(Request $request)
+    // {
+    //     // Validasi token yang diterima
+    //     $request->validate([
+    //         'token' => 'required|string',
+    //     ]);
+
+    //     $request->session()->regenerate();
+    //     // Simpan token ke dalam session
+    //     session(['token' => $request->token]);
+
+    //     // Ambil token dari session
+    //     $token = session('token');
+
+    //     $client = new Client();
+
+    //     // Kirim request ke API Web 1 untuk mendapatkan data pengguna
+    //     $response = $client->get(env('API_BASE_URL') . '/api/user', [
+    //         'headers' => [
+    //             'Authorization' => 'Bearer ' . $token, // Kirim token di header
+    //         ],
+    //         'timeout' => 30,
+    //     ]);
+
+    //     // Ambil data pengguna dari response
+    //     $userData = json_decode($response->getBody()->getContents(), true);
+    //     return response()->json([
+    //         'message' => 'Token berhasil disimpan di session',
+    //         'user' => $userData,
+    //     ]);
+    // }
 
     public function login(Request $request)
     {
@@ -160,7 +267,6 @@ class LoginController extends Controller
             if (isset($data['status']) && $data['status'] === 'success') {
                 $token = $data['token'];
                 $userData = $data['user'];
-
                 // Save token and user data to session
                 $request->session()->put('token', $token);
                 $request->session()->put('user', $userData);
@@ -187,8 +293,6 @@ class LoginController extends Controller
                 // $user->email = $userData['email'];
                 // $user->password = $userData['password'];
                 // // You don't need to set the password here if it's not used
-
-
 
                 // // Log the user in using their details (this method creates a session)
                 // Auth::login($user); // 'true' for remember me
@@ -291,27 +395,27 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         // Ambil token dari session
-        $token = session()->get('token');
+        // $token = session()->get('token');
 
-        if ($token) {
-            // Hapus token dari database utama menggunakan API
-            $client = new Client();
+        // if ($token) {
+        //     // Hapus token dari database utama menggunakan API
+        //     $client = new Client();
 
-            try {
-                $client->post(env('API_BASE_URL') . '/api/logout', [
-                    'headers' => [
-                        'Authorization' => "Bearer $token",
-                    ],
-                ]);
-            } catch (\Exception $e) {
-                return redirect()
-                    ->route('login')
-                    ->withErrors(['message' => 'Logout API Error: ' . $e->getMessage()]);
-            }
-        }
+        //     try {
+        //         $client->post(env('API_BASE_URL') . '/api/logout', [
+        //             'headers' => [
+        //                 'Authorization' => "Bearer $token",
+        //             ],
+        //         ]);
+        //     } catch (\Exception $e) {
+        //         return redirect()
+        //             ->route('login')
+        //             ->withErrors(['message' => 'Logout API Error: ' . $e->getMessage()]);
+        //     }
+        // }
 
         // Hapus token dan data user dari session
-            Auth::logout();
+        Auth::logout();
 
         $request->session()->invalidate();
 

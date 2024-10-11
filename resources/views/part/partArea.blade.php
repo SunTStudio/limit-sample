@@ -106,6 +106,7 @@
                 @endforeach
                 <div id="partAreasCount" hidden>{{ $partAreasCount }}</div>
 
+                <hr>
             </div>
             <div class="form-input-part-area bg-white pb-5 pr-5 pl-5">
                 <h4>Area baru</h4>
@@ -152,11 +153,11 @@
             // Tambahkan Inputan untuk klik menggunakan insertAdjacentHTML
             formInputPartArea.insertAdjacentHTML('beforeend', `
         <div class="form-group row" id="partArea` + countArea + `">
-            <label class="col-sm-2 col-form-label">Nama Area Part 0` + countArea + `</label>
-            <div class="col-sm-8">
+            <label class="col-3 p-0 pl-3 pt-2 col-form-label">Nama Area 0` + countArea + `</label>
+            <div class="col-7">
                 <input type="text" name="nameArea` + countArea + `" class="form-control" required>
             </div>
-            <div class="col-sm-2">
+            <div class="col-2">
                 <button type="button" id="deletePartArea" class="btn btn-danger" onclick="deleteArea(` +
                 countArea + `)">
                     <i class="fa fa-trash"></i>

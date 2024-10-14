@@ -159,9 +159,22 @@
         <tr>
             <td style="width: 50%;">
                 <strong>Approval</strong><br>
-                @if ($areaPart->sec_head_approval_date != null)
+                @if ($areaPart->sec_head_approval_date1 != null)
                     <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove</strong></p>
-                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>Pada {{ $areaPart->sec_head_approval_date }}</strong></p>
+                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>Pada {{ $areaPart->sec_head_approval_date1 }}</strong></p>
+                @elseif ($areaPart->status == 'tolak' && $areaPart->penolak_posisi == 'Supervisor')
+                    <br>
+                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>DiTolak</strong></p>
+                @else
+                    <br><br>
+                @endif
+                <strong>Section Head</strong>
+            </td>
+            <td style="width: 50%;">
+                <strong>Approval</strong><br>
+                @if ($areaPart->sec_head_approval_date2 != null)
+                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove</strong></p>
+                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>Pada {{ $areaPart->sec_head_approval_date2 }}</strong></p>
                 @elseif ($areaPart->status == 'tolak' && $areaPart->penolak_posisi == 'Supervisor')
                     <br>
                     <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>DiTolak</strong></p>

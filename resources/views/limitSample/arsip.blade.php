@@ -45,7 +45,8 @@
                         <th class="text-center">Rejection Reason</th>
                         <th class="text-center">Rejection Date</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">Section Head Approval Date</th>
+                        <th class="text-center">Section Head 1 Approval Date</th>
+                        <th class="text-center">Section Head 2 Approval Date</th>
                         <th class="text-center">Department Head Approval Date</th>
                         <th class="text-center">Submit Date</th>
                         <th class="text-center">Count Visit</th>
@@ -166,8 +167,12 @@
                         name: 'status'
                     },
                     {
-                        data: 'sec_head_approval_date',
-                        name: 'sec_head_approval_date'
+                        data: 'sec_head_approval_date1',
+                        name: 'sec_head_approval_date1'
+                    },
+                    {
+                        data: 'sec_head_approval_date2',
+                        name: 'sec_head_approval_date2'
                     },
                     {
                         data: 'dept_head_approval_date',
@@ -264,19 +269,33 @@
                                                     </div>
                                                     <div class="col-12 text-dark">
                                                         <div class="row bg-white">
-                                                            <div class="col-6 p-1 border border-dark ">
+                                                            <div class="col-3 p-1 border border-dark ">
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
-                                                                ${item.sec_head_approval_date ? `
+                                                                ${item.sec_head_approval_date2 ? `
                                                                                                     <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date} </strong></p>
+                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date2} </strong></p>
                                                                                                 ` : ` `}
 
-                                                                ${item.status == 'tolak' && item.penolak_posisi == 'Supervisor' ? `
+                                                                ${item.status == 'tolak' && item.penolak_id == 16 && item.penolak_posisi == 'Supervisor' ? `
                                                                                                     <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
                                                                                                 ` : `<br><br>`}
                                                                 <br>
-                                                                <p><strong>Section Head</strong></p>
+                                                                <p><strong>Section Head 1</strong></p>
+                                                            </div>
+                                                            <div class="col-3 p-1 border border-dark ">
+                                                                <p><strong>Approval</strong></p>
+                                                                <br>
+                                                                ${item.sec_head_approval_date1 ? `
+                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
+                                                                                                ` : ` `}
+
+                                                                ${item.status == 'tolak' && item.penolak_id == 15 && item.penolak_posisi == 'Supervisor' ? `
+                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                ` : `<br><br>`}
+                                                                <br>
+                                                                <p><strong>Section Head 2</strong></p>
                                                             </div>
                                                             <div class="col-6 p-1 border border-dark ">
                                                                 <p><strong>Approval</strong></p>

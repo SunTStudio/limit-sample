@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Departments;
+use App\Models\Detail_departements;
 use App\Models\Guest;
+use App\Models\Position;
 use App\Models\User;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -34,16 +37,33 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+            $userData = Auth::user();
+            $users = User::all()->toArray();
+            $depts = Departments::all()->toArray();
+            $detail_depts = Detail_departements::all()->toArray();
+            $positions = Position::all()->toArray();
+            $roles = Auth::user()->getRoleNames()->toArray();
 
-            if($request->username == 'guest'){
+            $request->session()->regenerate();
+            $request->session()->put('user', $userData);
+            $request->session()->put('all_users', $users);
+            $request->session()->put('all_depts', $depts);
+            $request->session()->put('all_detail_dept', $detail_depts);
+            $request->session()->put('all_positions', $positions);
+            $request->session()->put('status_login', 'local');
+
+            session()->put('roles', $roles);
+
+            $token = $userData->createToken('API Token')->plainTextToken;
+            $request->session()->put('token', $token);
+            if ($request->username == 'guest') {
                 Guest::create([
                     'guest_name' => $request->guest_name,
                     'login_date' => Carbon::now()->format('Y-m-d'),
                 ]);
             }
 
-            return redirect()->intended('dashboard');
+            return redirect()->route('limitSample.dashboard')->with('success', 'Login successful.');
         }
 
         return back()->withErrors([
@@ -200,7 +220,6 @@ class LoginController extends Controller
                     'count_visit' => $count,
                 ]);
             }
-
             // Redirect based on roles
             return redirect()->route('limitSample.dashboard')->with('success', 'Login successful.');
         } else {
@@ -395,7 +414,7 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         // Ambil token dari session
-        // $token = session()->get('token');
+        $token = session()->get('token');
 
         // if ($token) {
         //     // Hapus token dari database utama menggunakan API
@@ -415,6 +434,28 @@ class LoginController extends Controller
         // }
 
         // Hapus token dan data user dari session
+
+        if(session('status_login') == 'local'){
+            $tokenParts = explode('|', $token); // Split the token by "|"
+            $tokenId = $tokenParts[0]; // Take the first part, which is "52"
+            $user = Auth::user();
+            $user->tokens()->where('id', $tokenId)->delete();
+        }else{
+            if ($token) {
+                // Hapus token dari database utama menggunakan API
+                $client = new Client();
+
+                try {
+                    $client->post(env('API_BASE_URL') . '/api/logout', [
+                        'headers' => [
+                            'Authorization' => "Bearer $token",
+                        ],
+                    ]);
+                } catch (\Exception $e) {
+                    return redirect()->route('login')->withErrors(['message' => 'Logout API Error: ' . $e->getMessage()]);
+                }
+            }
+        }
         Auth::logout();
 
         $request->session()->invalidate();

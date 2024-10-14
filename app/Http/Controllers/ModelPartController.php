@@ -7,6 +7,7 @@ use App\Models\ModelPart;
 use App\Models\Part;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class ModelPartController extends Controller
 {
@@ -20,7 +21,7 @@ class ModelPartController extends Controller
 
         $models = ModelPart::simplePaginate(8);
 
-        
+
         return response()->view('model.index', compact('models'));
     }
 
@@ -147,5 +148,12 @@ class ModelPartController extends Controller
         }
         $deleteData->delete();
         return redirect()->route('model.index')->with('success','Model Berhasil diHapus!');
+    }
+
+    public function listModel(Request $request){
+        if($request->ajax()){
+            $data = ModelPart::all();
+            return DataTables::of($data)->make(true);
+        }
     }
 }

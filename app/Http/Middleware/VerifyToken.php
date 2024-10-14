@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class VerifyToken
 {
@@ -17,29 +18,50 @@ class VerifyToken
      */
     public function handle(Request $request, Closure $next)
     {
-         // return $next($request);
+        // return $next($request);
 
-         $token = $request->session()->get('token');
+        $token = $request->session()->get('token');
 
-         if (!$token) {
-             return redirect()->route('login')->withErrors([
-                 'message' => 'Please log in first.',
-             ]);
-         }
+        if (!$token) {
+            return redirect()
+                ->route('login')
+                ->withErrors([
+                    'message' => 'Please log in first.',
+                ]);
+        }
 
-         $client = new Client();
-         $response = $client->get(env('API_BASE_URL') . '/api/user', [
-             'headers' => [
-                 'Authorization' => "Bearer $token",
-             ]
-         ]);
+        if (session('status_login') == 'local') {
+            //validasi lokal login
+            $verifyToken = PersonalAccessToken::findToken($token);
 
-         if ($response->getStatusCode() == 200) {
-             return $next($request);
-         }
+            if ($verifyToken) {
+                return $next($request);
+            } else {
+                return redirect()
+                    ->route('login')
+                    ->withErrors([
+                        'message' => 'Invalid token.',
+                    ]);
+            }
+        } else {
+            //validasi login api
 
-         return redirect()->route('login')->withErrors([
-             'message' => 'Invalid token.',
-         ]);
+            $client = new Client();
+            $response = $client->get(env('API_BASE_URL') . '/api/user', [
+                'headers' => [
+                    'Authorization' => "Bearer $token",
+                ],
+            ]);
+
+            if ($response->getStatusCode() == 200) {
+                return $next($request);
+            }
+
+            return redirect()
+                ->route('login')
+                ->withErrors([
+                    'message' => 'Invalid token.',
+                ]);
+        }
     }
 }

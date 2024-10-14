@@ -38,7 +38,8 @@ class CreateAreaPartsTable extends Migration
             $table->string('foto_ke_dua')->nullable();
             $table->string('foto_ke_tiga')->nullable();
             $table->string('foto_ke_empat')->nullable();
-            $table->string('sec_head_approval_date')->nullable();
+            $table->string('sec_head_approval_date1')->nullable();
+            $table->string('sec_head_approval_date2')->nullable();
             $table->string('dept_head_approval_date')->nullable();
             $table->date('submit_date')->nullable();
             $table->softDeletes();

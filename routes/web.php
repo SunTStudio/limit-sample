@@ -20,20 +20,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
-// Route::post('/login', [LoginController::class, 'authenticate'])->name('limitSample.loginProsses');
-Route::post('/login', [LoginController::class, 'login'])->name('limitSample.loginProsses');
+Route::post('/login', [LoginController::class, 'authenticate'])->name('limitSample.loginProsses');
+// Route::post('/login', [LoginController::class, 'login'])->name('limitSample.loginProsses');
 Route::get('/limit-sample/login-external', [LoginController::class, 'externalLogin'])->name('limitSample.externalLogin');
 Route::post('/directToExternalSite', [LoginController::class, 'directToExternalSite'])->name('limitSample.directToExternalSite');
 
 // Route::post('/login', [LoginController::class, 'authenticate'])->name('limitSample.loginProsses');
 Route::get('/login-guest', [LoginController::class, 'loginGuest'])->name('loginGuest');
-Route::post('/login-guest', [LoginController::class, 'authenticateGuest'])->name('limitSample.loginGuestProsses');
+Route::post('/login-guest', [LoginController::class, 'authenticate'])->name('limitSample.loginGuestProsses');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/visits-data', [DashboardController::class, 'getVisitsData']);
 
 Route::middleware(['verify.token'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('limitSample.dashboard');
     Route::get('/limit-sample', [LoginController::class, 'dashboard'])->name('limitSample.dashboard');
+    Route::get('/all-limit-sample', [DashboardController::class, 'allLimitSample'])->name('limitSample.all');
+    Route::get('/all-limit-sample-modal', [DashboardController::class, 'allLimitSampleModal'])->name('limitSample.allLimitSampleModal');
     Route::get('/access-denied', [LoginController::class, 'accessDenied'])->name('access-denied');
 
     // Model
@@ -47,10 +49,12 @@ Route::middleware(['verify.token'])->group(function () {
         Route::delete('/limit-sample/model/delete/{id}', [ModelPartController::class, 'destroy'])->name('model.delete');
     });
     Route::get('/limit-sample/model/search/', [ModelPartController::class, 'search'])->name('model.search');
+    Route::get('/limit-sample/model/list/', [ModelPartController::class, 'listModel'])->name('limitSample.listModel');
 
     // Part
 
     Route::get('/limit-sample/model/{id}/part', [PartController::class, 'index'])->name('part.index');
+    Route::get('/limit-sample/model/{id}/part/list', [PartController::class, 'listPart'])->name('part.listPart');
     Route::middleware('role:Admin')->group(function () {
         Route::get('limit-sample/model/{id}/part/create', [PartController::class, 'create'])->name('part.create');
         Route::post('limit-sample/model/{id}/part/create', [PartController::class, 'store'])->name('part.store');
@@ -71,6 +75,7 @@ Route::middleware(['verify.token'])->group(function () {
     Route::get('/limit-sample/area-part/search/{id}', [AreaPartController::class, 'katalogSearch'])->name('katalog.search');
     Route::get('/limit-sample/area-part/{id}/getDataCharacteristic', [AreaPartController::class, 'getDataCharacteristic'])->name('katalog.getDataCharacteristic');
     Route::get('/limit-sample/area-part/{id}/count', [AreaPartController::class, 'katalogCount'])->name('katalog.count');
+    Route::get('/limit-sample/area-part/{id}/list', [AreaPartController::class, 'listKatalog'])->name('areaPart.listKatalog');
 
     Route::middleware('role:Admin')->group(function () {
         Route::get('/limit-sample/area-part/create/{id}', [AreaPartController::class, 'create'])->name('areaPart.create');
@@ -93,7 +98,8 @@ Route::middleware(['verify.token'])->group(function () {
 
     //approval
     Route::middleware('role:Supervisor')->group(function () {
-        Route::get('/limit-sample/area-part/approve/sechead/{id}', [AreaPartController::class, 'approvalSecHead'])->name('katalog.approve.secHead');
+        Route::get('/limit-sample/area-part/approve/sechead1/{id}', [AreaPartController::class, 'approvalSecHead1'])->name('katalog.approve.secHead1');
+        Route::get('/limit-sample/area-part/approve/sechead2/{id}', [AreaPartController::class, 'approvalSecHead2'])->name('katalog.approve.secHead2');
         Route::get('/limit-sample/area-part/tolak/sechead/{id}', [AreaPartController::class, 'tolakSecHead'])->name('katalog.tolak.secHead');
         Route::post('/limit-sample/area-part/tolak/sechead/{id}', [AreaPartController::class, 'tolakSecHeadProsses'])->name('katalog.tolak.secHead');
     });

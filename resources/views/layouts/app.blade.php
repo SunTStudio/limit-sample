@@ -48,6 +48,10 @@
                         <a href="{{ url('/limit-sample/model') }}"><i class="fa fa-th-large"></i><span
                                 class="nav-label">Limit Sample</span></a>
                     </li>
+                    <li class="{{ Request::is('all-limit-sample*') ? 'active' : '' }}">
+                        <a href="{{ url('/all-limit-sample') }}"><i class="fa fa-th"></i><span
+                                class="nav-label">All Limit Sample</span></a>
+                    </li>
                     @if (
                         in_array('Admin', session('roles', [])) ||
                         (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') ||
@@ -116,9 +120,11 @@
                         <li>
                             <span class="m-r-sm text-muted welcome-message">{{ ucwords(session('user')['name']) }}</span>
                         </li>
+                        @if (session('status_login') != 'local')
                         <li class="pr-3 d-inline">
                             <a href="{{ url('http://10.14.179.250:2222/dashboard') }}" class="p-0 pt-2"><button  class="btn btn-secondary">Ke Portal</button></a>
                         </li>
+                        @endif
                         <li class="pr-3">
                             <form action="{{ route('logout') }}" method="POST" id="logoutForm">
                                 @csrf

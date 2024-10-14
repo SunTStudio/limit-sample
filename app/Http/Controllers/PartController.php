@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use File;
+use Yajra\DataTables\Facades\DataTables;
+
 class PartController extends Controller
 {
     /**
@@ -245,5 +247,12 @@ class PartController extends Controller
         return redirect()
             ->route('part.index', ['id' => $modelPart->id])
             ->with('success', 'Part berhasil dihapus!');
+    }
+
+    public function listPart(Request $request){
+        if($request->ajax()){
+            $data = Part::all();
+            return DataTables::of($data)->make(true);
+        }
     }
 }

@@ -23,10 +23,19 @@ class DashboardController extends Controller
         $partAreas = PartArea::orderByDesc('count_visit')->simplePaginate(6);
         $expired = AreaPart::where('expired_date', '<', Carbon::today()->format('Y-m-d'))->count();
         $willExpired = AreaPart::whereBetween('expired_date', [Carbon::now()->format('Y-m-d'), Carbon::now()->addDays(5)->format('Y-m-d')])->count();
-        $NeedApproveSecHead = AreaPart::whereNull('sec_head_approval_date')->where('expired_date', '>', Carbon::now()->format('Y-m-d'))->count();
-        
-        $NeedApproveDeptHead = AreaPart::whereNotNull('sec_head_approval_date')->whereNull('dept_head_approval_date')->where('expired_date', '>', Carbon::today()->format('Y-m-d'))->count();
-        return view('limitSample.dashboard', compact('models','NeedApproveSecHead','NeedApproveDeptHead','AreaParts', 'parts', 'partAreas', 'expired', 'willExpired', 'TodayVisitWeb'));
+        if (session('user')['detail_dept_id'] == 15) {
+            $NeedApproveSecHead = AreaPart::whereNull('sec_head_approval_date1')->where('expired_date', '>', Carbon::now()->format('Y-m-d'))->count();
+        } else {
+            $NeedApproveSecHead = AreaPart::whereNull('sec_head_approval_date2')->where('expired_date', '>', Carbon::now()->format('Y-m-d'))->count();
+        }
+
+        $NeedApproveDeptHead = AreaPart::where(function ($query) {
+            $query->where('sec_head_approval_date1', '!=', null)->orWhere('sec_head_approval_date2', '!=', null);
+        })
+            ->whereNull('dept_head_approval_date')
+            ->where('expired_date', '>', Carbon::today()->format('Y-m-d'))
+            ->count();
+        return view('limitSample.dashboard', compact('models', 'NeedApproveSecHead', 'NeedApproveDeptHead', 'AreaParts', 'parts', 'partAreas', 'expired', 'willExpired', 'TodayVisitWeb'));
     }
 
     public function getVisitsData(Request $request)
@@ -62,12 +71,11 @@ class DashboardController extends Controller
 
     public function getDatatables(Request $request)
     {
-
         // Check if there is a search term
         $searchTerm = $request->get('search')['value'];
 
         if (!empty($searchTerm)) {
-            $guests = Guest::where('guest_name', 'LIKE', "%{$searchTerm}%")->where('count_visit' ,'!=', null);
+            $guests = Guest::where('guest_name', 'LIKE', "%{$searchTerm}%")->where('count_visit', '!=', null);
         } else {
             $guests = Guest::select('guest_name', DB::raw('MAX(count_visit) as count_visit'), DB::raw('MAX(login_date) as login_date'), DB::raw('MIN(id) as id'))->groupBy('guest_name');
         }
@@ -116,8 +124,10 @@ class DashboardController extends Controller
     }
     public function arsip(Request $request)
     {
-        if($request->ajax()){
-            $data = AreaPart::with(['modelPart'])->onlyTrashed()->get();
+        if ($request->ajax()) {
+            $data = AreaPart::with(['modelPart'])
+                ->onlyTrashed()
+                ->get();
             return DataTables::of($data)->make(true);
         }
 
@@ -125,8 +135,46 @@ class DashboardController extends Controller
     }
     public function arsipModal(Request $request)
     {
-        if($request->ajax()){
-            $data = AreaPart::with(['modelPart'])->onlyTrashed()->get();
+        if ($request->ajax()) {
+            $data = AreaPart::with(['modelPart'])
+                ->onlyTrashed()
+                ->get();
+            return response()->json($data);
+        }
+    }
+
+    public function allLimitSample(Request $request)
+    {
+        $modelPart = ModelPart::select('id', 'name', DB::raw('foto_model AS foto'))->get();
+        $part = Part::select('id','name',DB::raw('foto_part AS foto'))->get();
+        $areaPart = AreaPart::select('id','name',DB::raw('foto_ke_satu AS foto'))->get();
+
+        //memberikan label ke tiap model data
+        $modelPart->each(function($item) {
+            $item->filter = 'Model';
+        });
+        $part->each(function($item) {
+            $item->filter = 'Part';
+        });
+        $areaPart->each(function($item) {
+            $item->filter = 'Limit Sample';
+        });
+
+        $combinedDatas = $modelPart->concat($part)->concat($areaPart);
+
+        if($request->ajax())
+        {
+            return DataTables::of($combinedDatas)->make(true);
+        }
+
+        return view('limitSample.allLimitSample',compact('combinedDatas'));
+    }
+
+    public function allLimitSampleModal(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = AreaPart::with(['modelPart'])
+                ->get();
             return response()->json($data);
         }
     }

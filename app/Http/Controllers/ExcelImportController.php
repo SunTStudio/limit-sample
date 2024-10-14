@@ -91,8 +91,9 @@ class ExcelImportController extends Controller
                 'foto_ke_dua' => $row['M'],
                 'foto_ke_tiga' => $row['N'],
                 'foto_ke_empat' => $row['O'],
-                'sec_head_approval_date' => $row['P'] ?? null,
-                'dept_head_approval_date' => $row['Q'] ?? null,
+                'sec_head_approval_date1' => $row['P'] ?? null,
+                'sec_head_approval_date2' => $row['Q'] ?? null,
+                'dept_head_approval_date' => $row['R'] ?? null,
                 'submit_date' => Carbon::now()->format('Y-m-d'),
             ]);
         }

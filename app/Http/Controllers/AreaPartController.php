@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Intervention\Image\Facades\Image;
+use Yajra\DataTables\Facades\DataTables;
 
 class AreaPartController extends Controller
 {
@@ -30,7 +31,10 @@ class AreaPartController extends Controller
         $part = Part::find($id);
         $model = ModelPart::find($part->model_part_id);
         if (in_array('Guest', session('roles', []))) {
-            $partAreas = PartArea::has('areaPart')->whereHas('areaPart', fn($query) => $query->whereNotNull('sec_head_approval_date'))->where('part_id', $id)->get();
+            $partAreas = PartArea::has('areaPart')->whereHas('areaPart', fn($query) => $query->where(function($query) {
+                $query->where('sec_head_approval_date1', '!=', null)
+                      ->orWhere('sec_head_approval_date2', '!=', null);
+            })->where('expired_date', '>' , Carbon::now()->format('Y-m-d')))->where('part_id', $id)->get();
             $count = $part->count_visit;
             $count++;
             $part->update([
@@ -58,7 +62,11 @@ class AreaPartController extends Controller
         }
 
         if (in_array('Guest', session('roles', []))) {
-            $AreaParts = AreaPart::where('part_area_id', $id)->where('expired_date', '>' , Carbon::now()->format('Y-m-d'))->whereNotNull('sec_head_approval_date')->simplePaginate();
+            $AreaParts = AreaPart::where('part_area_id', $id)->where('expired_date', '>' , Carbon::now()->format('Y-m-d'))
+            ->where(function($query) {
+                $query->where('sec_head_approval_date1', '!=', null)
+                      ->orWhere('sec_head_approval_date2', '!=', null);
+            })->simplePaginate();
         } else {
             $AreaParts = AreaPart::where('part_area_id', $id)->simplePaginate();
         }
@@ -183,11 +191,24 @@ class AreaPartController extends Controller
             ->with('success', 'Limit Sample Berhasil di Tambahkan!');
     }
 
-    public function approvalSecHead(Request $request, $id)
+    public function approvalSecHead1(Request $request, $id)
     {
         $areaPart = AreaPart::find($id);
         $areaPart->update([
-            'sec_head_approval_date' => Carbon::now()->format('Y-m-d'),
+            'sec_head_approval_date1' => Carbon::now()->format('Y-m-d'),
+            'status' => 'approve',
+        ]);
+
+        return redirect()
+            ->route('areaPart.katalog', ['id' => $areaPart->part_area_id])
+            ->with('success', 'Limit Sample Berhasil di Approve');
+    }
+
+    public function approvalSecHead2(Request $request, $id)
+    {
+        $areaPart = AreaPart::find($id);
+        $areaPart->update([
+            'sec_head_approval_date2' => Carbon::now()->format('Y-m-d'),
             'status' => 'approve',
         ]);
 
@@ -249,7 +270,8 @@ class AreaPartController extends Controller
             'penolakan' => 'required',
         ]);
         $areaPart = AreaPart::find($id);
-        $validatedData['sec_head_approval_date'] = null;
+        $validatedData['sec_head_approval_date1'] = null;
+        $validatedData['sec_head_approval_date2'] = null;
         $validatedData['dept_head_approval_date'] = null;
         $validatedData['status'] = 'tolak';
         $validatedData['penolak_posisi'] = implode(', ', session('roles'));
@@ -296,7 +318,8 @@ class AreaPartController extends Controller
             'penolakan' => 'required',
         ]);
         $areaPart = AreaPart::find($id);
-        $validatedData['sec_head_approval_date'] = null;
+        $validatedData['sec_head_approval_date1'] = null;
+        $validatedData['sec_head_approval_date2'] = null;
         $validatedData['dept_head_approval_date'] = null;
         $validatedData['status'] = 'tolak';
         $validatedData['penolak_posisi'] = implode(', ', session('roles'));
@@ -376,13 +399,13 @@ class AreaPartController extends Controller
             // Tentukan ukuran baru
             if ($width > $height) {
                 // Jika lebar lebih besar dari tinggi, resize lebar
-                $newWidth = 800; // Ganti dengan lebar yang Anda inginkan
+                $newWidth = 1600; // Ganti dengan lebar yang Anda inginkan
                 $aspectRatio = $height / $width; // Rasio tinggi terhadap lebar
                 $newHeight = $newWidth * $aspectRatio; // Hitung tinggi baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
             } else {
                 // Jika tinggi lebih besar dari lebar, resize tinggi
-                $newHeight = 500; // Ganti dengan tinggi yang Anda inginkan
+                $newHeight = 1000; // Ganti dengan tinggi yang Anda inginkan
                 $aspectRatio = $width / $height; // Rasio lebar terhadap tinggi
                 $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
@@ -426,13 +449,13 @@ class AreaPartController extends Controller
             // Tentukan ukuran baru
             if ($width > $height) {
                 // Jika lebar lebih besar dari tinggi, resize lebar
-                $newWidth = 800; // Ganti dengan lebar yang Anda inginkan
+                $newWidth = 1600; // Ganti dengan lebar yang Anda inginkan
                 $aspectRatio = $height / $width; // Rasio tinggi terhadap lebar
                 $newHeight = $newWidth * $aspectRatio; // Hitung tinggi baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
             } else {
                 // Jika tinggi lebih besar dari lebar, resize tinggi
-                $newHeight = 500; // Ganti dengan tinggi yang Anda inginkan
+                $newHeight = 10000; // Ganti dengan tinggi yang Anda inginkan
                 $aspectRatio = $width / $height; // Rasio lebar terhadap tinggi
                 $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
@@ -476,13 +499,13 @@ class AreaPartController extends Controller
             // Tentukan ukuran baru
             if ($width > $height) {
                 // Jika lebar lebih besar dari tinggi, resize lebar
-                $newWidth = 800; // Ganti dengan lebar yang Anda inginkan
+                $newWidth = 1600; // Ganti dengan lebar yang Anda inginkan
                 $aspectRatio = $height / $width; // Rasio tinggi terhadap lebar
                 $newHeight = $newWidth * $aspectRatio; // Hitung tinggi baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
             } else {
                 // Jika tinggi lebih besar dari lebar, resize tinggi
-                $newHeight = 500; // Ganti dengan tinggi yang Anda inginkan
+                $newHeight = 10000; // Ganti dengan tinggi yang Anda inginkan
                 $aspectRatio = $width / $height; // Rasio lebar terhadap tinggi
                 $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
@@ -526,13 +549,13 @@ class AreaPartController extends Controller
             // Tentukan ukuran baru
             if ($width > $height) {
                 // Jika lebar lebih besar dari tinggi, resize lebar
-                $newWidth = 800; // Ganti dengan lebar yang Anda inginkan
+                $newWidth = 1600; // Ganti dengan lebar yang Anda inginkan
                 $aspectRatio = $height / $width; // Rasio tinggi terhadap lebar
                 $newHeight = $newWidth * $aspectRatio; // Hitung tinggi baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
             } else {
                 // Jika tinggi lebih besar dari lebar, resize tinggi
-                $newHeight = 500; // Ganti dengan tinggi yang Anda inginkan
+                $newHeight = 10000; // Ganti dengan tinggi yang Anda inginkan
                 $aspectRatio = $width / $height; // Rasio lebar terhadap tinggi
                 $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
@@ -546,7 +569,7 @@ class AreaPartController extends Controller
             // Simpan nama file yang sudah diputar ke dalam validated data
             $validatedData['foto_ke_empat'] = $imageName;
         }
-        $lastAreaPartId = AreaPart::latest()->pluck('id')->first();
+        $lastAreaPartId = AreaPart::orderBy('id', 'desc')->pluck('id')->first();
         $lastAreaPartId++;
         $validatedData['document_number'] = "AJI/LS/$modelPart->name/$part->name/$partArea->nameArea/0$lastAreaPartId";
         $validatedData['model_part_id'] = $part->modelPart->id;
@@ -594,7 +617,10 @@ class AreaPartController extends Controller
             if (in_array('Guest', session('roles', []))) {
                 $AreaParts = AreaPart::with(['modelPart'])
                     ->where('part_area_id', $id)
-                    ->whereNotNull('sec_head_approval_date')
+                    ->where(function($query) {
+                        $query->where('sec_head_approval_date1', '!=', null)
+                              ->orWhere('sec_head_approval_date2', '!=', null);
+                    })
                     ->where('name', 'LIKE', "%$searchTerm%")
                     ->get();
             } else {
@@ -608,7 +634,10 @@ class AreaPartController extends Controller
             if (in_array('Guest', session('roles', []))) {
                 $AreaParts = AreaPart::with(['modelPart'])
                     ->where('part_area_id', $id)
-                    ->whereNotNull('sec_head_approval_date')
+                    ->where(function($query) {
+                        $query->where('sec_head_approval_date1', '!=', null)
+                              ->orWhere('sec_head_approval_date2', '!=', null);
+                    })
                     ->where('name', 'LIKE', "%$request->searchKatalog%")
                     ->simplePaginate();
             } else {
@@ -697,5 +726,10 @@ class AreaPartController extends Controller
             'count_visit' => $count,
         ]);
         return response()->json();
+    }
+
+    public function listKatalog(Request $request,$id){
+        $data = AreaPart::with(['modelPart'])->where('part_area_id', $id)->get();
+        return DataTables::of($data)->make(true);
     }
 }

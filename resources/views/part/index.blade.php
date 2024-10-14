@@ -1,5 +1,10 @@
 @extends('layouts.app')
-
+@section('css')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.bootstrap.min.css">
+@endsection
 @section('header')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
@@ -24,8 +29,13 @@
 
 @section('content')
     <section id="part">
-        <div class="row justify-content-center">
-            <div class="col-lg-5 col-8 rounded  mb-3">
+        <div class="row justify-content-center m-1">
+            <div class="col-lg-2 col-3 p-0 text-center">
+                <button type="button" onclick="listModel()" class="btn btn-white"><i class="fa fa-list"></i></button>
+                <button type="button" onclick="cardModel()" class="btn btn-white"><i
+                        class="fa fa-window-restore"></i></button>
+            </div>
+            <div class="col-lg-5 col-8 rounded  mb-3" id="searchForm">
                 <div class="autocomplete-container position-relative">
                     <form action="{{ route('part.search', ['id' => $model->id]) }}" method="GET">
                         <div class="input-group">
@@ -48,13 +58,14 @@
         </div>
         <div class="row justify-content-center" id="partCard">
             @foreach ($parts as $part)
-                <div class="col-lg-6 col-12 p-2">
+                <div class="col-lg-6 col-12 p-2 cardDisplay">
                     <div class="ibox">
                         <div class="ibox-content product-box">
 
 
                             <div class="product-imitation">
-                                <a href="{{ url("/limit-sample/part/$part->id") }}"><img src="{{ asset("img/part/$part->foto_part") }}" class="img-fluid" alt=""></a>
+                                <a href="{{ url("/limit-sample/part/$part->id") }}"><img
+                                        src="{{ asset("img/part/$part->foto_part") }}" class="img-fluid" alt=""></a>
                             </div>
                             <div class="product-desc p-3">
                                 <a href="#" class="product-name"> {{ $part->name }}</a>
@@ -73,7 +84,18 @@
                     </div>
                 </div>
             @endforeach
-
+            <div class=" col-lg-10 col bg-white p-3" id="listDisplay" style="display: none;">
+                <table id="listModel" class="display ">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Part</th>
+                            <th>Created_at</th>
+                            <th>Opsi</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
         <div class="text-center">
             {{ $parts->links() }}
@@ -86,6 +108,89 @@
 
 
 @section('script')
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    {{-- <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap.min.js"></script> --}}
+    <script src="https://cdn.datatables.net/fixedheader/3.2.3/js/dataTables.fixedHeader.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.0/js/responsive.bootstrap.min.js"></script>
+    <script>
+        let listCount = 0;
+
+        function listModel() {
+            var dataRoles = "{{ implode(',', session('roles', [])) }}";
+            let searchForm = document.getElementById('searchForm').style.display = 'none';
+            let cardDisplay = document.getElementsByClassName('cardDisplay');
+            for (let i = 0; i < cardDisplay.length; i++) {
+                cardDisplay[i].style.display = 'none';
+            }
+            let listDisplay = document.getElementById('listDisplay');
+            listDisplay.style.display = 'block'
+            if (listCount == 0) {
+                var table = $('#listModel').DataTable({
+                    responsive: true,
+                    processing: true,
+                    serverSide: true,
+                    ajax: "{{ route('part.listPart', ['id' => $model->id]) }}",
+                    columns: [{
+                            data: null,
+                            className: 'text-center',
+                            orderable: false,
+                            render: function(data, type, row, meta) {
+                                return meta.row + 1; // Nomor urut sederhana
+                            }
+                        },
+                        {
+                            data: 'name',
+                            name: 'name',
+                            className: 'text-center'
+                        },
+                        {
+                            data: 'created_at',
+                            name: 'created_at',
+                            className: 'text-center',
+                            render: function(data, type, row) {
+                                let dateOnly = data.substring(0, 10);
+                                return dateOnly;
+                            }
+                        },
+                        {
+                            data: 'id',
+                            name: 'id',
+                            className: 'text-center',
+                            orderable: false,
+                            render: function(data, type, row) {
+                                return `
+                                <div class="d-flex justify-content-center">
+                                    <a href="{{ url('/limit-sample/part/') }}/${data}" class="btn btn-sm btn-primary m-1">
+                                        See Detail
+                                    </a>
+                                    ${dataRoles == 'Admin' ? `
+                                                <a href="{{ url('/limit-sample/part/edit/') }}/${data}" class="btn btn-sm btn-primary m-1">
+                                                    Edit
+                                                </a>
+                                                `: ''}
+                                </div>`;
+                            }
+                        }
+                    ]
+                });
+                new $.fn.dataTable.FixedHeader(table);
+                listCount++;
+            }
+        }
+
+        function cardModel() {
+            let cardDisplay = document.getElementsByClassName('cardDisplay');
+            let searchForm = document.getElementById('searchForm').style.display = 'block';
+            for (let i = 0; i < cardDisplay.length; i++) {
+                cardDisplay[i].style.display = 'block';
+            }
+            let listDisplay = document.getElementById('listDisplay');
+            listDisplay.style.display = 'none'
+        }
+    </script>
+
+
     <script>
         // Pass the model ID from the backend to JavaScript
         var modelId = {{ $model->id }};
@@ -124,7 +229,7 @@
                         // Append new model cards
                         $.each(data, function(index, item) {
                             $('#partCard').append(`
-                            <div class="col-lg-6 col-12 p-2">
+                            <div class="col-lg-6 col-12 p-2 cardDisplay">
                                 <div class="ibox">
                                     <div class="ibox-content product-box">
                                         <div class="product-imitation">
@@ -145,9 +250,24 @@
                         `);
                         });
 
+                        $('#partCard').append(`
+                        <div class=" col-lg-10 col bg-white p-3" id="listDisplay" style="display: none;">
+                            <table id="listModel" class="display ">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Part</th>
+                                        <th>Created_at</th>
+                                        <th>Opsi</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        `);
                         if (click == true) {
                             $('#autocomplete-results').empty();
                         }
+                        listCount = 0;
                     }
                 });
             } else {
@@ -162,6 +282,12 @@
                 var query = $(this).val();
                 performSearch(query, click); // Call performSearch on keyup
             });
+        });
+
+        $(document).click(function(event) {
+            if (!$(event.target).closest('#autocomplete-results').length) {
+                $('#autocomplete-results').hide();
+            }
         });
     </script>
 @endsection

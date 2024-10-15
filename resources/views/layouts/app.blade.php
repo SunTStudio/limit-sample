@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-bs-theme-mode="dark">
 
 <head>
 
@@ -132,6 +132,7 @@
                             <a href="{{ url('http://10.14.179.250:2222/dashboard') }}" class="p-0 pt-2"><button  class="btn btn-secondary">Ke Portal</button></a>
                         </li>
                         @endif
+                        @if (session('status_login') == 'local')
                         <li class="pr-3">
                             <form action="{{ route('logout') }}" method="POST" id="logoutForm">
                                 @csrf
@@ -140,6 +141,7 @@
                                 </button>
                             </form>
                         </li>
+                        @endif
                     </ul>
                 </nav>
             </div>

@@ -508,7 +508,7 @@
                                             Download PDF
                                         </a>
                                     @endhasRole
-                                    @if (
+                                    @if (in_array('Admin', session('roles', [])) ||
                                         (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') ||
                                             (in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15'))
                                         <form action="{{ url("/limit-sample/areaPart/delete/$areaPart->id") }}"

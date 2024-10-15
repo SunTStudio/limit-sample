@@ -10,11 +10,13 @@
             height: 15rem;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
 
         .product-imitation img {
             width: 100%;
-            height: auto;
+            height: 15rem;
+            object-fit: contain;
         }
     </style>
 @endsection
@@ -36,7 +38,7 @@
 
 @section('content')
     <div class="row justify-content-center m-1" id="filterAllData">
-        <div class="col-lg-2 col-3 text-center p-0" id="btnfilterDropDown">
+        <div class="col-lg-2 col-4 text-center p-0" id="btnfilterDropDown">
             <div class="btn-group">
                 <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" id="headDropdown">All Filter</button>
                 <ul class="dropdown-menu">

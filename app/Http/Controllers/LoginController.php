@@ -176,7 +176,6 @@ class LoginController extends Controller
                 'Accept' => 'application/json',
             ],
         ]);
-
         $data = json_decode($response->getBody()->getContents(), true);
         if (isset($data['status']) && $data['status'] === 'success') {
             $userData = $data['user'];
@@ -208,7 +207,7 @@ class LoginController extends Controller
 
             // // Log the user in using their details (this method creates a session)
             // Auth::login($user); // 'true' for remember me
-            if ($userData['detail_dept_id'] != 15 && $userData['username'] != 'AdminLS') {
+            if ($userData['detail_dept_id'] != 15 && $userData['detail_dept_id'] != 16 && $userData['username'] != 'AdminLS') {
                 Guest::create([
                     'guest_name' => $userData['npk'],
                     'login_date' => Carbon::now()->format('Y-m-d'),
@@ -220,6 +219,8 @@ class LoginController extends Controller
                     'count_visit' => $count,
                 ]);
             }
+            $request->session()->put('status_login', 'api');
+
             // Redirect based on roles
             return redirect()->route('limitSample.dashboard')->with('success', 'Login successful.');
         } else {

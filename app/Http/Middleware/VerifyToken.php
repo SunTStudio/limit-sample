@@ -29,7 +29,6 @@ class VerifyToken
                     'message' => 'Please log in first.',
                 ]);
         }
-
         if (session('status_login') == 'local') {
             //validasi lokal login
             $verifyToken = PersonalAccessToken::findToken($token);

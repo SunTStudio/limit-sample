@@ -395,7 +395,6 @@ class AreaPartController extends Controller
             // Ambil dimensi gambar
             $width = $img->width();
             $height = $img->height();
-
             // Tentukan ukuran baru
             if ($width > $height) {
                 // Jika lebar lebih besar dari tinggi, resize lebar
@@ -410,6 +409,7 @@ class AreaPartController extends Controller
                 $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
             }
+
             // Siapkan nama file untuk disimpan
             $imageName = time() . '_satu.' . $image->getClientOriginalExtension();
 
@@ -455,7 +455,7 @@ class AreaPartController extends Controller
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
             } else {
                 // Jika tinggi lebih besar dari lebar, resize tinggi
-                $newHeight = 10000; // Ganti dengan tinggi yang Anda inginkan
+                $newHeight = 1000; // Ganti dengan tinggi yang Anda inginkan
                 $aspectRatio = $width / $height; // Rasio lebar terhadap tinggi
                 $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
@@ -505,7 +505,7 @@ class AreaPartController extends Controller
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
             } else {
                 // Jika tinggi lebih besar dari lebar, resize tinggi
-                $newHeight = 10000; // Ganti dengan tinggi yang Anda inginkan
+                $newHeight = 1000; // Ganti dengan tinggi yang Anda inginkan
                 $aspectRatio = $width / $height; // Rasio lebar terhadap tinggi
                 $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
@@ -555,7 +555,7 @@ class AreaPartController extends Controller
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio
             } else {
                 // Jika tinggi lebih besar dari lebar, resize tinggi
-                $newHeight = 10000; // Ganti dengan tinggi yang Anda inginkan
+                $newHeight = 1000; // Ganti dengan tinggi yang Anda inginkan
                 $aspectRatio = $width / $height; // Rasio lebar terhadap tinggi
                 $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
                 $img->resize($newWidth, $newHeight); // Resize dengan rasio

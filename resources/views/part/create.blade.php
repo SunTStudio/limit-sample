@@ -60,7 +60,7 @@
                             <div class="hr-line-dashed"></div>
                             <div class="form-group row">
                                 <div class="col-sm-4 col-sm-offset-2">
-                                    <a href="{{ url('/limit-sample/id/part') }}" class="btn btn-white btn-sm">Batal</a>
+                                    <a href="{{ url("/limit-sample/model/$model->id/part") }}" class="btn btn-white btn-sm">Batal</a>
                                     <button class="btn btn-primary btn-sm" type="submit">Tambah</button>
                                 </div>
                             </div>

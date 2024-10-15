@@ -25,7 +25,7 @@
 @section('content')
     <section id="model">
         <div class="row justify-content-center m-1">
-            <div class="col-lg-2 col-3 p-0 text-center">
+            <div class="col-lg-2 col-4 p-0 text-center">
                 <button type="button" onclick="listModel()" class="btn btn-white"><i class="fa fa-list"></i></button>
                 <button type="button" onclick="cardModel()" class="btn btn-white"><i
                         class="fa fa-window-restore"></i></button>

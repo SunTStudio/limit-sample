@@ -14,7 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'limit_sample'),
-    'link_website' => env('LINK_WEBSITE', 'http://10.14.143.89/limit-sample/'),
+    'link_website' => env('LINK_WEBSITE', 'http://10.14.179.250:1111'),
     'api_base_url' => env('API_BASE_URL', 'http://10.14.179.250:2222'),
 
     /*

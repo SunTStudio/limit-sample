@@ -131,12 +131,14 @@
                     processing: true,
                     serverSide: true,
                     ajax: "{{ route('part.listPart', ['id' => $model->id]) }}",
-                    columns: [{
+                    columns: [
+                        {
                             data: null,
                             className: 'text-center',
                             orderable: false,
                             render: function(data, type, row, meta) {
-                                return meta.row + 1; // Nomor urut sederhana
+                                var pageInfo = table.page.info(); // Use the `table` variable to get the page info
+                                return pageInfo.start + meta.row + 1; // Adjusts the row number based on the start index of the current page
                             }
                         },
                         {
@@ -206,7 +208,7 @@
         }
 
         function performSearch(query, click) {
-            if (query.length > 0) {
+            if (query.length >= 0) {
                 $.ajax({
                     url: "{{ route('part.search', ['id' => $model->id]) }}",
                     type: "GET",

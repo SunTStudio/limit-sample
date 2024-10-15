@@ -567,18 +567,13 @@
                     serverSide: true,
                     ajax: "{{ route('areaPart.listKatalog', ['id' => $partArea->id]) }}",
                     columns: [
-                        // {
-                        //     data: 'id',
-                        //     name: 'id',
-                        //     className: 'text-center',
-                        //     orderable: false
-                        // },
                         {
                             data: null,
                             className: 'text-center',
                             orderable: false,
                             render: function(data, type, row, meta) {
-                                return meta.row + 1; // Nomor urut sederhana
+                                var pageInfo = table.page.info(); // Use the `table` variable to get the page info
+                                return pageInfo.start + meta.row + 1; // Adjusts the row number based on the start index of the current page
                             }
                         },
                         {

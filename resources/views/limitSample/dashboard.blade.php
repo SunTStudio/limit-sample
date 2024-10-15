@@ -54,10 +54,10 @@
                     </div>
                 </a>
                 </div>
-                
-                @if(in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15')
+
+                @if((in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '16') || (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') )
                 <div class="col m-0 p-1 ">
-                    <a href="{{ route('limitSample.activity') }}">
+                    <a href="{{ route('limitSample.needApprovePage') }}">
                     <div class="text-center bg-white p-2">
                         <p class="m-0"> <strong> Need <br> Approve </strong></p>
                         <hr class="m-1">
@@ -68,9 +68,9 @@
                 @endif
                 @if(in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15')
                 <div class="col m-0 p-1">
-                    <a href="{{ route('limitSample.activity') }}">
+                    <a href="{{ route('limitSample.needApprovePage') }}">
                     <div class="text-center bg-white p-2">
-                        <p class="m-0"> <strong> Need Approve </strong></p>
+                        <p class="m-0"> <strong> Need <br> Approve </strong></p>
                         <hr class="m-1">
                         <p class="h3 m-0">{{ $NeedApproveDeptHead }}</p>
                     </div>

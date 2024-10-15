@@ -34,6 +34,11 @@ Route::get('/visits-data', [DashboardController::class, 'getVisitsData']);
 Route::middleware(['verify.token'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('limitSample.dashboard');
     Route::get('/limit-sample', [LoginController::class, 'dashboard'])->name('limitSample.dashboard');
+    Route::get('/all-limit-sample/search', [DashboardController::class, 'allLimitSampleSearch'])->name('limitSample.Allsearch');
+    Route::get('/all-limit-sample/search/model', [DashboardController::class, 'allModelSearch'])->name('AllLimitSample.modelSearch');
+    Route::get('/all-limit-sample/search/part', [DashboardController::class, 'allPartSearch'])->name('AllLimitSample.partSearch');
+    Route::get('/all-limit-sample/search/area-part', [DashboardController::class, 'allAreaPartSearch'])->name('AllLimitSample.areaPartSearch');
+    Route::get('/all-limit-sample/list', [DashboardController::class, 'allLimitSample'])->name('allLimitSample.allList');
     Route::get('/all-limit-sample', [DashboardController::class, 'allLimitSample'])->name('limitSample.all');
     Route::get('/all-limit-sample-modal', [DashboardController::class, 'allLimitSampleModal'])->name('limitSample.allLimitSampleModal');
     Route::get('/access-denied', [LoginController::class, 'accessDenied'])->name('access-denied');
@@ -95,7 +100,7 @@ Route::middleware(['verify.token'])->group(function () {
     Route::get('/will-expired', [DashboardController::class, 'willExpired'])->name('limitSample.willExpired');
     Route::get('/arsip', [DashboardController::class, 'arsip'])->name('limitSample.arsip');
     Route::get('/arsipModal', [DashboardController::class, 'arsipModal'])->name('limitSample.arsipModal');
-
+    Route::get('/need-approve', [DashboardController::class, 'needApprovePage'])->name('limitSample.needApprovePage');
     //approval
     Route::middleware('role:Supervisor')->group(function () {
         Route::get('/limit-sample/area-part/approve/sechead1/{id}', [AreaPartController::class, 'approvalSecHead1'])->name('katalog.approve.secHead1');

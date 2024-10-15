@@ -36,7 +36,7 @@
                     </li>
                     @if (
                         in_array('Admin', session('roles', [])) ||
-                        (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') ||
+                        (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') || (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '16') ||
                         (in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15')
                     )
 
@@ -52,9 +52,16 @@
                         <a href="{{ url('/all-limit-sample') }}"><i class="fa fa-th"></i><span
                                 class="nav-label">All Limit Sample</span></a>
                     </li>
+                    @if ((in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') || (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '16') ||
+                    (in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15'))
+                    <li class="{{ Request::is('need-approve*') ? 'active' : '' }}">
+                        <a href="{{ url('/need-approve') }}"><i class="fa fa-clock-o"></i><span
+                                class="nav-label">Need Approve</span></a>
+                    </li>
+                    @endif
                     @if (
                         in_array('Admin', session('roles', [])) ||
-                        (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') ||
+                        (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') || (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '16') ||
                         (in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15')
                     )
                     <li class="{{ Request::is('activity') ? 'active' : '' }}">

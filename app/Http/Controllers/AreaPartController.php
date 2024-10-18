@@ -31,10 +31,17 @@ class AreaPartController extends Controller
         $part = Part::find($id);
         $model = ModelPart::find($part->model_part_id);
         if (in_array('Guest', session('roles', []))) {
-            $partAreas = PartArea::has('areaPart')->whereHas('areaPart', fn($query) => $query->where(function($query) {
-                $query->where('sec_head_approval_date1', '!=', null)
-                      ->orWhere('sec_head_approval_date2', '!=', null);
-            })->where('expired_date', '>' , Carbon::now()->format('Y-m-d')))->where('part_id', $id)->get();
+            $partAreas = PartArea::has('areaPart')
+                ->whereHas(
+                    'areaPart',
+                    fn($query) => $query
+                        ->where(function ($query) {
+                            $query->where('sec_head_approval_date1', '!=', null)->orWhere('sec_head_approval_date2', '!=', null);
+                        })
+                        ->where('expired_date', '>', Carbon::now()->format('Y-m-d')),
+                )
+                ->where('part_id', $id)
+                ->get();
             $count = $part->count_visit;
             $count++;
             $part->update([
@@ -62,11 +69,12 @@ class AreaPartController extends Controller
         }
 
         if (in_array('Guest', session('roles', []))) {
-            $AreaParts = AreaPart::where('part_area_id', $id)->where('expired_date', '>' , Carbon::now()->format('Y-m-d'))
-            ->where(function($query) {
-                $query->where('sec_head_approval_date1', '!=', null)
-                      ->orWhere('sec_head_approval_date2', '!=', null);
-            })->simplePaginate();
+            $AreaParts = AreaPart::where('part_area_id', $id)
+                ->where('expired_date', '>', Carbon::now()->format('Y-m-d'))
+                ->where(function ($query) {
+                    $query->where('sec_head_approval_date1', '!=', null)->orWhere('sec_head_approval_date2', '!=', null);
+                })
+                ->simplePaginate();
         } else {
             $AreaParts = AreaPart::where('part_area_id', $id)->simplePaginate();
         }
@@ -129,37 +137,183 @@ class AreaPartController extends Controller
             'part_number' => 'required',
             'document_number' => 'required',
         ]);
-
         $validatedData['effective_date'] = Carbon::createFromFormat('m/d/Y', $request->effective_date)->format('Y-m-d');
         $validatedData['expired_date'] = Carbon::createFromFormat('m/d/Y', $request->expired_date)->format('Y-m-d');
 
         // Pindahkan foto ke direktori public/img/part
         if ($request->hasFile('foto_ke_satu')) {
+
+
+            // Ambil file gambar dari request
             $image = $request->file('foto_ke_satu');
+
+            // Buat objek image dengan Intervention Image
+            $img = Image::make($image->getRealPath());
+
+            // Putar gambar 90 derajat
+            if ($request->rotateFotoSatu != null) {
+                $img->rotate($request->rotateFotoSatu + 180);
+            } else {
+                $img->rotate($request->rotateFotoSatu);
+            }
+
+            // Ambil dimensi gambar
+            $width = $img->width();
+            $height = $img->height();
+            // Tentukan ukuran baru
+            if ($width > $height) {
+                // Jika lebar lebih besar dari tinggi, resize lebar
+                $newWidth = 1600; // Ganti dengan lebar yang Anda inginkan
+                $aspectRatio = $height / $width; // Rasio tinggi terhadap lebar
+                $newHeight = $newWidth * $aspectRatio; // Hitung tinggi baru
+                $img->resize($newWidth, $newHeight); // Resize dengan rasio
+            } else {
+                // Jika tinggi lebih besar dari lebar, resize tinggi
+                $newHeight = 1000; // Ganti dengan tinggi yang Anda inginkan
+                $aspectRatio = $width / $height; // Rasio lebar terhadap tinggi
+                $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
+                $img->resize($newWidth, $newHeight); // Resize dengan rasio
+            }
+
+            // Siapkan nama file untuk disimpan
             $imageName = time() . '_satu.' . $image->getClientOriginalExtension();
-            $image->move(public_path('img/areaPart'), $imageName);
-            $validatedData['foto_ke_satu'] = $imageName; // Simpan nama file untuk database
+
+            // Simpan gambar yang sudah diputar ke direktori tujuan
+            $img->save(public_path('img/areaPart/' . $imageName));
+
+            // Simpan nama file yang sudah diputar ke dalam validated data
+            $validatedData['foto_ke_satu'] = $imageName;
         }
 
         if ($request->hasFile('foto_ke_dua')) {
+
+            // Ambil file gambar dari request
             $image = $request->file('foto_ke_dua');
+
+            // Buat objek image dengan Intervention Image
+            $img = Image::make($image->getRealPath());
+
+            // Putar gambar 90 derajat
+            if ($request->rotateFotoDua != null) {
+                $img->rotate($request->rotateFotoDua + 180);
+            } else {
+                $img->rotate($request->rotateFotoDua);
+            }
+
+            // Ambil dimensi gambar
+            $width = $img->width();
+            $height = $img->height();
+
+            // Tentukan ukuran baru
+            if ($width > $height) {
+                // Jika lebar lebih besar dari tinggi, resize lebar
+                $newWidth = 1600; // Ganti dengan lebar yang Anda inginkan
+                $aspectRatio = $height / $width; // Rasio tinggi terhadap lebar
+                $newHeight = $newWidth * $aspectRatio; // Hitung tinggi baru
+                $img->resize($newWidth, $newHeight); // Resize dengan rasio
+            } else {
+                // Jika tinggi lebih besar dari lebar, resize tinggi
+                $newHeight = 1000; // Ganti dengan tinggi yang Anda inginkan
+                $aspectRatio = $width / $height; // Rasio lebar terhadap tinggi
+                $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
+                $img->resize($newWidth, $newHeight); // Resize dengan rasio
+            }
+            // Siapkan nama file untuk disimpan
             $imageName = time() . '_dua.' . $image->getClientOriginalExtension();
-            $image->move(public_path('img/areaPart'), $imageName);
-            $validatedData['foto_ke_dua'] = $imageName; // Simpan nama file untuk database
+
+            // Simpan gambar yang sudah diputar ke direktori tujuan
+            $img->save(public_path('img/areaPart/' . $imageName));
+
+            // Simpan nama file yang sudah diputar ke dalam validated data
+            $validatedData['foto_ke_dua'] = $imageName;
         }
 
         if ($request->hasFile('foto_ke_tiga')) {
+
+
+            // Ambil file gambar dari request
             $image = $request->file('foto_ke_tiga');
+
+            // Buat objek image dengan Intervention Image
+            $img = Image::make($image->getRealPath());
+
+            // Putar gambar 90 derajat
+            if ($request->rotateFotoTiga != null) {
+                $img->rotate($request->rotateFotoTiga + 180);
+            } else {
+                $img->rotate($request->rotateFotoTiga);
+            }
+
+            // Ambil dimensi gambar
+            $width = $img->width();
+            $height = $img->height();
+
+            // Tentukan ukuran baru
+            if ($width > $height) {
+                // Jika lebar lebih besar dari tinggi, resize lebar
+                $newWidth = 1600; // Ganti dengan lebar yang Anda inginkan
+                $aspectRatio = $height / $width; // Rasio tinggi terhadap lebar
+                $newHeight = $newWidth * $aspectRatio; // Hitung tinggi baru
+                $img->resize($newWidth, $newHeight); // Resize dengan rasio
+            } else {
+                // Jika tinggi lebih besar dari lebar, resize tinggi
+                $newHeight = 1000; // Ganti dengan tinggi yang Anda inginkan
+                $aspectRatio = $width / $height; // Rasio lebar terhadap tinggi
+                $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
+                $img->resize($newWidth, $newHeight); // Resize dengan rasio
+            }
+            // Siapkan nama file untuk disimpan
             $imageName = time() . '_tiga.' . $image->getClientOriginalExtension();
-            $image->move(public_path('img/areaPart'), $imageName);
-            $validatedData['foto_ke_tiga'] = $imageName; // Simpan nama file untuk database
+
+            // Simpan gambar yang sudah diputar ke direktori tujuan
+            $img->save(public_path('img/areaPart/' . $imageName));
+
+            // Simpan nama file yang sudah diputar ke dalam validated data
+            $validatedData['foto_ke_tiga'] = $imageName;
         }
 
         if ($request->hasFile('foto_ke_empat')) {
+
+            // Ambil file gambar dari request
             $image = $request->file('foto_ke_empat');
+
+            // Buat objek image dengan Intervention Image
+            $img = Image::make($image->getRealPath());
+
+            // Putar gambar 90 derajat
+            if ($request->rotateFotoEmpat != null) {
+                $img->rotate($request->rotateFotoEmpat + 180);
+            } else {
+                $img->rotate($request->rotateFotoEmpat);
+            }
+
+            // Ambil dimensi gambar
+            $width = $img->width();
+            $height = $img->height();
+
+            // Tentukan ukuran baru
+            if ($width > $height) {
+                // Jika lebar lebih besar dari tinggi, resize lebar
+                $newWidth = 1600; // Ganti dengan lebar yang Anda inginkan
+                $aspectRatio = $height / $width; // Rasio tinggi terhadap lebar
+                $newHeight = $newWidth * $aspectRatio; // Hitung tinggi baru
+                $img->resize($newWidth, $newHeight); // Resize dengan rasio
+            } else {
+                // Jika tinggi lebih besar dari lebar, resize tinggi
+                $newHeight = 1000; // Ganti dengan tinggi yang Anda inginkan
+                $aspectRatio = $width / $height; // Rasio lebar terhadap tinggi
+                $newWidth = $newHeight * $aspectRatio; // Hitung lebar baru
+                $img->resize($newWidth, $newHeight); // Resize dengan rasio
+            }
+
+            // Siapkan nama file untuk disimpan
             $imageName = time() . '_empat.' . $image->getClientOriginalExtension();
-            $image->move(public_path('img/areaPart'), $imageName);
-            $validatedData['foto_ke_empat'] = $imageName; // Simpan nama file untuk database
+
+            // Simpan gambar yang sudah diputar ke direktori tujuan
+            $img->save(public_path('img/areaPart/' . $imageName));
+
+            // Simpan nama file yang sudah diputar ke dalam validated data
+            $validatedData['foto_ke_empat'] = $imageName;
         }
 
         $validatedData['model_part_id'] = $part->modelPart->id;
@@ -173,13 +327,38 @@ class AreaPartController extends Controller
         //kirim data yang sudah dibuat ke email untuk review sec head and Dept Head
         $emailData = AreaPart::latest()->first();
 
+        //mengambil data session Posisi dari web utama
+        $allPositions = session('all_positions', []);
+        $detailPostColumn = array_column($allPositions, 'id');
+
+        //mengambil data session detail departement dari web utama
+        $allDetailDepts = session('all_detail_dept', []);
+        $detailDeptColumn = array_column($allDetailDepts, 'id');
+
+        //mengambil data session departement dari web utama
+        $allDepts = session('all_depts', []);
+        $DeptColumn = array_column($allDepts, 'id');
+
+
+
         //mengambil nama Dept Head
         $semuaUsers = session('all_users');
         foreach ($semuaUsers as $semuaUser) {
-            if ($semuaUser['position_id'] == 1 && $semuaUser['detail_dept_id'] == 15 && $semuaUser['dept_id'] == 13) {
+            //mengambil nama Position
+            $searchPositionId = array_search($semuaUser['position_id'], $detailPostColumn);
+            $PositionName = $allPositions[$searchPositionId]['position'];
+            //mengambil nama detail Departement
+            $searchDetailDeptId = array_search($semuaUser['detail_dept_id'], $detailDeptColumn);
+            $DetailDeptName = $allDetailDepts[$searchDetailDeptId]['name'];
+            //mengambil nama departement
+            $searchDeptId = array_search($semuaUser['dept_id'], $DeptColumn);
+            $DeptName = $allDepts[$searchDeptId]['name'];
+
+            //kondisi untuk kirim email ke sechead dan dept head
+            if ($PositionName == 'Dept Head' && $DetailDeptName == 'Quality Control' && $DeptName == 'PEQUALITY') {
                 //send Mail Ke Sec Head dan Dept Head
                 Mail::to($semuaUser['email'])->send(new NeedApprovalMail($emailData, $semuaUser['name']));
-            } elseif ($semuaUser['position_id'] == 2 && $semuaUser['detail_dept_id'] == 15 && $semuaUser['dept_id'] == 13) {
+            } elseif ($PositionName == 'Supervisor' && ($DetailDeptName == 'Quality Control' || $DetailDeptName == 'Quality Assurance') && $DeptName == 'PEQUALITY') {
                 //send Mail Ke Sec Head dan Dept Head
                 Mail::to($semuaUser['email'])->send(new NeedApprovalMail($emailData, $semuaUser['name']));
             }
@@ -281,15 +460,37 @@ class AreaPartController extends Controller
         $part = Part::find($areaPart->part_id);
         $model = ModelPart::find($part->model_part_id);
 
+        //mengambil data session Posisi dari web utama
+        $allPositions = session('all_positions', []);
+        $detailPostColumn = array_column($allPositions, 'id');
+
+        //mengambil data session detail departement dari web utama
+        $allDetailDepts = session('all_detail_dept', []);
+        $detailDeptColumn = array_column($allDetailDepts, 'id');
+
+        //mengambil data session departement dari web utama
+        $allDepts = session('all_depts', []);
+        $DeptColumn = array_column($allDepts, 'id');
+
         //kirim data yang sudah dibuat ke email untuk informasi Penolakan ke sec head and Dept Head
         $emailData = AreaPart::find($id);
         //mengambil nama Dept Head
         $semuaUsers = session('all_users');
         foreach ($semuaUsers as $semuaUser) {
-            if ($semuaUser['position_id'] == 1 && $semuaUser['detail_dept_id'] == 15 && $semuaUser['dept_id'] == 13) {
+            //mengambil nama Position
+            $searchPositionId = array_search($semuaUser['position_id'], $detailPostColumn);
+            $PositionName = $allPositions[$searchPositionId]['position'];
+            //mengambil nama detail Departement
+            $searchDetailDeptId = array_search($semuaUser['detail_dept_id'], $detailDeptColumn);
+            $DetailDeptName = $allDetailDepts[$searchDetailDeptId]['name'];
+            //mengambil nama departement
+            $searchDeptId = array_search($semuaUser['dept_id'], $DeptColumn);
+            $DeptName = $allDepts[$searchDeptId]['name'];
+
+            if ($PositionName == 'Dept Head' && $DetailDeptName == 'Quality Control' && $DeptName == 'PEQUALITY') {
                 //send Mail ke Dept Head
                 Mail::to($semuaUser['email'])->send(new TolakLimitSampleMail($emailData, $semuaUser['name']));
-            } elseif ($semuaUser['position_id'] == 2 && $semuaUser['detail_dept_id'] == 15 && $semuaUser['dept_id'] == 13) {
+            } elseif ($PositionName == 'Supervisor' && ($DetailDeptName == 'Quality Control' || $DetailDeptName == 'Quality Assurance') && $DeptName == 'PEQUALITY') {
                 //send Mail Ke Sec Head
                 Mail::to($semuaUser['email'])->send(new TolakLimitSampleMail($emailData, $semuaUser['name']));
             } elseif ($semuaUser['username'] == 'adminLS') {
@@ -617,9 +818,8 @@ class AreaPartController extends Controller
             if (in_array('Guest', session('roles', []))) {
                 $AreaParts = AreaPart::with(['modelPart'])
                     ->where('part_area_id', $id)
-                    ->where(function($query) {
-                        $query->where('sec_head_approval_date1', '!=', null)
-                              ->orWhere('sec_head_approval_date2', '!=', null);
+                    ->where(function ($query) {
+                        $query->where('sec_head_approval_date1', '!=', null)->orWhere('sec_head_approval_date2', '!=', null);
                     })
                     ->where('name', 'LIKE', "%$searchTerm%")
                     ->get();
@@ -634,9 +834,8 @@ class AreaPartController extends Controller
             if (in_array('Guest', session('roles', []))) {
                 $AreaParts = AreaPart::with(['modelPart'])
                     ->where('part_area_id', $id)
-                    ->where(function($query) {
-                        $query->where('sec_head_approval_date1', '!=', null)
-                              ->orWhere('sec_head_approval_date2', '!=', null);
+                    ->where(function ($query) {
+                        $query->where('sec_head_approval_date1', '!=', null)->orWhere('sec_head_approval_date2', '!=', null);
                     })
                     ->where('name', 'LIKE', "%$request->searchKatalog%")
                     ->simplePaginate();
@@ -728,8 +927,11 @@ class AreaPartController extends Controller
         return response()->json();
     }
 
-    public function listKatalog(Request $request,$id){
-        $data = AreaPart::with(['modelPart'])->where('part_area_id', $id)->get();
+    public function listKatalog(Request $request, $id)
+    {
+        $data = AreaPart::with(['modelPart'])
+            ->where('part_area_id', $id)
+            ->get();
         return DataTables::of($data)->make(true);
     }
 }

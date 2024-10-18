@@ -44,7 +44,7 @@
 @section('content')
     <section id="areaPart">
         <div class="row justify-content-center">
-            @hasRole('Admin')
+            @hasRole('AdminLS')
                 <div class="col-lg-12 col-10 text-center  mb-3">
                     <form action="{{ route('excel.import', ['id' => $partArea->id]) }}" class="bg-white p-2 rounded "
                         method="POST" enctype="multipart/form-data">
@@ -92,14 +92,14 @@
                                     <li class="dropdown-item p-2" data-value="{{ $characteristic->name }}">
                                         <span style="cursor:pointer;"
                                             onclick="getDataCharacteristic('{{ $characteristic->name }}')">{{ $characteristic->name }}</span>
-                                        @hasRole('Admin')
+                                        @hasRole('AdminLS')
                                             <span style="float: right;cursor:pointer;"
                                                 onclick="deleteCharacteristic('{{ $characteristic->id }}')"> <i
                                                     class="fa fa-trash-o"></i> </span>
                                         @endhasRole
                                     </li>
                                 @endforeach
-                                @hasRole('Admin')
+                                @hasRole('AdminLS')
                                     <li class="dropdown-item p-2">
                                         <div class="input-group">
                                             <input placeholder="Add Characteristic" id="newCharacteristic" autocomplete="off"
@@ -137,7 +137,7 @@
                 <button type="button" onclick="cardModel()" class="btn btn-white"><i
                         class="fa fa-window-restore"></i></button>
             </div>
-            @hasRole('Admin')
+            @hasRole('AdminLS')
                 <div class="col-lg-2 col-9 text-center  mb-3">
                     <a href="{{ url("/limit-sample/area-part/create/$partArea->id") }}" class="btn btn-secondary ">Tambah
                         Detail
@@ -183,23 +183,26 @@
                                     </div>
                                     <div class="col-8 text-right " id="toolsCard">
                                         @if (in_array('Supervisor', session('roles', [])) &&
-                                                session('user')['detail_dept_id'] == '15' &&
+                                                session('user_detail_dept_name') == 'Quality Control' &&
                                                 $areaPart->sec_head_approval_date1 == null &&
-                                                $areaPart->status != 'tolak')
+                                                $areaPart->status != 'tolak' &&
+                                                $areaPart->expired_date > now()->toDateString())
                                             <button type="button" class="btn btn-primary mb-1">Need Approve</button>
                                         @endif
                                         @if (in_array('Supervisor', session('roles', [])) &&
-                                                session('user')['detail_dept_id'] == '16' &&
+                                                session('user_detail_dept_name') == 'Quality Assurance' &&
                                                 $areaPart->sec_head_approval_date2 == null &&
-                                                $areaPart->status != 'tolak')
+                                                $areaPart->status != 'tolak' &&
+                                                $areaPart->expired_date > now()->toDateString())
                                             <button type="button" class="btn btn-primary mb-1">Need Approve</button>
                                         @endif
                                         @if (in_array('Department Head', session('roles', [])) &&
-                                                session('user')['detail_dept_id'] == '15' &&
+                                                session('user_detail_dept_name') == 'Quality Control' &&
                                                 $areaPart->sec_head_approval_date1 != null &&
                                                 $areaPart->sec_head_approval_date2 != null &&
                                                 $areaPart->dept_head_approval_date == null &&
-                                                $areaPart->status != 'tolak')
+                                                $areaPart->status != 'tolak' &&
+                                                $areaPart->expired_date > now()->toDateString())
                                             <button type="button" class="btn btn-primary mb-1">Need Approve</button>
                                         @endif
                                         @if ($areaPart->status == 'tolak')
@@ -362,6 +365,16 @@
                                                         if (!empty($penolakId) && $userIndex !== false) {
                                                             $penolakName = $allUsers[$userIndex]['name']; // Mengambil nama dari all_users berdasarkan penolak_id
                                                         }
+
+                                                        $allDetailDepts = session('all_detail_dept', []);
+                                                        $detailDeptColumn = array_column($allDetailDepts, 'id');
+                                                        $searchDetailDeptId = array_search(
+                                                            $areaPart->penolak_id,
+                                                            $detailDeptColumn,
+                                                        );
+                                                        $penolakDetailDeptName =
+                                                            $allDetailDepts[$searchDetailDeptId]['name'];
+
                                                     @endphp
                                                     <p><strong>Approval</strong></p>
                                                     <br>
@@ -371,7 +384,10 @@
                                                             </strong></p>
                                                         <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>
                                                                 Pada {{ $areaPart->sec_head_approval_date1 }} </strong></p>
-                                                    @elseif ($areaPart->status == 'tolak' && $areaPart->penolak_id == 15  && $areaPart->penolak_posisi == 'Supervisor')
+                                                    @elseif (
+                                                        $areaPart->status == 'tolak' &&
+                                                            $penolakDetailDeptName == 'Quality Control' &&
+                                                            $areaPart->penolak_posisi == 'Supervisor')
                                                         <p style="color: rgb(207, 0, 0);" class="p-0 m-0"><strong>
                                                                 DiTolak
                                                             </strong></p>
@@ -404,6 +420,15 @@
                                                         if (!empty($penolakId) && $userIndex !== false) {
                                                             $penolakName = $allUsers[$userIndex]['name']; // Mengambil nama dari all_users berdasarkan penolak_id
                                                         }
+
+                                                        $allDetailDepts = session('all_detail_dept', []);
+                                                        $detailDeptColumn = array_column($allDetailDepts, 'id');
+                                                        $searchDetailDeptId = array_search(
+                                                            $areaPart->penolak_id,
+                                                            $detailDeptColumn,
+                                                        );
+                                                        $penolakDetailDeptName =
+                                                            $allDetailDepts[$searchDetailDeptId]['name'];
                                                     @endphp
                                                     <p><strong>Approval</strong></p>
                                                     <br>
@@ -413,7 +438,10 @@
                                                             </strong></p>
                                                         <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong>
                                                                 Pada {{ $areaPart->sec_head_approval_date2 }} </strong></p>
-                                                    @elseif ($areaPart->status == 'tolak' && $areaPart->penolak_id == 16  && $areaPart->penolak_posisi == 'Supervisor')
+                                                    @elseif (
+                                                        $areaPart->status == 'tolak' &&
+                                                            $penolakDetailDeptName == 'Quality Assurance' &&
+                                                            $areaPart->penolak_posisi == 'Supervisor')
                                                         <p style="color: rgb(207, 0, 0);" class="p-0 m-0"><strong>
                                                                 DiTolak
                                                             </strong></p>
@@ -473,34 +501,37 @@
                                 <div class="modal-footer" style="display: flex; justify-content: center;">
                                     <button type="button" class="btn btn-white" data-dismiss="modal">Kembali</button>
                                     @if (in_array('Supervisor', session('roles', [])) &&
-                                            session('user')['detail_dept_id'] == '15' &&
+                                            session('user_detail_dept_name') == 'Quality Control' &&
                                             $areaPart->sec_head_approval_date1 == null &&
-                                            $areaPart->status != 'tolak')
+                                            $areaPart->status != 'tolak' &&
+                                            $areaPart->expired_date > now()->toDateString())
                                         <a href="{{ url("/limit-sample/area-part/tolak/sechead/$areaPart->id") }}"
                                             class="btn btn-danger">Tolak</a>
                                         <a href="{{ url("/limit-sample/area-part/approve/sechead1/$areaPart->id") }}"
                                             class="btn btn-secondary">Approve</a>
                                     @endif
                                     @if (in_array('Supervisor', session('roles', [])) &&
-                                            session('user')['detail_dept_id'] == '16' &&
+                                            session('user_detail_dept_name') == 'Quality Assurance' &&
                                             $areaPart->sec_head_approval_date2 == null &&
-                                            $areaPart->status != 'tolak')
+                                            $areaPart->status != 'tolak' &&
+                                            $areaPart->expired_date > now()->toDateString())
                                         <a href="{{ url("/limit-sample/area-part/tolak/sechead/$areaPart->id") }}"
                                             class="btn btn-danger">Tolak</a>
                                         <a href="{{ url("/limit-sample/area-part/approve/sechead2/$areaPart->id") }}"
                                             class="btn btn-secondary">Approve</a>
                                     @endif
                                     @if (in_array('Department Head', session('roles', [])) &&
-                                            session('user')['detail_dept_id'] == '15' &&
+                                            session('user_detail_dept_name') == 'Quality Control' &&
                                             $areaPart->sec_head_approval_date1 != null &&
                                             $areaPart->sec_head_approval_date2 != null &&
-                                            $areaPart->status != 'tolak')
+                                            $areaPart->status != 'tolak' &&
+                                            $areaPart->expired_date > now()->toDateString())
                                         <a href="{{ url("/limit-sample/area-part/tolak/depthead/$areaPart->id") }}"
                                             class="btn btn-danger">Tolak</a>
                                         <a href="{{ url("/limit-sample/area-part/approve/depthead/$areaPart->id") }}"
                                             class="btn btn-secondary">Approve</a>
                                     @endif
-                                    @hasRole('Admin')
+                                    @hasRole('AdminLS')
                                         <a href="{{ url("/limit-sample/area-part/edit/$areaPart->id") }}"
                                             class="btn btn-secondary">Edit</a>
                                         <a href="{{ route('areaPart.exportPDF', $areaPart->id) }}" target="_blank"
@@ -508,9 +539,9 @@
                                             Download PDF
                                         </a>
                                     @endhasRole
-                                    @if (in_array('Admin', session('roles', [])) ||
-                                        (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') ||
-                                            (in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15'))
+                                    @if (in_array('AdminLS', session('roles', [])) ||
+                                            (in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control') ||
+                                            (in_array('Department Head', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control'))
                                         <form action="{{ url("/limit-sample/areaPart/delete/$areaPart->id") }}"
                                             method="POST"
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
@@ -546,7 +577,9 @@
     <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.0/js/responsive.bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/js/lightbox.min.js"></script>
-
+    <script>
+        const user_detail_dept_name = @json(session('user_detail_dept_name'));
+    </script>
     <script>
         let listCount = 0;
 
@@ -566,14 +599,15 @@
                     processing: true,
                     serverSide: true,
                     ajax: "{{ route('areaPart.listKatalog', ['id' => $partArea->id]) }}",
-                    columns: [
-                        {
+                    columns: [{
                             data: null,
                             className: 'text-center',
                             orderable: false,
                             render: function(data, type, row, meta) {
-                                var pageInfo = table.page.info(); // Use the `table` variable to get the page info
-                                return pageInfo.start + meta.row + 1; // Adjusts the row number based on the start index of the current page
+                                var pageInfo = table.page
+                                    .info(); // Use the `table` variable to get the page info
+                                return pageInfo.start + meta.row +
+                                    1; // Adjusts the row number based on the start index of the current page
                             }
                         },
                         {
@@ -663,6 +697,7 @@
             var partArea = {{ $partArea->id }};
             let charDropdown = document.getElementById('charDropdown');
 
+
             $.ajax({
                 url: "{{ route('katalog.addCharacteristic', ['id' => $partArea->id]) }}",
                 type: "GET",
@@ -687,7 +722,7 @@
 
                     // Adding the input group for adding a new characteristic
                     $('#charDropdown').append(`
-                                    @hasRole('Admin')
+                                    @hasRole('AdminLS')
                                     <li class="dropdown-item p-2">
                                         <div class="input-group">
                                             <input placeholder="Add Characteristic" id="newCharacteristic" autocomplete="off" type="text" name="new_characteristic" class="form-control form-control-sm">
@@ -710,6 +745,15 @@
             var partArea = {{ $partArea->id }};
             var roles = @json(session('roles'));
             var user = @json(session('user'));
+
+            // Ambil nilai dari sesi (ini bisa berbeda tergantung bagaimana sesi diakses di aplikasi Anda)
+            let userDetailDeptId = @json(session('user')['detail_dept_id']);
+            let allDetailDepts = @json(session('all_detail_dept', []));
+
+            // Buat array dengan kolom 'id' dari setiap objek dalam allDetailDepts
+            let detailDeptColumn = allDetailDepts.map(dept => dept.id);
+            let searchDetailDeptId;
+
             let csrf_token = '{{ csrf_token() }}';
 
             $.ajax({
@@ -753,13 +797,13 @@
                                                         </div>
                                                         <div class="col-8 text-right" id="toolsCard">
 
-                                                            ${dataRoles == 'Supervisor' && user.detail_dept_id == '15' && areaPart.sec_head_approval_date1 == null && areaPart.status != 'tolak' ?
+                                                            ${dataRoles == 'Supervisor' && user_detail_dept_name == 'Quality Control' && areaPart.sec_head_approval_date1 == null && areaPart.status != 'tolak' && new Date(areaPart.expired_date) > new Date() ?
                                                                 '<button type="button" class="btn btn-primary mb-1">Need Approve</button>' :
                                                                 ''}
-                                                            ${dataRoles == 'Supervisor' && user.detail_dept_id == '16' && areaPart.sec_head_approval_date2 == null && areaPart.status != 'tolak' ?
+                                                            ${dataRoles == 'Supervisor' && user_detail_dept_name == 'Quality Assurance' && areaPart.sec_head_approval_date2 == null && areaPart.status != 'tolak' && new Date(areaPart.expired_date) > new Date() ?
                                                                 '<button type="button" class="btn btn-primary mb-1">Need Approve</button>' :
                                                                 ''}
-                                                            ${dataRoles == 'Department Head' && user.detail_dept_id == '15' && areaPart.sec_head_approval_date1 != null && areaPart.sec_head_approval_date2 != null && areaPart.dept_head_approval_date == null && areaPart.status != 'tolak' ?
+                                                            ${dataRoles == 'Department Head' && user_detail_dept_name == 'Quality Control' && areaPart.sec_head_approval_date1 != null && areaPart.sec_head_approval_date2 != null && areaPart.dept_head_approval_date == null && areaPart.status != 'tolak' && new Date(areaPart.expired_date) > new Date() ?
                                                                 '<button type="button" class="btn btn-primary mb-1">Need Approve</button>' :
                                                                 ''}
                                                             ${areaPart.status == 'tolak'?
@@ -801,6 +845,13 @@
                         `);
 
                     $.each(data, function(index, item) {
+                        // Cari indeks dari userDetailDeptId dalam detailDeptColumn
+                        searchDetailDeptId = detailDeptColumn.indexOf(parseInt(item.penolak_id, 10));
+
+                        // Pastikan nilai yang ditemukan adalah indeks yang valid
+                        let penolakDetailDeptName = searchDetailDeptId !== -1 ? allDetailDepts[
+                            searchDetailDeptId].name : null;
+
                         // untuk mencari data penolak dari session all_user dengan penolak_id
                         let userIndex = userAll.map(user => user.id).indexOf(Number(item
                             .penolak_id));
@@ -869,14 +920,14 @@
                                                                     <p><strong>Approval</strong></p>
                                                                     <br>
                                                                     ${item.sec_head_approval_date1 ? `
-                                                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
-                                                                                                                            ` : ` `}
+                                                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
+                                                                                                                                    ` : ` `}
 
-                                                                    ${item.status == 'tolak' && item.penolak_id == 15 && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                                            ` : `<br><br>`}
+                                                                    ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Control' && item.penolak_posisi == 'Supervisor' ? `
+                                                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                                                    ` : `<br><br>`}
                                                                     <br>
                                                                     <p><strong>Section Head</strong></p>
                                                                 </div>
@@ -884,14 +935,14 @@
                                                                     <p><strong>Approval</strong></p>
                                                                     <br>
                                                                     ${item.sec_head_approval_date2 ? `
-                                                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
-                                                                                                                            ` : ` `}
+                                                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
+                                                                                                                                    ` : ` `}
 
-                                                                    ${item.status == 'tolak' && item.penolak_id == 16 && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                                            ` : `<br><br>`}
+                                                                    ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Assurance' && item.penolak_posisi == 'Supervisor' ? `
+                                                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                                                    ` : `<br><br>`}
                                                                     <br>
                                                                     <p><strong>Section Head</strong></p>
                                                                 </div>
@@ -899,13 +950,13 @@
                                                                     <p><strong>Approval</strong></p>
                                                                     <br>
                                                                     ${item.dept_head_approval_date ? `
-                                                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                                                <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
-                                                                                                                            ` : ` `}
+                                                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
+                                                                                                                                    ` : ` `}
                                                                     ${item.status == 'tolak' && item.penolak_posisi == 'Department Head' ? `
-                                                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                                                <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                                            ` : `<br><br>`}
+                                                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                                                    ` : `<br><br>`}
                                                                     <br>
                                                                     <p><strong>Departemen Head</strong></p>
                                                                 </div>
@@ -913,12 +964,12 @@
                                                         </div>
                                                         ${item.status == 'tolak'?
                                                         `<div class="col-12 bg-white text-left p-2 border border-dark text-dark">
-                                                                                                                <p> <strong> Informasi Penolakan</strong></p>
-                                                                                                                <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
-                                                                                                                <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
-                                                                                                                <br>
+                                                                                                                        <p> <strong> Informasi Penolakan</strong></p>
+                                                                                                                        <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
+                                                                                                                        <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
+                                                                                                                        <br>
 
-                                                                                                            </div>`
+                                                                                                                    </div>`
                                                         :` `}
                                                         <div class="col-12 bg-white text-left p-2 m-0 border border-dark text-dark">
                                                         <p class="m-0"> Charackteristic :<strong> ${item.characteristics }</strong>
@@ -927,31 +978,31 @@
                                                 </div>
                                                 <div class="modal-footer" style="display: flex; justify-content: center;">
                                                     <button type="button" class="btn btn-white" data-dismiss="modal">Kembali</button>
-                                                    ${dataRoles == 'Supervisor' && user.detail_dept_id == '15' && item.sec_head_approval_date1 == null && item.status != 'tolak'? `
-                                                                                                                <a href="{{ url('/limit-sample/area-part/tolak/sechead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                                                <a href="{{ url('/limit-sample/area-part/approve/sechead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                                            ` : ''}
-                                                    ${dataRoles == 'Supervisor' && user.detail_dept_id == '16' && item.sec_head_approval_date1 == null && item.status != 'tolak'? `
-                                                                                                                <a href="{{ url('/limit-sample/area-part/tolak/sechead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                                                <a href="{{ url('/limit-sample/area-part/approve/sechead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                                            ` : ''}
-                                                    ${dataRoles == 'Department Head' && user.detail_dept_id == '15' && item.dept_head_approval_date == null && item.status != 'tolak'? `
-                                                                                                                <a href="{{ url('/limit-sample/area-part/tolak/depthead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                                                <a href="{{ url('/limit-sample/area-part/approve/depthead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                                            ` : ''}
-                                                    ${dataRoles == 'Admin' ? `
-                                                                                                                <a href="{{ url('/limit-sample/area-part/edit/') }}/${item.id}" class="btn btn-secondary">Edit</a>
-                                                                                                                <a href="{{ url('/area-part/export-pdf/') }}/${item.id}" target="_blank" class="btn btn-primary">
-                                                                                                                    Download PDF
-                                                                                                                </a>
-                                                                                                                ` : ''}
-                                                                                             ${dataRoles == 'Admin' || dataRoles == 'Supervisor' && user.detail_dept_id == '15' || dataRoles == 'Department Head' && user.detail_dept_id == '15'  ? `
-                                                                                                                <form action="{{ url('/limit-sample/areaPart/delete/') }}/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
-                                                                                                                    <input type="hidden" name="_token" value="${csrf_token}">
-                                                                                                                    <input type="hidden" name="_method" value="DELETE">
-                                                                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
-                                                                                                                </form>
-                                                                                                                ` : ''}
+                                                    ${dataRoles == 'Supervisor' && user_detail_dept_name == 'Quality Control' && item.sec_head_approval_date1 == null && item.status != 'tolak' && new Date(item.expired_date) > new Date()? `
+                                                                                                                        <a href="{{ url('/limit-sample/area-part/tolak/sechead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                                                        <a href="{{ url('/limit-sample/area-part/approve/sechead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                                                    ` : ''}
+                                                    ${dataRoles == 'Supervisor' && user_detail_dept_name == 'Quality Assurance' && item.sec_head_approval_date1 == null && item.status != 'tolak' && new Date(item.expired_date) > new Date()? `
+                                                                                                                        <a href="{{ url('/limit-sample/area-part/tolak/sechead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                                                        <a href="{{ url('/limit-sample/area-part/approve/sechead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                                                    ` : ''}
+                                                    ${dataRoles == 'Department Head' && user_detail_dept_name == 'Quality Control' && item.dept_head_approval_date == null && item.status != 'tolak' && new Date(item.expired_date) > new Date()? `
+                                                                                                                        <a href="{{ url('/limit-sample/area-part/tolak/depthead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                                                        <a href="{{ url('/limit-sample/area-part/approve/depthead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                                                    ` : ''}
+                                                    ${dataRoles == 'AdminLS' ? `
+                                                                                                                        <a href="{{ url('/limit-sample/area-part/edit/') }}/${item.id}" class="btn btn-secondary">Edit</a>
+                                                                                                                        <a href="{{ url('/area-part/export-pdf/') }}/${item.id}" target="_blank" class="btn btn-primary">
+                                                                                                                            Download PDF
+                                                                                                                        </a>
+                                                                                                                        ` : ''}
+                                                                                             ${dataRoles == 'AdminLS' || dataRoles == 'Supervisor' && user_detail_dept_name == 'Quality Control' || dataRoles == 'Department Head' && user_detail_dept_name == 'Quality Control'  ? `
+                                                                                                                        <form action="{{ url('/limit-sample/areaPart/delete/') }}/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
+                                                                                                                            <input type="hidden" name="_token" value="${csrf_token}">
+                                                                                                                            <input type="hidden" name="_method" value="DELETE">
+                                                                                                                            <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                                                                        </form>
+                                                                                                                        ` : ''}
 
                                                 </div>
                                             </div>
@@ -1045,6 +1096,15 @@
         function performSearch(query, click) {
             var user = @json(session('user'));
             let csrf_token = '{{ csrf_token() }}';
+
+            // Ambil nilai dari sesi (ini bisa berbeda tergantung bagaimana sesi diakses di aplikasi Anda)
+            let userDetailDeptId = @json(session('user')['detail_dept_id']);
+            let allDetailDepts = @json(session('all_detail_dept', []));
+
+            // Buat array dengan kolom 'id' dari setiap objek dalam allDetailDepts
+            let detailDeptColumn = allDetailDepts.map(dept => dept.id);
+            let searchDetailDeptId;
+
             if (query.length >= 0) {
                 $.ajax({
                     url: "{{ route('katalog.search', ['id' => $partArea->id]) }}",
@@ -1100,13 +1160,13 @@
                                                     </div>
                                                     <div class="col-8 text-right" id="toolsCard">
 
-                                                        ${dataRoles == 'Supervisor' && user.detail_dept_id == '15' && areaPart.sec_head_approval_date1 == null && areaPart.status != 'tolak' ?
+                                                        ${dataRoles == 'Supervisor' && user_detail_dept_name == 'Quality Control' && areaPart.sec_head_approval_date1 == null && areaPart.status != 'tolak' && new Date(areaPart.expired_date) > new Date() ?
                                                             '<button type="button" class="btn btn-primary mb-1">Need Approve</button>' :
                                                             ''}
-                                                        ${dataRoles == 'Supervisor' && user.detail_dept_id == '16' && areaPart.sec_head_approval_date2 == null && areaPart.status != 'tolak' ?
+                                                        ${dataRoles == 'Supervisor' && user_detail_dept_name == 'Quality Assurance' && areaPart.sec_head_approval_date2 == null && areaPart.status != 'tolak' && new Date(areaPart.expired_date) > new Date() ?
                                                             '<button type="button" class="btn btn-primary mb-1">Need Approve</button>' :
                                                             ''}
-                                                        ${dataRoles == 'Department Head' && user.detail_dept_id == '15' && areaPart.sec_head_approval_date1 != null && areaPart.sec_head_approval_date2 != null && areaPart.dept_head_approval_date == null && areaPart.status != 'tolak' ?
+                                                        ${dataRoles == 'Department Head' && user_detail_dept_name == 'Quality Control' && areaPart.sec_head_approval_date1 != null && areaPart.sec_head_approval_date2 != null && areaPart.dept_head_approval_date == null && areaPart.status != 'tolak' && new Date(areaPart.expired_date) > new Date() ?
                                                             '<button type="button" class="btn btn-primary mb-1">Need Approve</button>' :
                                                             ''}
                                                         ${areaPart.status == 'tolak'?
@@ -1147,7 +1207,16 @@
                         </div>
                         `);
 
+
                         $.each(data, function(index, item) {
+                            // Cari indeks dari userDetailDeptId dalam detailDeptColumn
+                            searchDetailDeptId = detailDeptColumn.indexOf(parseInt(item.penolak_id,
+                            10));
+
+                            // Pastikan nilai yang ditemukan adalah indeks yang valid
+                            let penolakDetailDeptName = searchDetailDeptId !== -1 ? allDetailDepts[
+                                searchDetailDeptId].name : null;
+
                             // untuk mencari data penolak dari session all_user dengan penolak_id
                             let userIndex = userAll.map(user => user.id).indexOf(Number(item
                                 .penolak_id));
@@ -1216,14 +1285,14 @@
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
                                                                 ${item.sec_head_approval_date1 ? `
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
-                                                                                                                        ` : ` `}
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
+                                                                                                                                ` : ` `}
 
-                                                                ${item.status == 'tolak' && item.penolak_id == 15 && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                                            <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                                            <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                                        ` : `<br><br>`}
+                                                                ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Control' && item.penolak_posisi == 'Supervisor' ? `
+                                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                                                ` : `<br><br>`}
                                                                 <br>
                                                                 <p><strong>Section Head</strong></p>
                                                             </div>
@@ -1231,14 +1300,14 @@
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
                                                                 ${item.sec_head_approval_date2 ? `
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date2} </strong></p>
-                                                                                                                        ` : ` `}
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date2} </strong></p>
+                                                                                                                                ` : ` `}
 
-                                                                ${item.status == 'tolak' && item.penolak_id == 16 && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                                            <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                                            <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                                        ` : `<br><br>`}
+                                                                ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Assurance' && item.penolak_posisi == 'Supervisor' ? `
+                                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                                                ` : `<br><br>`}
                                                                 <br>
                                                                 <p><strong>Section Head</strong></p>
                                                             </div>
@@ -1246,13 +1315,13 @@
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
                                                                 ${item.dept_head_approval_date ? `
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
-                                                                                                                        ` : ` `}
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
+                                                                                                                                ` : ` `}
                                                                 ${item.status == 'tolak' && item.penolak_posisi == 'Department Head' ? `
-                                                                                                                            <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                                            <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
-                                                                                                                        ` : `<br><br>`}
+                                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Oleh ${userAll[userIndex].name} </strong></p>
+                                                                                                                                ` : `<br><br>`}
                                                                 <br>
                                                                 <p><strong>Departemen Head</strong></p>
                                                             </div>
@@ -1260,12 +1329,12 @@
                                                     </div>
                                                     ${item.status == 'tolak'?
                                                     `<div class="col-12 bg-white text-left p-2 border border-dark text-dark">
-                                                                                                            <p> <strong> Informasi Penolakan</strong></p>
-                                                                                                            <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
-                                                                                                            <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
-                                                                                                            <br>
+                                                                                                                    <p> <strong> Informasi Penolakan</strong></p>
+                                                                                                                    <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
+                                                                                                                    <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
+                                                                                                                    <br>
 
-                                                                                                        </div>`
+                                                                                                                </div>`
                                                     :` `}
                                                     <div class="col-12 bg-white text-left p-2 m-0 border border-dark text-dark">
                                                         <p class="m-0"> Charackteristic :<strong> ${item.characteristics }</strong>
@@ -1274,31 +1343,31 @@
                                             </div>
                                             <div class="modal-footer" style="display: flex; justify-content: center;">
                                                 <button type="button" class="btn btn-white" data-dismiss="modal">Kembali</button>
-                                                ${dataRoles == 'Supervisor' && user.detail_dept_id == '15' && item.sec_head_approval_date1 == null && item.status != 'tolak'? `
-                                                                                                            <a href="{{ url('/limit-sample/area-part/tolak/sechead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                                            <a href="{{ url('/limit-sample/area-part/approve/sechead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                                        ` : ''}
-                                                ${dataRoles == 'Supervisor' && user.detail_dept_id == '16' && item.sec_head_approval_date2 == null && item.status != 'tolak'? `
-                                                                                                            <a href="{{ url('/limit-sample/area-part/tolak/sechead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                                            <a href="{{ url('/limit-sample/area-part/approve/sechead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                                        ` : ''}
-                                                ${dataRoles == 'Department Head' && user.detail_dept_id == '15' && item.dept_head_approval_date == null && item.status != 'tolak'? `
-                                                                                                            <a href="{{ url('/limit-sample/area-part/tolak/depthead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
-                                                                                                            <a href="{{ url('/limit-sample/area-part/approve/depthead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
-                                                                                                        ` : ''}
-                                                ${dataRoles == 'Admin' ? `
-                                                                                                            <a href="{{ url('/limit-sample/area-part/edit/') }}/${item.id}" class="btn btn-secondary">Edit</a>
-                                                                                                            <a href="{{ url('/area-part/export-pdf/') }}/${item.id}" target="_blank" class="btn btn-primary">
-                                                                                                                Download PDF
-                                                                                                            </a>
-                                                                                                            ` : ''}
-                                                                                            ${dataRoles == 'Admin' || dataRoles == 'Supervisor' && user.detail_dept_id == '15' || dataRoles == 'Department Head' && user.detail_dept_id == '15' ? `
-                                                                                                            <form action="{{ url('/limit-sample/areaPart/delete/') }}/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
-                                                                                                                <input type="hidden" name="_token" value="${csrf_token}">
-                                                                                                                <input type="hidden" name="_method" value="DELETE">
-                                                                                                                <button type="submit" class="btn btn-danger">Hapus</button>
-                                                                                                            </form>
-                                                                                                        ` : ''}
+                                                ${dataRoles == 'Supervisor' && user_detail_dept_name == 'Quality Control' && item.sec_head_approval_date1 == null && item.status != 'tolak' && new Date(item.expired_date) > new Date()? `
+                                                                                                                    <a href="{{ url('/limit-sample/area-part/tolak/sechead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                                                    <a href="{{ url('/limit-sample/area-part/approve/sechead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                                                ` : ''}
+                                                ${dataRoles == 'Supervisor' && user_detail_dept_name == 'Quality Assurance' && item.sec_head_approval_date2 == null && item.status != 'tolak' && new Date(item.expired_date) > new Date()? `
+                                                                                                                    <a href="{{ url('/limit-sample/area-part/tolak/sechead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                                                    <a href="{{ url('/limit-sample/area-part/approve/sechead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                                                ` : ''}
+                                                ${dataRoles == 'Department Head' && user_detail_dept_name == 'Quality Control' && item.dept_head_approval_date == null && item.status != 'tolak' && new Date(item.expired_date) > new Date()? `
+                                                                                                                    <a href="{{ url('/limit-sample/area-part/tolak/depthead/') }}/${item.id}" class="btn btn-danger">Tolak</a>
+                                                                                                                    <a href="{{ url('/limit-sample/area-part/approve/depthead/') }}/${item.id}" class="btn btn-secondary">Approve</a>
+                                                                                                                ` : ''}
+                                                ${dataRoles == 'AdminLS' ? `
+                                                                                                                    <a href="{{ url('/limit-sample/area-part/edit/') }}/${item.id}" class="btn btn-secondary">Edit</a>
+                                                                                                                    <a href="{{ url('/area-part/export-pdf/') }}/${item.id}" target="_blank" class="btn btn-primary">
+                                                                                                                        Download PDF
+                                                                                                                    </a>
+                                                                                                                    ` : ''}
+                                                                                            ${dataRoles == 'AdminLS' || dataRoles == 'Supervisor' && user_detail_dept_name == 'Quality Control' || dataRoles == 'Department Head' && user_detail_dept_name == 'Quality Control' ? `
+                                                                                                                    <form action="{{ url('/limit-sample/areaPart/delete/') }}/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Area Part ini?');">
+                                                                                                                        <input type="hidden" name="_token" value="${csrf_token}">
+                                                                                                                        <input type="hidden" name="_method" value="DELETE">
+                                                                                                                        <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                                                                    </form>
+                                                                                                                ` : ''}
                                             </div>
                                         </div>
                                     </div>

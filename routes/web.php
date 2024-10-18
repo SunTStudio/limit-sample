@@ -46,7 +46,7 @@ Route::middleware(['verify.token'])->group(function () {
     // Model
 
     Route::get('/limit-sample/model', [ModelPartController::class, 'index'])->name('model.index');
-    Route::middleware('role:Admin')->group(function () {
+    Route::middleware('role:AdminLS')->group(function () {
         Route::get('/limit-sample/model/create', [ModelPartController::class, 'create'])->name('model.create');
         Route::post('/limit-sample/model/create', [ModelPartController::class, 'store'])->name('model.store');
         Route::get('/limit-sample/model/edit/{id}', [ModelPartController::class, 'edit'])->name('model.edit');
@@ -60,7 +60,7 @@ Route::middleware(['verify.token'])->group(function () {
 
     Route::get('/limit-sample/model/{id}/part', [PartController::class, 'index'])->name('part.index');
     Route::get('/limit-sample/model/{id}/part/list', [PartController::class, 'listPart'])->name('part.listPart');
-    Route::middleware('role:Admin')->group(function () {
+    Route::middleware('role:AdminLS')->group(function () {
         Route::get('limit-sample/model/{id}/part/create', [PartController::class, 'create'])->name('part.create');
         Route::post('limit-sample/model/{id}/part/create', [PartController::class, 'store'])->name('part.store');
         Route::get('limit-sample/part/edit/{id}', [PartController::class, 'edit'])->name('part.edit');
@@ -82,7 +82,7 @@ Route::middleware(['verify.token'])->group(function () {
     Route::get('/limit-sample/area-part/{id}/count', [AreaPartController::class, 'katalogCount'])->name('katalog.count');
     Route::get('/limit-sample/area-part/{id}/list', [AreaPartController::class, 'listKatalog'])->name('areaPart.listKatalog');
 
-    Route::middleware('role:Admin')->group(function () {
+    Route::middleware('role:AdminLS')->group(function () {
         Route::get('/limit-sample/area-part/create/{id}', [AreaPartController::class, 'create'])->name('areaPart.create');
         Route::post('/limit-sample/area-part/create/{id}', [AreaPartController::class, 'store'])->name('areaPart.store');
         Route::get('/limit-sample/area-part/edit/{id}', [AreaPartController::class, 'edit'])->name('areaPart.edit');

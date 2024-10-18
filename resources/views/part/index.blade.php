@@ -49,7 +49,7 @@
                     </form>
                 </div>
             </div>
-            @hasRole('Admin')
+            @hasRole('AdminLS')
                 <div class="col-lg-2 col-10 text-center  mb-3">
                     <a href="{{ url("limit-sample/model/$model->id/part/create") }}" class="btn btn-secondary ">Tambah Part
                         <i class="fa fa-plus"></i></a>
@@ -74,7 +74,7 @@
                                     <a href="{{ url("/limit-sample/part/$part->id") }}"
                                         class="btn btn-xs btn-outline btn-primary">Lihat <i
                                             class="fa fa-long-arrow-right"></i> </a>
-                                    @hasRole('Admin')
+                                    @hasRole('AdminLS')
                                         <a href="{{ url("/limit-sample/part/edit/$part->id") }}"
                                             class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
                                     @endhasRole
@@ -166,7 +166,7 @@
                                     <a href="{{ url('/limit-sample/part/') }}/${data}" class="btn btn-sm btn-primary m-1">
                                         See Detail
                                     </a>
-                                    ${dataRoles == 'Admin' ? `
+                                    ${dataRoles == 'AdminLS' ? `
                                                 <a href="{{ url('/limit-sample/part/edit/') }}/${data}" class="btn btn-sm btn-primary m-1">
                                                     Edit
                                                 </a>
@@ -241,7 +241,7 @@
                                             <a href="#" class="product-name">${item.name}</a>
                                             <div class="m-t text-right">
                                                 <a href="{{ url('/limit-sample/part/') }}/${item.id}" class="btn btn-xs btn-outline btn-primary">Lihat <i class="fa fa-long-arrow-right"></i> </a>
-                                                @hasRole('Admin')
+                                                @hasRole('AdminLS')
                                                     <a href="{{ url('/limit-sample/part/edit/') }}/${item.id}" class="btn btn-xs btn-outline btn-primary">Edit <i class="fa fa-edit"></i> </a>
                                                 @endhasRole
                                             </div>

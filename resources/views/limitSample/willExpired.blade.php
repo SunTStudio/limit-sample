@@ -123,10 +123,10 @@
                         render: function(data, type, row) {
                             return `
                             <div class="d-flex justify-content-center">
-                                <a href="/limit-sample/area-part/${row.part_area_id}" class="btn btn-sm btn-primary m-1">
+                                <a href="{{ url('/limit-sample/area-part/') }}/${row.part_area_id}" class="btn btn-sm btn-primary m-1">
                                     See Detail
                                 </a>
-                                ${dataRoles == 'Admin' ? `<a href="/limit-sample/area-part/edit/${data}" class="btn btn-sm btn-primary m-1">
+                                ${dataRoles == 'AdminLS' ? `<a href="{{ ('/limit-sample/area-part/edit/') }}${data}" class="btn btn-sm btn-primary m-1">
                                     Edit
                                 </a>`:''}
                             </div>`;

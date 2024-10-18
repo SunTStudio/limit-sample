@@ -44,6 +44,10 @@ class UserSeeder extends Seeder
             'name' => 'Admin',
         ]);
 
+        $AdminLSRole = Role::create([
+            'name' => 'AdminLS',
+        ]);
+
         $BODRole = Role::create([
             'name' => 'Board of Directors',
         ]);
@@ -847,7 +851,7 @@ class UserSeeder extends Seeder
         ]);
 
         $Admin->assignRole($AdminRole);
-        $AdminLS->assignRole($AdminRole);
+        $AdminLS->assignRole($AdminLSRole);
         $BOD->assignRole($BODRole);
         $DeptHeadFA->assignRole($DeptHeadRole);
         $DeptHeadHRGAEI->assignRole($DeptHeadRole);

@@ -54,8 +54,7 @@
                     </div>
                 </a>
                 </div>
-
-                @if((in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '16') || (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') )
+                @if((in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control') || (in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Assurance') )
                 <div class="col m-0 p-1 ">
                     <a href="{{ route('limitSample.needApprovePage') }}">
                     <div class="text-center bg-white p-2">
@@ -66,7 +65,7 @@
                     </a>
                 </div>
                 @endif
-                @if(in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15')
+                @if(in_array('Department Head', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control')
                 <div class="col m-0 p-1">
                     <a href="{{ route('limitSample.needApprovePage') }}">
                     <div class="text-center bg-white p-2">
@@ -213,7 +212,7 @@
             $(document).ready(function() {
                 // Menggunakan AJAX untuk mengambil data
                 $.ajax({
-                    url: '/visits-data', // URL endpoint API
+                    url: '{{ url("/visits-data") }}', // URL endpoint API
                     type: 'GET', // Tipe request
                     data: {
                         sort: 'week',
@@ -261,7 +260,7 @@
             $(document).ready(function() {
                 // Menggunakan AJAX untuk mengambil data
                 $.ajax({
-                    url: '/visits-data', // URL endpoint API
+                    url: '{{ url("/visits-data") }}', // URL endpoint API
                     type: 'GET', // Tipe request
                     data: {
                         sort: 'month',

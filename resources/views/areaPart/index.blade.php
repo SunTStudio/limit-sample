@@ -67,12 +67,12 @@
         <div class="row mb-4 mt-4 p-3">
             <div class="col-lg-12">
                 <div class="text-center d-flex justify-content-center">
-                    @hasRole('Admin')
+                    @hasRole('AdminLS')
                         <a href="{{ url("/limit-sample/part-area/kelola/$part->id") }}"
                             class="btn btn-secondary mr-2">Kelola Part Area</a>
                     @endhasRole
                     <a href="{{ url("/limit-sample/model/$model->id/part") }}" class="btn btn-dark mr-2">Kembali</a>
-                    @hasRole('Admin')
+                    @hasRole('AdminLS')
                         <form action="{{ url("/limit-sample/model/part/delete/$part->id") }}" method="POST"
                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus part ini?');">
                             @csrf

@@ -62,7 +62,13 @@ class LoginController extends Controller
                     'login_date' => Carbon::now()->format('Y-m-d'),
                 ]);
             }
-
+            //mencari nama detail departement untuk akses CRUD
+            $userDetailDeptId = session('user')['detail_dept_id'];
+            $allDetailDepts = session('all_detail_dept', []);
+            $detailDeptColumn = array_column($allDetailDepts, 'id');
+            $searchDetailDeptId = array_search($userDetailDeptId, $detailDeptColumn);
+            $userDetailDeptName = $allDetailDepts[$searchDetailDeptId]['name'];
+            session()->put('user_detail_dept_name', $userDetailDeptName);
             return redirect()->route('limitSample.dashboard')->with('success', 'Login successful.');
         }
 
@@ -207,12 +213,13 @@ class LoginController extends Controller
 
             // // Log the user in using their details (this method creates a session)
             // Auth::login($user); // 'true' for remember me
-            if ($userData['detail_dept_id'] != 15 && $userData['detail_dept_id'] != 16 && $userData['username'] != 'AdminLS') {
+            if (session('user_detail_dept_name') != 'Quality Control' && session('user_detail_dept_name') != 'Quality Assurance' && session('roles', []) != 'AdminLS') {
                 Guest::create([
                     'guest_name' => $userData['npk'],
                     'login_date' => Carbon::now()->format('Y-m-d'),
                 ]);
-                $guest = Guest::where('guest_name', $userData['username'])->first();
+
+                $guest = Guest::where('guest_name', $userData['npk'])->first();
                 $count = $guest->count_visit;
                 $count++;
                 $guest->update([
@@ -306,6 +313,7 @@ class LoginController extends Controller
                 $request->session()->put('permissions', $permissions);
                 $this->fetchUserData($request, $token);
 
+
                 // // Create a user instance manually
                 // $user = new User(); // Use your User model namespace
                 // $user->id = $userData['id']; // Ensure this ID matches your API user ID
@@ -360,6 +368,15 @@ class LoginController extends Controller
                 $request->session()->put('all_depts', $depts);
                 $request->session()->put('all_detail_dept', $detail_depts);
                 $request->session()->put('all_positions', $positions);
+
+                //mencari nama detail departement untuk akses CRUD
+                $userDetailDeptId = session('user')['detail_dept_id'];
+                $allDetailDepts = session('all_detail_dept', []);
+                $detailDeptColumn = array_column($allDetailDepts, 'id');
+                $searchDetailDeptId = array_search($userDetailDeptId, $detailDeptColumn);
+                $userDetailDeptName = $allDetailDepts[$searchDetailDeptId]['name'];
+                session()->put('user_detail_dept_name', $userDetailDeptName);
+
             }
         } catch (\Exception $e) {
             // Handle any errors in fetching user data
@@ -398,7 +415,13 @@ class LoginController extends Controller
             $data = json_decode($response->getBody()->getContents(), true);
 
             if (isset($data['status']) && $data['status'] === 'success') {
-                return $data['permissions'];
+                if(empty($data['permissions'])){
+                    return $data['permissions'];
+                }else{
+                    session()->put('permissions', $data['permissions']);
+                    return $data['permissions'];
+                }
+
             }
 
             return null;
@@ -436,12 +459,12 @@ class LoginController extends Controller
 
         // Hapus token dan data user dari session
 
-        if(session('status_login') == 'local'){
+        if (session('status_login') == 'local') {
             $tokenParts = explode('|', $token); // Split the token by "|"
             $tokenId = $tokenParts[0]; // Take the first part, which is "52"
             $user = Auth::user();
             $user->tokens()->where('id', $tokenId)->delete();
-        }else{
+        } else {
             if ($token) {
                 // Hapus token dari database utama menggunakan API
                 $client = new Client();
@@ -453,7 +476,9 @@ class LoginController extends Controller
                         ],
                     ]);
                 } catch (\Exception $e) {
-                    return redirect()->route('login')->withErrors(['message' => 'Logout API Error: ' . $e->getMessage()]);
+                    return redirect()
+                        ->route('login')
+                        ->withErrors(['message' => 'Logout API Error: ' . $e->getMessage()]);
                 }
             }
         }
@@ -475,6 +500,9 @@ class LoginController extends Controller
 
     public function dashboard()
     {
+
+
+        // dd($all_depts[$index]['name']);
         return redirect()->route('model.index');
     }
 

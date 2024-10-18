@@ -23,15 +23,14 @@ class DashboardController extends Controller
         $partAreas = PartArea::orderByDesc('count_visit')->simplePaginate(6);
         $expired = AreaPart::where('expired_date', '<', Carbon::today()->format('Y-m-d'))->count();
         $willExpired = AreaPart::whereBetween('expired_date', [Carbon::now()->format('Y-m-d'), Carbon::now()->addDays(5)->format('Y-m-d')])->count();
-        if (session('user')['detail_dept_id'] == 15) {
+        if (session('user_detail_dept_name') == 'Quality Control') {
             $NeedApproveSecHead = AreaPart::whereNull('sec_head_approval_date1')->where('status' ,'!=' ,'tolak')->where('expired_date', '>', Carbon::now()->format('Y-m-d'))->count();
         } else {
             $NeedApproveSecHead = AreaPart::whereNull('sec_head_approval_date2')->where('status' ,'!=' ,'tolak')->where('expired_date', '>', Carbon::now()->format('Y-m-d'))->count();
         }
 
-        $NeedApproveDeptHead = AreaPart::where(function ($query) {
-            $query->where('sec_head_approval_date1', '!=', null)->orWhere('sec_head_approval_date2', '!=', null);
-        })
+        $NeedApproveDeptHead = AreaPart::where('sec_head_approval_date1', '!=', null)
+            ->where('sec_head_approval_date2', '!=', null)
             ->whereNull('dept_head_approval_date')
             ->where('expired_date', '>', Carbon::today()->format('Y-m-d'))
             ->count();
@@ -145,12 +144,12 @@ class DashboardController extends Controller
 
     public function needApprovePage(Request $request){
         if ($request->ajax()) {
-            if(in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15')
+            if(in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control')
             {
                 $data = AreaPart::with('modelpart', 'parts', 'partarea')->whereNull('sec_head_approval_date1')->where('status' ,'!=' ,'tolak')->where('expired_date', '>', Carbon::now()->format('Y-m-d'))->get();
-            }elseif(in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '16'){
+            }elseif(in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Assurance'){
                 $data = AreaPart::with('modelpart', 'parts', 'partarea')->whereNull('sec_head_approval_date2')->where('status' ,'!=' ,'tolak')->where('expired_date', '>', Carbon::now()->format('Y-m-d'))->get();
-            }elseif(in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15'){
+            }elseif(in_array('Department Head', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control'){
                 $data = AreaPart::with('modelpart', 'parts', 'partarea')->whereNotNull('sec_head_approval_date1')->where('status' ,'!=' ,'tolak')->where('expired_date', '>', Carbon::now()->format('Y-m-d'))->whereNotNull('sec_head_approval_date2')->whereNull('dept_head_approval_date')->get();
             }
             return DataTables::of($data)->make(true);

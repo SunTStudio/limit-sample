@@ -3796,7 +3796,7 @@ a.forum-item-title:hover {
         height: 10rem;
     }
 
-    
+
     #rekapA{
         font-size:0.5rem;
     }
@@ -3807,6 +3807,14 @@ a.forum-item-title:hover {
 
     #rekapC{
         margin-bottom:2rem;
+    }
+
+    #AreaPartCardModal {
+        font-size:0.5rem;
+    }
+
+    #modalAreaPart {
+        font-size:0.5rem;
     }
 }
 /* New Timeline style */

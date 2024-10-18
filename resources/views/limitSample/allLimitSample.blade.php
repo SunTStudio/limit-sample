@@ -4,6 +4,7 @@
     <link rel="stylesheet" type="text/css"
         href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/css/lightbox.min.css" rel="stylesheet" />
 
     <style>
         .product-imitation {
@@ -90,13 +91,13 @@
                                         <a href="{{ url("/limit-sample/model/$combinedData->id/part") }}"
                                             class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                 class="fa fa-long-arrow-right"></i> </a>
-                                        @hasRole('Admin')
+                                        @hasRole('AdminLS')
                                             <a href="{{ url("/limit-sample/model/edit/$combinedData->id") }}"
                                                 class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i>
                                             </a>
                                         @endhasRole
                                     </div>
-                                    @hasRole('Admin')
+                                    @hasRole('AdminLS')
                                         <div class="d-flex">
 
                                             <form action="{{ url("/limit-sample/model/delete/$combinedData->id") }}"
@@ -130,7 +131,7 @@
                                         <a href="{{ url("/limit-sample/part/$combinedData->id") }}"
                                             class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                 class="fa fa-long-arrow-right"></i> </a>
-                                        @hasRole('Admin')
+                                        @hasRole('AdminLS')
                                             <a href="{{ url("/limit-sample/part/edit/$combinedData->id") }}"
                                                 class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                     class="fa fa-edit"></i>
@@ -159,7 +160,7 @@
                                         <a data-toggle="modal" data-target="#{{ $combinedData->id }}"
                                             class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                 class="fa fa-long-arrow-right"></i> </a>
-                                        @hasRole('Admin')
+                                        @hasRole('AdminLS')
                                             <a href="{{ url("/limit-sample/area-part/edit/$combinedData->id") }}"
                                                 class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                     class="fa fa-edit"></i>
@@ -200,6 +201,7 @@
     <script src="https://cdn.datatables.net/fixedheader/3.2.3/js/dataTables.fixedHeader.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.0/js/responsive.bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/js/lightbox.min.js"></script>
     <script>
         let listCount = 0;
 
@@ -219,14 +221,15 @@
                     processing: true,
                     serverSide: true,
                     ajax: "{{ route('allLimitSample.allList') }}",
-                    columns: [
-                        {
+                    columns: [{
                             data: null,
                             className: 'text-center',
                             orderable: false,
                             render: function(data, type, row, meta) {
-                                var pageInfo = table.page.info(); // Use the `table` variable to get the page info
-                                return pageInfo.start + meta.row + 1; // Adjusts the row number based on the start index of the current page
+                                var pageInfo = table.page
+                                    .info(); // Use the `table` variable to get the page info
+                                return pageInfo.start + meta.row +
+                                    1; // Adjusts the row number based on the start index of the current page
                             }
                         },
                         {
@@ -262,20 +265,20 @@
                                 return `
                                 <div class="d-flex justify-content-center">
                                     ${data == 'Model' ? `
-                                         <a href="{{ url('/limit-sample/model/') }}/${row.id}/part"
-                                         class="btn btn-xs btn-outline btn-primary">Lihat <i
-                                         class="fa fa-long-arrow-right"></i> </a>
-                                        `:''}
+                                                 <a href="{{ url('/limit-sample/model/') }}/${row.id}/part"
+                                                 class="btn btn-xs btn-outline btn-primary">Lihat <i
+                                                 class="fa fa-long-arrow-right"></i> </a>
+                                                `:''}
                                     ${data == 'Part' ? `
-                                         <a href="{{ url('/limit-sample/part/') }}/${row.id}"
-                                                            class="btn btn-xs btn-outline btn-primary">Lihat <i
-                                                                class="fa fa-long-arrow-right"></i> </a>
-                                        `:''}
+                                                 <a href="{{ url('/limit-sample/part/') }}/${row.id}"
+                                                                    class="btn btn-xs btn-outline btn-primary">Lihat <i
+                                                                        class="fa fa-long-arrow-right"></i> </a>
+                                                `:''}
                                     ${data == 'Limit Sample' ? `
-                                         <a data-toggle="modal" data-target="#${row.id}"
-                                                            class="btn btn-xs btn-outline btn-primary">Lihat <i
-                                                                class="fa fa-long-arrow-right"></i> </a>
-                                        `:''}
+                                                 <a data-toggle="modal" data-target="#${row.id}"
+                                                                    class="btn btn-xs btn-outline btn-primary">Lihat <i
+                                                                        class="fa fa-long-arrow-right"></i> </a>
+                                                `:''}
 
                                 </div>`;
                             }
@@ -325,20 +328,20 @@
                                 <div class="ibox-content product-box">
                                         <div class="product-imitation">
                                             ${combinedData.filter == 'Model' ? `
-                                                    <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"><img
-                                                            src="{{ asset('img/model/') }}/${combinedData.foto}" class="img-fluid"
-                                                            alt=""></a>
-                                                    `:''}
+                                                            <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"><img
+                                                                    src="{{ asset('img/model/') }}/${combinedData.foto}" class="img-fluid"
+                                                                    alt=""></a>
+                                                            `:''}
                                             ${combinedData.filter == 'Part' ? `
-                                                    <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"><img
-                                                    src="{{ asset('img/part/') }}/${combinedData.foto}" class="img-fluid"
-                                                    alt=""></a>
-                                                    `:''}
+                                                            <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"><img
+                                                            src="{{ asset('img/part/') }}/${combinedData.foto}" class="img-fluid"
+                                                            alt=""></a>
+                                                            `:''}
                                             ${combinedData.filter == 'Limit Sample' ? `
-                                                    <img
-                                                    src="{{ asset('img/areaPart/') }}/${combinedData.foto}" class="img-fluid"
-                                                    alt="">
-                                                    `:''}
+                                                            <img
+                                                            src="{{ asset('img/areaPart/') }}/${combinedData.foto}" class="img-fluid"
+                                                            alt="">
+                                                            `:''}
 
 
                                         </div>
@@ -348,20 +351,20 @@
                                                 <button type="button" class="btn btn-info mb-1">${combinedData.filter}</button>
                                             </div>
                                             ${combinedData.filter == 'Model' ? `
-                                                <div class="m-t text-right d-flex justify-content-between">
-                                                    <div>
+                                                        <div class="m-t text-right d-flex justify-content-between">
+                                                            <div>
 
 
-                                                        <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"
-                                                            class="btn btn-xs btn-outline btn-primary">Lihat <i
-                                                                class="fa fa-long-arrow-right"></i> </a>
-                                                        ${dataRoles == 'Admin' ? `
+                                                                <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"
+                                                                    class="btn btn-xs btn-outline btn-primary">Lihat <i
+                                                                        class="fa fa-long-arrow-right"></i> </a>
+                                                                ${dataRoles == 'AdminLS' ? `
                                                                 <a href="{{ url('/limit-sample/model/edit/') }}/${combinedData.id}"
                                                                     class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i>
                                                                 </a>` : ''
-                                                            }
-                                                    </div>
-                                                    ${dataRoles == 'Admin' ? `
+                                                                    }
+                                                            </div>
+                                                            ${dataRoles == 'AdminLS' ? `
                                                             <div class="d-flex">
 
                                                                 <form action="{{ url('/limit-sample/model/delete/') }}/${combinedData.id}"
@@ -374,43 +377,43 @@
                                                                             class="fa fa-trash"></i></button>
                                                                 </form>
                                                             </div>` : ''
-                                                    }
-                                                </div>
-                                                `:''}
+                                                            }
+                                                        </div>
+                                                        `:''}
                                             ${combinedData.filter == 'Part' ? `
-                                                <div class="m-t text-right d-flex justify-content-between">
-                                                    <div>
+                                                        <div class="m-t text-right d-flex justify-content-between">
+                                                            <div>
 
-                                                        <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"
-                                                            class="btn btn-xs btn-outline btn-primary">Lihat <i
-                                                                class="fa fa-long-arrow-right"></i> </a>
-                                                        ${dataRoles == 'Admin'?`
+                                                                <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"
+                                                                    class="btn btn-xs btn-outline btn-primary">Lihat <i
+                                                                        class="fa fa-long-arrow-right"></i> </a>
+                                                                ${dataRoles == 'AdminLS'?`
                                                         <a href="{{ url('/limit-sample/part/edit/') }}/${combinedData.id}"
                                                             class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                                 class="fa fa-edit"></i>
                                                         </a>
                                                     `:''}
-                                                    </div>
-                                                </div>
-                                                `:''}
+                                                            </div>
+                                                        </div>
+                                                        `:''}
                                             ${combinedData.filter == 'Limit Sample' ? `
-                                                <div>
-                                                    <p style="font-size:0.7rem;">No.Doc :  ${combinedData.document_number} </p>
-                                                </div>
-                                                <div class="m-t text-right d-flex justify-content-between">
-                                                    <div>
-                                                        <a data-toggle="modal" data-target="#${combinedData.id}"
-                                                            class="btn btn-xs btn-outline btn-primary">Lihat <i
-                                                                class="fa fa-long-arrow-right"></i> </a>
-                                                        ${dataRoles == "Admin"? `
+                                                        <div>
+                                                            <p style="font-size:0.7rem;">No.Doc :  ${combinedData.document_number} </p>
+                                                        </div>
+                                                        <div class="m-t text-right d-flex justify-content-between">
+                                                            <div>
+                                                                <a data-toggle="modal" data-target="#${combinedData.id}"
+                                                                    class="btn btn-xs btn-outline btn-primary">Lihat <i
+                                                                        class="fa fa-long-arrow-right"></i> </a>
+                                                                ${dataRoles == "Admin"? `
                                                         <a href="{{ url('/limit-sample/area-part/edit/') }}/${combinedData.id}"
                                                             class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                                 class="fa fa-edit"></i>
                                                         </a>
                                                     ` : ''}
-                                                    </div>
-                                                </div>
-                                                `:''}
+                                                            </div>
+                                                        </div>
+                                                        `:''}
 
                                         </div>
                                 </div>
@@ -474,25 +477,25 @@
                                                     <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"
                                                         class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                             class="fa fa-long-arrow-right"></i> </a>
-                                                    ${dataRoles == 'Admin' ? `
-                                                                    <a href="{{ url('/limit-sample/model/edit/') }}/${combinedData.id}"
-                                                                        class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i>
-                                                                    </a>` : ''
+                                                    ${dataRoles == 'AdminLS' ? `
+                                                                            <a href="{{ url('/limit-sample/model/edit/') }}/${combinedData.id}"
+                                                                                class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i>
+                                                                            </a>` : ''
                                                         }
                                                 </div>
-                                                ${dataRoles == 'Admin' ? `
-                                                                <div class="d-flex">
+                                                ${dataRoles == 'AdminLS' ? `
+                                                                        <div class="d-flex">
 
-                                                                    <form action="{{ url('/limit-sample/model/delete/') }}/${combinedData.id}"
-                                                                        method="POST"
-                                                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus Model ini?');">
-                                                                        <input type="hidden" name="_token" value="${csrf_token}">
-                                                                        <input type="hidden" name="_method" value="DELETE">
-                                                                        <!-- Ini menandakan bahwa request ini adalah DELETE method -->
-                                                                        <button type="submit" class="btn btn-xs btn-outline btn-danger">Hapus <i
-                                                                                class="fa fa-trash"></i></button>
-                                                                    </form>
-                                                                </div>` : ''
+                                                                            <form action="{{ url('/limit-sample/model/delete/') }}/${combinedData.id}"
+                                                                                method="POST"
+                                                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus Model ini?');">
+                                                                                <input type="hidden" name="_token" value="${csrf_token}">
+                                                                                <input type="hidden" name="_method" value="DELETE">
+                                                                                <!-- Ini menandakan bahwa request ini adalah DELETE method -->
+                                                                                <button type="submit" class="btn btn-xs btn-outline btn-danger">Hapus <i
+                                                                                        class="fa fa-trash"></i></button>
+                                                                            </form>
+                                                                        </div>` : ''
                                                 }
                                             </div>
                                         </div>
@@ -518,6 +521,8 @@
                             </table>
                         </div>
                         `);
+                    listCount = 0;
+
                 }
             });
         }
@@ -552,12 +557,12 @@
                                                     <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"
                                                         class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                             class="fa fa-long-arrow-right"></i> </a>
-                                                    ${dataRoles == 'Admin'?`
-                                                            <a href="{{ url('/limit-sample/part/edit/') }}/${combinedData.id}"
-                                                                class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
-                                                                    class="fa fa-edit"></i>
-                                                            </a>
-                                                        `:''}
+                                                    ${dataRoles == 'AdminLS'?`
+                                                                    <a href="{{ url('/limit-sample/part/edit/') }}/${combinedData.id}"
+                                                                        class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
+                                                                            class="fa fa-edit"></i>
+                                                                    </a>
+                                                                `:''}
                                                 </div>
                                             </div>
                                         </div>
@@ -583,6 +588,8 @@
                             </table>
                         </div>
                         `);
+                    listCount = 0;
+
                 }
             });
         }
@@ -620,11 +627,11 @@
                                                         class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                             class="fa fa-long-arrow-right"></i> </a>
                                                     ${dataRoles == "Admin"? `
-                                                            <a href="{{ url('/limit-sample/area-part/edit/') }}/${combinedData.id}"
-                                                                class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
-                                                                    class="fa fa-edit"></i>
-                                                            </a>
-                                                        ` : ''}
+                                                                    <a href="{{ url('/limit-sample/area-part/edit/') }}/${combinedData.id}"
+                                                                        class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
+                                                                            class="fa fa-edit"></i>
+                                                                    </a>
+                                                                ` : ''}
                                                 </div>
                                             </div>
                                         </div>
@@ -650,6 +657,8 @@
                             </table>
                         </div>
                         `);
+                    listCount = 0;
+
                 }
             });
         }
@@ -659,11 +668,28 @@
             //get modal data
             const dataRoles = @json(session('roles'));
             const userAll = @json(session('all_users'));
+            // Ambil nilai dari sesi (ini bisa berbeda tergantung bagaimana sesi diakses di aplikasi Anda)
+            let userDetailDeptId = @json(session('user')['detail_dept_id']);
+            let allDetailDepts = @json(session('all_detail_dept', []));
+
+            // Buat array dengan kolom 'id' dari setiap objek dalam allDetailDepts
+            let detailDeptColumn = allDetailDepts.map(dept => dept.id);
+            let searchDetailDeptId;
+
+
             $.ajax({
                 url: "{{ route('limitSample.allLimitSampleModal') }}",
                 type: "GET",
                 success: function(data) {
                     $.each(data, function(index, item) {
+                        // Cari indeks dari userDetailDeptId dalam detailDeptColumn
+                        searchDetailDeptId = detailDeptColumn.indexOf(parseInt(item.penolak_id,
+                            10));
+
+                        // Pastikan nilai yang ditemukan adalah indeks yang valid
+                        let penolakDetailDeptName = searchDetailDeptId !== -1 ? allDetailDepts[
+                            searchDetailDeptId].name : null;
+
                         // untuk mencari data penolak dari session all_user dengan penolak_id
                         let userIndex = userAll.map(user => user.id).indexOf(Number(item
                             .penolak_id));
@@ -686,6 +712,7 @@
                                                         <p class="m-0" style="color: yellow;" id="CopHeading"><strong> LIMIT SAMPLE </strong></p>
                                                     </div>
                                                     <div class="col-2" style="background-color: #002060;">
+                                                        <p class="m-0 pr-3" style="color: yellow;" id="CopSubHeading">${item.model_part.name}</p>
                                                     </div>
                                                     <div class="col-12">
                                                         <div class="row text-left bg-white text-dark">
@@ -704,10 +731,30 @@
                                                     </div>
                                                     <div class="col-12">
                                                         <div class="row bg-white">
-                                                            <div class="col-6 p-3 border border-dark "><img src="{{ asset('img/areaPart/') }}/${item.foto_ke_satu}" alt="" class="fotoLimitSample"></div>
-                                                            <div class="col-6 p-3 border border-dark "><img src="{{ asset('img/areaPart/') }}/${item.foto_ke_dua}" alt="" class="fotoLimitSample"></div>
-                                                            <div class="col-6 p-3 border border-dark "><img src="{{ asset('img/areaPart/') }}/${item.foto_ke_tiga}" alt="" class="fotoLimitSample"></div>
-                                                            <div class="col-6 p-3 border border-dark "><img src="{{ asset('img/areaPart/') }}/${item.foto_ke_empat}" alt="" class="fotoLimitSample"></div>
+                                                            <div class="col-6 p-3 border border-dark ">
+                                                                <a href="{{ asset('img/areaPart/') }}/${item.foto_ke_satu}"
+                                                        data-lightbox="foto${item.id}" data-title="Foto 1">
+                                                                <img src="{{ asset('img/areaPart/') }}/${item.foto_ke_satu}" alt="" class="fotoLimitSample">
+                                                                </a>
+                                                                </div>
+                                                            <div class="col-6 p-3 border border-dark ">
+                                                                <a href="{{ asset('img/areaPart/') }}/${item.foto_ke_dua}"
+                                                        data-lightbox="foto${item.id}" data-title="Foto 2">
+                                                                <img src="{{ asset('img/areaPart/') }}/${item.foto_ke_dua}" alt="" class="fotoLimitSample">
+                                                                </a>
+                                                                </div>
+                                                            <div class="col-6 p-3 border border-dark ">
+                                                                <a href="{{ asset('img/areaPart/') }}/${item.foto_ke_tiga}"
+                                                            data-lightbox="foto${item.id}" data-title="Foto 3">
+                                                                <img src="{{ asset('img/areaPart/') }}/${item.foto_ke_tiga}" alt="" class="fotoLimitSample">
+                                                                </a>
+                                                                </div>
+                                                            <div class="col-6 p-3 border border-dark ">
+                                                            <a href="{{ asset('img/areaPart/') }}/${item.foto_ke_empat}"
+                                                            data-lightbox="foto${item.id}" data-title="Foto 4">
+                                                                <img src="{{ asset('img/areaPart/') }}/${item.foto_ke_empat}" alt="" class="fotoLimitSample">
+                                                                </a>
+                                                                </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-12 text-left p-2 border border-dark text-dark" style="background-color: #ffffff;">
@@ -730,28 +777,28 @@
                                                             <div class="col-3 p-1 border border-dark ">
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
-                                                                ${item.sec_head_approval_date2 ? `
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date2} </strong></p>
-                                                                                                                        ` : ` `}
+                                                                ${item.sec_head_approval_date1 ? `
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date2} </strong></p>
+                                                                                                                                ` : ``}
 
-                                                                ${item.status == 'tolak' && item.penolak_id == 16 && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                                            <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                                        ` : `<br><br>`}
+                                                                ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Control' && item.penolak_posisi == 'Supervisor' ? `
+                                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                                ` : ``}
                                                                 <br>
                                                                 <p><strong>Section Head 1</strong></p>
                                                             </div>
                                                             <div class="col-3 p-1 border border-dark ">
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
-                                                                ${item.sec_head_approval_date1 ? `
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
-                                                                                                                        ` : ` `}
+                                                                ${item.sec_head_approval_date2 ? `
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
+                                                                                                                                ` : ``}
 
-                                                                ${item.status == 'tolak' && item.penolak_id == 15 && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                                            <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                                        ` : `<br><br>`}
+                                                                ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Assurance' && item.penolak_posisi == 'Supervisor' ? `
+                                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                                ` : ``}
                                                                 <br>
                                                                 <p><strong>Section Head 2</strong></p>
                                                             </div>
@@ -759,12 +806,12 @@
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
                                                                 ${item.dept_head_approval_date ? `
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                                            <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
-                                                                                                                        ` : ` `}
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
+                                                                                                                                ` : ` `}
                                                                 ${item.status == 'tolak' && item.penolak_posisi == 'Department Head' ? `
-                                                                                                                            <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                                        ` : `<br><br>`}
+                                                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                                                ` : ``}
                                                                 <br>
                                                                 <p><strong>Departemen Head</strong></p>
                                                             </div>
@@ -772,12 +819,12 @@
                                                     </div>
                                                     ${item.status == 'tolak'?
                                                     `<div class="col-12 bg-white text-left p-2 border border-dark text-dark">
-                                                                                                            <p> <strong> Informasi Penolakan</strong></p>
-                                                                                                            <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
-                                                                                                            <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
-                                                                                                            <br>
+                                                                                                                    <p> <strong> Informasi Penolakan</strong></p>
+                                                                                                                    <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
+                                                                                                                    <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
+                                                                                                                    <br>
 
-                                                                                                        </div>`
+                                                                                                                </div>`
                                                     :` `}
                                                 </div>
                                             </div>
@@ -843,20 +890,20 @@
                                 <div class="ibox-content product-box">
                                         <div class="product-imitation">
                                             ${combinedData.filter == 'Model' ? `
-                                                    <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"><img
-                                                            src="{{ asset('img/model/') }}/${combinedData.foto}" class="img-fluid"
-                                                            alt=""></a>
-                                                    `:''}
+                                                            <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"><img
+                                                                    src="{{ asset('img/model/') }}/${combinedData.foto}" class="img-fluid"
+                                                                    alt=""></a>
+                                                            `:''}
                                             ${combinedData.filter == 'Part' ? `
-                                                    <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"><img
-                                                    src="{{ asset('img/part/') }}/${combinedData.foto}" class="img-fluid"
-                                                    alt=""></a>
-                                                    `:''}
+                                                            <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"><img
+                                                            src="{{ asset('img/part/') }}/${combinedData.foto}" class="img-fluid"
+                                                            alt=""></a>
+                                                            `:''}
                                             ${combinedData.filter == 'Limit Sample' ? `
-                                                    <img
-                                                    src="{{ asset('img/areaPart/') }}/${combinedData.foto}" class="img-fluid"
-                                                    alt="">
-                                                    `:''}
+                                                            <img
+                                                            src="{{ asset('img/areaPart/') }}/${combinedData.foto}" class="img-fluid"
+                                                            alt="">
+                                                            `:''}
 
 
                                         </div>
@@ -866,20 +913,20 @@
                                                 <button type="button" class="btn btn-info mb-1">${combinedData.filter}</button>
                                             </div>
                                             ${combinedData.filter == 'Model' ? `
-                                                <div class="m-t text-right d-flex justify-content-between">
-                                                    <div>
+                                                        <div class="m-t text-right d-flex justify-content-between">
+                                                            <div>
 
 
-                                                        <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"
-                                                            class="btn btn-xs btn-outline btn-primary">Lihat <i
-                                                                class="fa fa-long-arrow-right"></i> </a>
-                                                        ${dataRoles == 'Admin' ? `
+                                                                <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"
+                                                                    class="btn btn-xs btn-outline btn-primary">Lihat <i
+                                                                        class="fa fa-long-arrow-right"></i> </a>
+                                                                ${dataRoles == 'AdminLS' ? `
                                                                 <a href="{{ url('/limit-sample/model/edit/') }}/${combinedData.id}"
                                                                     class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i>
                                                                 </a>` : ''
-                                                            }
-                                                    </div>
-                                                    ${dataRoles == 'Admin' ? `
+                                                                    }
+                                                            </div>
+                                                            ${dataRoles == 'AdminLS' ? `
                                                             <div class="d-flex">
 
                                                                 <form action="{{ url('/limit-sample/model/delete/') }}/${combinedData.id}"
@@ -892,43 +939,43 @@
                                                                             class="fa fa-trash"></i></button>
                                                                 </form>
                                                             </div>` : ''
-                                                    }
-                                                </div>
-                                                `:''}
+                                                            }
+                                                        </div>
+                                                        `:''}
                                             ${combinedData.filter == 'Part' ? `
-                                                <div class="m-t text-right d-flex justify-content-between">
-                                                    <div>
+                                                        <div class="m-t text-right d-flex justify-content-between">
+                                                            <div>
 
-                                                        <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"
-                                                            class="btn btn-xs btn-outline btn-primary">Lihat <i
-                                                                class="fa fa-long-arrow-right"></i> </a>
-                                                        ${dataRoles == 'Admin'?`
+                                                                <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"
+                                                                    class="btn btn-xs btn-outline btn-primary">Lihat <i
+                                                                        class="fa fa-long-arrow-right"></i> </a>
+                                                                ${dataRoles == 'AdminLS'?`
                                                         <a href="{{ url('/limit-sample/part/edit/') }}/${combinedData.id}"
                                                             class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                                 class="fa fa-edit"></i>
                                                         </a>
                                                     `:''}
-                                                    </div>
-                                                </div>
-                                                `:''}
+                                                            </div>
+                                                        </div>
+                                                        `:''}
                                             ${combinedData.filter == 'Limit Sample' ? `
-                                                <div>
-                                                    <p style="font-size:0.7rem;">No.Doc :  ${combinedData.document_number} </p>
-                                                </div>
-                                                <div class="m-t text-right d-flex justify-content-between">
-                                                    <div>
-                                                        <a data-toggle="modal" data-target="#${combinedData.id}"
-                                                            class="btn btn-xs btn-outline btn-primary">Lihat <i
-                                                                class="fa fa-long-arrow-right"></i> </a>
-                                                        ${dataRoles == "Admin"? `
+                                                        <div>
+                                                            <p style="font-size:0.7rem;">No.Doc :  ${combinedData.document_number} </p>
+                                                        </div>
+                                                        <div class="m-t text-right d-flex justify-content-between">
+                                                            <div>
+                                                                <a data-toggle="modal" data-target="#${combinedData.id}"
+                                                                    class="btn btn-xs btn-outline btn-primary">Lihat <i
+                                                                        class="fa fa-long-arrow-right"></i> </a>
+                                                                ${dataRoles == "Admin"? `
                                                         <a href="{{ url('/limit-sample/area-part/edit/') }}/${combinedData.id}"
                                                             class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                                 class="fa fa-edit"></i>
                                                         </a>
                                                     ` : ''}
-                                                    </div>
-                                                </div>
-                                                `:''}
+                                                            </div>
+                                                        </div>
+                                                        `:''}
 
                                         </div>
                                 </div>

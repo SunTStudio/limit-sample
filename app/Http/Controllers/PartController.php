@@ -249,9 +249,9 @@ class PartController extends Controller
             ->with('success', 'Part berhasil dihapus!');
     }
 
-    public function listPart(Request $request){
+    public function listPart(Request $request,$id){
         if($request->ajax()){
-            $data = Part::all();
+            $data = Part::where('model_part_id',$id)->get();
             return DataTables::of($data)->make(true);
         }
     }

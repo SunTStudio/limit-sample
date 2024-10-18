@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('css')
     <style>
-        
+
     </style>
 @endsection
 @section('header')
@@ -150,6 +150,7 @@
                         <div class="form-group row" id="uploadFotoLS">
                             <label class="col-sm-2 col-form-label">Foto Ke-Satu</label>
                             <div class="col-sm-10 mb-2">
+                                <input type="hidden" name="rotateFotoSatu" id="rotateFoto1">
                                 <div class="custom-file">
                                     <input name="foto_ke_satu" id="imageInput1" type="file"
                                         class="custom-file-input">
@@ -165,6 +166,7 @@
 
                             <label class="col-sm-2 col-form-label">Foto Ke-Dua</label>
                             <div class="col-sm-10 mb-2">
+                                <input type="hidden" name="rotateFotoDua" id="rotateFoto2">
                                 <div class="custom-file">
                                     <input name="foto_ke_dua" id="imageInput2" type="file" class="custom-file-input">
                                     <label for="imageInput2" class="custom-file-label">Choose file...</label>
@@ -179,6 +181,7 @@
 
                             <label class="col-sm-2 col-form-label">Foto Ke-Tiga</label>
                             <div class="col-sm-10 mb-2">
+                                <input type="hidden" name="rotateFotoTiga" id="rotateFoto3">
                                 <div class="custom-file">
                                     <input name="foto_ke_tiga" id="imageInput3" type="file"
                                         class="custom-file-input">
@@ -194,12 +197,13 @@
 
                             <label class="col-sm-2 col-form-label">Foto Ke-Empat</label>
                             <div class="col-sm-10 mb-2">
+                                <input type="hidden" name="rotateFotoEmpat" id="rotateFoto4">
                                 <div class="custom-file">
                                     <input name="foto_ke_empat" id="imageInput4" type="file"
                                         class="custom-file-input">
                                     <label for="imageInput4" class="custom-file-label">Choose file...</label>
                                 </div>
-                                <button type="button" class="btn btn-secondary" id="rotate4" style="display: none;">
+                                 <button type="button" class="btn btn-secondary" id="rotate4" style="display: none;">
                                     <i class="fa fa-rotate-right"></i>
                                 </button>
                                 <div class="image-container">
@@ -229,42 +233,42 @@
 @endsection
 
 @section('script')
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const imageInputs = document.querySelectorAll('input[type="file"]');
-            const rotateButtons = document.querySelectorAll('button[id^="rotate"]');
-            const previews = document.querySelectorAll('img[id^="preview"]');
-            const rotations = [0, 0, 0, 0]; // Menyimpan sudut rotasi untuk setiap gambar
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const imageInputs = document.querySelectorAll('input[type="file"]');
+        const rotateButtons = document.querySelectorAll('button[id^="rotate"]');
+        const previews = document.querySelectorAll('img[id^="preview"]');
+        const rotations = [0, 0, 0, 0]; // Menyimpan sudut rotasi untuk setiap gambar
+        const rotateFoto = document.querySelectorAll('input[id^="rotateFoto"]')
 
-            imageInputs.forEach((input, index) => {
-                input.addEventListener('change', (event) => {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            previews[index].src = e.target.result;
-                            previews[index].style.display = 'block';
-                            rotateButtons[index].style.display = 'inline-block';
-                            rotations[index] = 0; // Reset rotasi saat gambar baru dimuat
-                            previews[index].style.transform =
-                                `rotate(${rotations[index]}deg)`; // Reset rotasi
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            });
-
-            rotateButtons.forEach((button, index) => {
-                button.addEventListener('click', () => {
-                    rotations[index] += 90; // Tambah rotasi 90 derajat
-                    previews[index].style.transform =
-                        `rotate(${rotations[index]}deg)`; // Update rotasi
-                });
+        imageInputs.forEach((input, index) => {
+            input.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        previews[index].src = e.target.result;
+                        previews[index].style.display = 'block';
+                        rotateButtons[index].style.display = 'inline-block';
+                        rotations[index] = 0; // Reset rotasi saat gambar baru dimuat
+                        previews[index].style.transform =
+                            `rotate(${rotations[index]}deg)`; // Reset rotasi
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
         });
-    </script>
 
-
+        rotateButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                rotations[index] += 90; // Tambah rotasi 90 derajat
+                previews[index].style.transform =
+                    `rotate(${rotations[index]}deg)`; // Update rotasi
+                rotateFoto[index].setAttribute('value',rotations[index]);
+            });
+        });
+    });
+</script>
 
 
 

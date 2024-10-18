@@ -143,7 +143,7 @@
                     <div class="ibox-content">
                         <div class="form-group row" id="uploadFotoLS">
                             <label class="col-sm-2 col-form-label">Foto Ke-Satu</label>
-                            <div class="col-sm-10 mb-2"> 
+                            <div class="col-sm-10 mb-2">
                                 <input type="hidden" name="rotateFotoSatu" id="rotateFoto1">
                                 <div class="custom-file">
                                     <input name="foto_ke_satu" id="imageInput1" type="file"
@@ -197,7 +197,7 @@
                                         class="custom-file-input">
                                     <label for="imageInput4" class="custom-file-label">Choose file...</label>
                                 </div>
-                                <button type="button" class="btn btn-secondary" id="rotate4" style="display: none;">
+                                 <button type="button" class="btn btn-secondary" id="rotate4" style="display: none;">
                                     <i class="fa fa-rotate-right"></i>
                                 </button>
                                 <div class="image-container">

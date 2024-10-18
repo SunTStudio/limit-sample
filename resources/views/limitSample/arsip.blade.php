@@ -3,6 +3,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css"
         href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/css/lightbox.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.bootstrap.min.css">
 @endsection
 @section('header')
@@ -66,6 +67,7 @@
     <script src="https://cdn.datatables.net/fixedheader/3.2.3/js/dataTables.fixedHeader.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.0/js/responsive.bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/js/lightbox.min.js"></script>
 
     <script>
         //datatables deleted limit sample data
@@ -201,15 +203,31 @@
         //get modal data
         const dataRoles = @json(session('roles'));
         const userAll = @json(session('all_users'));
+        // Ambil nilai dari sesi (ini bisa berbeda tergantung bagaimana sesi diakses di aplikasi Anda)
+        let userDetailDeptId = @json(session('user')['detail_dept_id']);
+        let allDetailDepts = @json(session('all_detail_dept', []));
+
+        // Buat array dengan kolom 'id' dari setiap objek dalam allDetailDepts
+        let detailDeptColumn = allDetailDepts.map(dept => dept.id);
+        let searchDetailDeptId;
+
+
         $.ajax({
-            url:"{{ route('limitSample.arsipModal') }}",
-            type:"GET",
-            success:function(data){
+            url: "{{ route('limitSample.arsipModal') }}",
+            type: "GET",
+            success: function(data) {
                 $.each(data, function(index, item) {
+                    // Cari indeks dari userDetailDeptId dalam detailDeptColumn
+                    searchDetailDeptId = detailDeptColumn.indexOf(parseInt(item.penolak_id, 10));
+
+                    // Pastikan nilai yang ditemukan adalah indeks yang valid
+                    let penolakDetailDeptName = searchDetailDeptId !== -1 ? allDetailDepts[
+                        searchDetailDeptId].name : null;
+
                     // untuk mencari data penolak dari session all_user dengan penolak_id
-                            let userIndex = userAll.map(user => user.id).indexOf(Number(item
-                                .penolak_id));
-                            $('#modalAreaPart').append(`
+                    let userIndex = userAll.map(user => user.id).indexOf(Number(item
+                        .penolak_id));
+                    $('#modalAreaPart').append(`
                                 <div class="modal inmodal" id="${item.id}" tabindex="-1" role="dialog" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content animated fadeIn">
@@ -246,10 +264,34 @@
                                                     </div>
                                                     <div class="col-12">
                                                         <div class="row bg-white">
-                                                            <div class="col-6 p-3 border border-dark "><img src="{{ asset('img/areaPart/') }}/${item.foto_ke_satu}" alt="" class="fotoLimitSample"></div>
-                                                            <div class="col-6 p-3 border border-dark "><img src="{{ asset('img/areaPart/') }}/${item.foto_ke_dua}" alt="" class="fotoLimitSample"></div>
-                                                            <div class="col-6 p-3 border border-dark "><img src="{{ asset('img/areaPart/') }}/${item.foto_ke_tiga}" alt="" class="fotoLimitSample"></div>
-                                                            <div class="col-6 p-3 border border-dark "><img src="{{ asset('img/areaPart/') }}/${item.foto_ke_empat}" alt="" class="fotoLimitSample"></div>
+                                                            <div class="col-6 p-3 border border-dark ">
+                                                                 <a href="{{ asset('img/areaPart/') }}/${item.foto_ke_satu}"
+                                                        data-lightbox="foto${item.id}" data-title="Foto 1">
+                                                                <img src="{{ asset('img/areaPart/') }}/${item.foto_ke_satu}" alt="" class="fotoLimitSample">
+                                                                </a>
+
+                                                                </div>
+                                                            <div class="col-6 p-3 border border-dark ">
+                                            <a href="{{ asset('img/areaPart/') }}/${item.foto_ke_dua}"
+                                                        data-lightbox="foto${item.id}" data-title="Foto 2">
+                                                                <img src="{{ asset('img/areaPart/') }}/${item.foto_ke_dua}" alt="" class="fotoLimitSample">
+                                                                </a>
+
+                                                                </div>
+                                                            <div class="col-6 p-3 border border-dark ">
+                                            <a href="{{ asset('img/areaPart/') }}/${item.foto_ke_tiga}"
+                                                            data-lightbox="foto${item.id}" data-title="Foto 3">
+                                                                <img src="{{ asset('img/areaPart/') }}/${item.foto_ke_tiga}" alt="" class="fotoLimitSample">
+                                                                </a>
+
+                                                                </div>
+                                                            <div class="col-6 p-3 border border-dark ">
+                                            <a href="{{ asset('img/areaPart/') }}/${item.foto_ke_empat}"
+                                                            data-lightbox="foto${item.id}" data-title="Foto 4">
+                                                                <img src="{{ asset('img/areaPart/') }}/${item.foto_ke_empat}" alt="" class="fotoLimitSample">
+                                                                </a>
+
+                                                                </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-12 text-left p-2 border border-dark text-dark" style="background-color: #ffffff;">
@@ -272,28 +314,28 @@
                                                             <div class="col-3 p-1 border border-dark ">
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
-                                                                ${item.sec_head_approval_date2 ? `
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date2} </strong></p>
-                                                                                                ` : ` `}
+                                                                ${item.sec_head_approval_date1 ? `
+                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date2} </strong></p>
+                                                                                                    ` : ` `}
 
-                                                                ${item.status == 'tolak' && item.penolak_id == 16 && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                ` : `<br><br>`}
+                                                                ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Control' && item.penolak_posisi == 'Supervisor' ? `
+                                                                                                        <br><p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                    ` : `<br><br>`}
                                                                 <br>
                                                                 <p><strong>Section Head 1</strong></p>
                                                             </div>
                                                             <div class="col-3 p-1 border border-dark ">
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
-                                                                ${item.sec_head_approval_date1 ? `
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
-                                                                                                ` : ` `}
+                                                                ${item.sec_head_approval_date2 ? `
+                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
+                                                                                                    ` : ` `}
 
-                                                                ${item.status == 'tolak' && item.penolak_id == 15 && item.penolak_posisi == 'Supervisor' ? `
-                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                ` : `<br><br>`}
+                                                                ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Assurance' && item.penolak_posisi == 'Supervisor' ? `
+                                                                                                        <br><p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                    ` : `<br><br>`}
                                                                 <br>
                                                                 <p><strong>Section Head 2</strong></p>
                                                             </div>
@@ -301,12 +343,12 @@
                                                                 <p><strong>Approval</strong></p>
                                                                 <br>
                                                                 ${item.dept_head_approval_date ? `
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
-                                                                                                    <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
-                                                                                                ` : ` `}
+                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Sudah diApprove </strong></p>
+                                                                                                        <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.dept_head_approval_date} </strong></p>
+                                                                                                    ` : ` `}
                                                                 ${item.status == 'tolak' && item.penolak_posisi == 'Department Head' ? `
-                                                                                                    <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
-                                                                                                ` : `<br><br>`}
+                                                                                                        <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
+                                                                                                    ` : `<br><br>`}
                                                                 <br>
                                                                 <p><strong>Departemen Head</strong></p>
                                                             </div>
@@ -314,12 +356,12 @@
                                                     </div>
                                                     ${item.status == 'tolak'?
                                                     `<div class="col-12 bg-white text-left p-2 border border-dark text-dark">
-                                                                                    <p> <strong> Informasi Penolakan</strong></p>
-                                                                                    <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
-                                                                                    <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
-                                                                                    <br>
+                                                                                        <p> <strong> Informasi Penolakan</strong></p>
+                                                                                        <p>  Tanggal Penolakan :<strong> ${item.penolakan_date}</strong></p>
+                                                                                        <p>  Catatan Penolakan :<strong> ${item.penolakan}</strong></p>
+                                                                                        <br>
 
-                                                                                </div>`
+                                                                                    </div>`
                                                     :` `}
                                                 </div>
                                             </div>
@@ -330,7 +372,7 @@
                                     </div>
                                 </div>
                             `);
-                        });
+                });
             },
             error: function(xhr, status, error) {
                 console.error('AJAX Error: ', status, error);

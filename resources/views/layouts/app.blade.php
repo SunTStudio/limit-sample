@@ -34,50 +34,55 @@
                             LS
                         </div>
                     </li>
-                    @if (
-                        in_array('Admin', session('roles', [])) ||
-                        (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') || (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '16') ||
-                        (in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15')
-                    )
-
-                    <li class="{{ Request::is('/*') ? 'active' : '' }}">
-                        <a href="{{ url('/') }}"><i class="fa fa-dashboard"></i><span class="nav-label">Dashboard</span></a>
-                    </li>
+                    @if (in_array('AdminLS', session('roles', [])) ||
+                            (in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control') ||
+                            (in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Assurance') ||
+                            (in_array('Department Head', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control'))
+                        <li class="{{ Request::is('/*') ? 'active' : '' }}">
+                            <a href="{{ url('/') }}"><i class="fa fa-dashboard"></i><span
+                                    class="nav-label">Dashboard</span></a>
+                        </li>
                     @endif
                     <li class="{{ Request::is('limit-sample*') ? 'active' : '' }}">
                         <a href="{{ url('/limit-sample/model') }}"><i class="fa fa-th-large"></i><span
                                 class="nav-label">Limit Sample</span></a>
                     </li>
                     <li class="{{ Request::is('all-limit-sample*') ? 'active' : '' }}">
-                        <a href="{{ url('/all-limit-sample') }}"><i class="fa fa-th"></i><span
-                                class="nav-label">All Limit Sample</span></a>
+                        <a href="{{ url('/all-limit-sample') }}"><i class="fa fa-th"></i><span class="nav-label">All
+                                Limit Sample</span></a>
                     </li>
-                    @if ((in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') || (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '16') ||
-                    (in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15'))
-                    <li class="{{ Request::is('need-approve*') ? 'active' : '' }}">
-                        <a href="{{ url('/need-approve') }}"><i class="fa fa-clock-o"></i><span
-                                class="nav-label">Need Approve</span></a>
-                    </li>
-                    @endif
                     @if (
-                        in_array('Admin', session('roles', [])) ||
-                        (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '15') || (in_array('Supervisor', session('roles', [])) && session('user')['detail_dept_id'] == '16') ||
-                        (in_array('Department Head', session('roles', [])) && session('user')['detail_dept_id'] == '15')
-                    )
-                    <li class="{{ Request::is('activity') ? 'active' : '' }}">
-                        <a href="{{ url('/activity') }}"><i class="fa fa-user-o"></i><span class="nav-label">Activity</span></a>
-                    </li>
-                    <li class="{{ Request::is('*expired') ? 'active' : '' }}">
-                        <a href="#"><i class="fa fa-warning"></i> <span class="nav-label">Expired</span><span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level collapse">
-                            <li class="{{ Request::is('all-expired') ? 'active' : '' }}"><a href="{{ route('limitSample.allExpired') }}">Sudah Expired</a></li>
-                            <li class="{{ Request::is('will-expired') ? 'active' : '' }}"><a href="{{ route('limitSample.willExpired') }}">Akan Expired</a></li>
-                            {{-- <li><a href="carousel.html">Dilaporkan</a></li> --}}
-                        </ul>
-                    </li>
-                    <li class="{{ Request::is('arsip') ? 'active' : '' }}">
-                        <a href="{{ url('/arsip') }}"><i class="fa fa-history"></i><span class="nav-label">Arsip</span></a>
-                    </li>
+                        (in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control') ||
+                            (in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Assurance') ||
+                            (in_array('Department Head', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control'))
+                        <li class="{{ Request::is('need-approve*') ? 'active' : '' }}">
+                            <a href="{{ url('/need-approve') }}"><i class="fa fa-clock-o"></i><span
+                                    class="nav-label">Need Approve</span></a>
+                        </li>
+                    @endif
+                    @if (in_array('AdminLS', session('roles', [])) ||
+                            (in_array('Supervisor', session('roles', [])) &&
+                                (session('user_detail_dept_name') == 'Quality Control' || session('user_detail_dept_name') == 'Quality Assurance')) ||
+                            (in_array('Department Head', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control'))
+                        <li class="{{ Request::is('activity') ? 'active' : '' }}">
+                            <a href="{{ url('/activity') }}"><i class="fa fa-user-o"></i><span
+                                    class="nav-label">Activity</span></a>
+                        </li>
+                        <li class="{{ Request::is('*expired') ? 'active' : '' }}">
+                            <a href="#"><i class="fa fa-warning"></i> <span class="nav-label">Expired</span><span
+                                    class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level collapse">
+                                <li class="{{ Request::is('all-expired') ? 'active' : '' }}"><a
+                                        href="{{ route('limitSample.allExpired') }}">Sudah Expired</a></li>
+                                <li class="{{ Request::is('will-expired') ? 'active' : '' }}"><a
+                                        href="{{ route('limitSample.willExpired') }}">Akan Expired</a></li>
+                                {{-- <li><a href="carousel.html">Dilaporkan</a></li> --}}
+                            </ul>
+                        </li>
+                        <li class="{{ Request::is('arsip') ? 'active' : '' }}">
+                            <a href="{{ url('/arsip') }}"><i class="fa fa-history"></i><span
+                                    class="nav-label">Arsip</span></a>
+                        </li>
                     @endif
                     {{-- <li id="managementMenu">
                         <a href="#"><i class="fa fa-th-large"></i><span class="nav-label">Manajemen Perpus</span><span class="fa arrow"></span></a>
@@ -125,22 +130,24 @@
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
-                            <span class="m-r-sm text-muted welcome-message">{{ ucwords(session('user')['name']) }}</span>
+                            <span
+                                class="m-r-sm text-muted welcome-message">{{ ucwords(session('user')['name']) }}</span>
                         </li>
                         @if (session('status_login') != 'local')
-                        <li class="pr-3 d-inline">
-                            <a href="{{ url('http://10.14.179.250:2222/dashboard') }}" class="p-0 pt-2"><button  class="btn btn-secondary">Ke Portal</button></a>
-                        </li>
+                            <li class="pr-3 d-inline">
+                                <a href="{{ url('http://10.14.179.250:2222/dashboard') }}" class="p-0 pt-2"><button
+                                        class="btn btn-secondary">Ke Portal</button></a>
+                            </li>
                         @endif
                         @if (session('status_login') == 'local')
-                        <li class="pr-3">
-                            <form action="{{ route('logout') }}" method="POST" id="logoutForm">
-                                @csrf
-                                <button type="submit" class="btn btn-danger" id="logoutBtn">
-                                    <i class="fa fa-sign-out"></i> Log out
-                                </button>
-                            </form>
-                        </li>
+                            <li class="pr-3">
+                                <form action="{{ route('logout') }}" method="POST" id="logoutForm">
+                                    @csrf
+                                    <button type="submit" class="btn btn-danger" id="logoutBtn">
+                                        <i class="fa fa-sign-out"></i> Log out
+                                    </button>
+                                </form>
+                            </li>
                         @endif
                     </ul>
                 </nav>

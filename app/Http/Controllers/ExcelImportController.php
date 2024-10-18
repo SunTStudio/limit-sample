@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\AreaPart; // Ganti dengan nama model Anda
+use App\Models\AreaPart; 
 use App\Models\ModelPart;
 use App\Models\Part;
 use App\Models\PartArea;
@@ -11,12 +11,14 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Zip;
-
+use ZipArchive;
+use Illuminate\Support\Facades\File;
 class ExcelImportController extends Controller
 {
     public function import(Request $request, $id)
     {
         $partArea = PartArea::find($id);
+        $lastIdAreapart = AreaPart::orderByDesc('id')->first();
         $part = Part::find($partArea->part_id);
         $modelPart = ModelPart::find($part->model_part_id);
 
@@ -30,16 +32,35 @@ class ExcelImportController extends Controller
         $zipPath = $request->file('zip_file')->store('temp', 'public');
 
         // Lokasi direktori tujuan ekstraksi
-        $extractTo = public_path('img/areaPart');
+        $extractTo = 'public/img/areaPart';
 
-        // Buka dan ekstrak file zip
-        $zip = Zip::open(storage_path('app/public/' . $zipPath));
+        // Buka dan ekstrak file zip menggunakan ZipArchive
+        $zip = new ZipArchive();
+        $res = $zip->open(storage_path('app/public/' . $zipPath));
 
-        // Ekstrak semua file ke direktori public/img
-        $zip->extract($extractTo);
+        if ($res === true) {
+            // Iterasi setiap file dalam zip
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $fileName = $zip->getNameIndex($i);
 
-        // Tutup zip setelah diekstrak
-        $zip->close();
+                // Pastikan hanya memproses file yang merupakan gambar (ekstensi .jpg, .jpeg, .png, .gif)
+                $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+                if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])) {
+                    // Buat nama baru dengan menambahkan '1' sebelum ekstensi file
+                    $newFileName = $lastIdAreapart->id . pathinfo($fileName, PATHINFO_FILENAME) . '.' . $fileExtension;
+                    // Ekstrak file ke lokasi sementara
+                    $zip->extractTo(storage_path('app/temp/'), $fileName);
+                    $sourceFilePath = storage_path('app/temp/' . $fileName);
+                    $destinationFilePath = public_path('img/areaPart/' . $newFileName);
+                    // Pindahkan dan rename file ke direktori tujuan
+                    File::move($sourceFilePath, $destinationFilePath);
+                }
+            }
+            // Tutup zip setelah selesai
+            $zip->close();
+        } else {
+            echo 'Failed to open the zip file!';
+        }
 
         // Hapus file zip setelah diekstrak
         Storage::disk('public')->delete($zipPath);
@@ -65,13 +86,12 @@ class ExcelImportController extends Controller
             // Mengambil tanggal efektif dan kedaluwarsa
             $effective_date = $row['E'];
             $expired_date = $row['F'];
-            $lastAreaPartId = AreaPart::latest()->pluck('id')->first();
+            $lastAreaPartId = AreaPart::orderByDesc('id')->pluck('id')->first();
             if ($lastAreaPartId == null) {
                 $lastAreaPartId = 1;
             } else {
                 $lastAreaPartId++;
             }
-
             AreaPart::create([
                 'model_part_id' => $modelPart->id,
                 'part_id' => $part->id,
@@ -87,10 +107,10 @@ class ExcelImportController extends Controller
                 'appearance' => $row['I'],
                 'jumlah' => $row['J'],
                 'metode_pengecekan' => $row['K'],
-                'foto_ke_satu' => $row['L'],
-                'foto_ke_dua' => $row['M'],
-                'foto_ke_tiga' => $row['N'],
-                'foto_ke_empat' => $row['O'],
+                'foto_ke_satu' => $lastIdAreapart->id . $row['L']  ,
+                'foto_ke_dua' =>$lastIdAreapart->id . $row['M'] ,
+                'foto_ke_tiga' =>$lastIdAreapart->id . $row['N'] ,
+                'foto_ke_empat' =>$lastIdAreapart->id . $row['O'] ,
                 'sec_head_approval_date1' => $row['P'] ?? null,
                 'sec_head_approval_date2' => $row['Q'] ?? null,
                 'dept_head_approval_date' => $row['R'] ?? null,

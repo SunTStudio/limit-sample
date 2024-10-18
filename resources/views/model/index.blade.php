@@ -44,7 +44,7 @@
                     </form>
                 </div>
             </div>
-            @hasRole('Admin')
+            @hasRole('AdminLS')
                 <div class="col-lg-2 col-10 text-center  mb-3">
                     <a href="{{ url('/limit-sample/model/create') }}" class="btn btn-secondary ">Tambah Model <i
                             class="fa fa-plus"></i></a>
@@ -72,13 +72,13 @@
                                         <a href="{{ url("/limit-sample/model/$model->id/part") }}"
                                             class="btn btn-xs btn-outline btn-primary">See Detail <i
                                                 class="fa fa-long-arrow-right"></i> </a>
-                                        @hasRole('Admin')
+                                        @hasRole('AdminLS')
                                             <a href="{{ url("/limit-sample/model/edit/$model->id") }}"
                                                 class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i>
                                             </a>
                                         @endhasRole
                                     </div>
-                                    @hasRole('Admin')
+                                    @hasRole('AdminLS')
                                         <div class="d-flex">
 
                                             <form action="{{ url("/limit-sample/model/delete/$model->id") }}" method="POST"
@@ -178,7 +178,7 @@
                                     <a href="{{ url('/limit-sample/model/') }}/${data}/part" class="btn btn-sm btn-primary m-1">
                                         See Detail
                                     </a>
-                                    ${dataRoles == 'Admin' ? `
+                                    ${dataRoles == 'AdminLS' ? `
                                                 <a href="{{ url('/limit-sample/model/edit/') }}/${data}" class="btn btn-sm btn-primary m-1">
                                                     Edit
                                                 </a>
@@ -262,12 +262,12 @@
                                                 <div class="m-t text-right d-flex justify-content-between align-items-center">
                                                     <div>
                                                         <a href="{{ url('/limit-sample/model/') }}/${item.id}/part" class="btn btn-xs btn-outline btn-primary">See Detail <i class="fa fa-long-arrow-right"></i></a>
-                                                                    @hasRole('Admin')
+                                                                    @hasRole('AdminLS')
 
                                                             <a href="{{ url('/limit-sample/model/edit/') }}/${item.id}" class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i></a>
                                                         @endhasRole
                                                     </div>
-                                                                @hasRole('Admin')
+                                                                @hasRole('AdminLS')
 
                                                         <div>
                                                             <form action="{{ url('/limit-sample/model/delete/') }}/${item.id}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Model ini?');">

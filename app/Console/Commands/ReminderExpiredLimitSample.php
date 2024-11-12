@@ -43,11 +43,17 @@ class ReminderExpiredLimitSample extends Command
      */
     public function handle()
     {
+        $users = User::all();
         //reminder dokumen limit sample yang sudah expired
         $areaParts = AreaPart::where('expired_date', '>' ,Carbon::now()->format('Y-m-d'))->with(['parts','modelPart','partArea'])->select('part_area_id','part_id','model_part_id','expired_date')->groupBy('part_area_id','part_id','model_part_id','expired_date')->get();
         if($areaParts->count() > 0)
         {
-            Mail::to('mahsunmuh0@gmail.com')->send(new ReminderLSExpired($areaParts));
+            foreach($users as $user){
+                if($user->hasRole('AdminLS')){
+                    // dump($user->email,$user->hasRole('AdminLS'));
+                    Mail::to($user->email)->send(new ReminderLSExpired($areaParts));
+                }
+            }
         }
 
 

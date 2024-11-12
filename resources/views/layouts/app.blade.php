@@ -34,10 +34,10 @@
                             LS
                         </div>
                     </li>
-                    @if (in_array('AdminLS', session('roles', [])) ||
-                            (in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control') ||
-                            (in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Assurance') ||
-                            (in_array('Department Head', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control'))
+                    @if (auth()->user()->hasRole('AdminLS') ||
+                            (auth()->user()->position->position == 'Supervisor' && auth()->user()->id == $secHead1->user_id) ||
+                            (auth()->user()->position->position == 'Supervisor' && auth()->user()->id == $secHead2->user_id) ||
+                            (auth()->user()->position->position == 'Department Head') && auth()->user()->id == $DeptHead->user_id)
                         <li class="{{ Request::is('/*') ? 'active' : '' }}">
                             <a href="{{ url('/') }}"><i class="fa fa-dashboard"></i><span
                                     class="nav-label">Dashboard</span></a>
@@ -52,18 +52,19 @@
                                 Limit Sample</span></a>
                     </li>
                     @if (
-                        (in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control') ||
-                            (in_array('Supervisor', session('roles', [])) && session('user_detail_dept_name') == 'Quality Assurance') ||
-                            (in_array('Department Head', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control'))
+                        (auth()->user()->position->position == 'Supervisor' && auth()->user()->id == $secHead1->user_id) ||
+                            (auth()->user()->position->position == 'Supervisor' && auth()->user()->id == $secHead2->user_id) ||
+                            (auth()->user()->position->position == 'Department Head') && auth()->user()->id == $DeptHead->user_id)
                         <li class="{{ Request::is('need-approve*') ? 'active' : '' }}">
                             <a href="{{ url('/need-approve') }}"><i class="fa fa-clock-o"></i><span
                                     class="nav-label">Need Approve</span></a>
                         </li>
                     @endif
-                    @if (in_array('AdminLS', session('roles', [])) ||
-                            (in_array('Supervisor', session('roles', [])) &&
-                                (session('user_detail_dept_name') == 'Quality Control' || session('user_detail_dept_name') == 'Quality Assurance')) ||
-                            (in_array('Department Head', session('roles', [])) && session('user_detail_dept_name') == 'Quality Control'))
+                    @if (auth()->user()->hasRole('AdminLS') ||
+                            (auth()->user()->position->position == 'Supervisor' &&
+                                (auth()->user()->id == $secHead1->user_id ||
+                                    auth()->user()->id == $secHead2->user_id)) ||
+                            (auth()->user()->position->position == 'Department Head') && auth()->user()->id == $DeptHead->user_id)
                         <li class="{{ Request::is('activity') ? 'active' : '' }}">
                             <a href="{{ url('/activity') }}"><i class="fa fa-user-o"></i><span
                                     class="nav-label">Activity</span></a>
@@ -76,6 +77,8 @@
                                         href="{{ route('limitSample.allExpired') }}">Sudah Expired</a></li>
                                 <li class="{{ Request::is('will-expired') ? 'active' : '' }}"><a
                                         href="{{ route('limitSample.willExpired') }}">Akan Expired</a></li>
+                                <li class="{{ Request::is('ditolak') ? 'active' : '' }}"><a
+                                        href="{{ route('limitSample.ditolak') }}">Ditolak</a></li>
                                 {{-- <li><a href="carousel.html">Dilaporkan</a></li> --}}
                             </ul>
                         </li>
@@ -83,6 +86,12 @@
                             <a href="{{ url('/arsip') }}"><i class="fa fa-history"></i><span
                                     class="nav-label">Arsip</span></a>
                         </li>
+                        @if (auth()->user()->hasRole('AdminLS'))
+                        <li class="{{ Request::is('manage-access') ? 'active' : '' }}">
+                            <a href="{{ url('/manage-access') }}"><i class="fa fa-users"></i><span
+                                    class="nav-label">Manage Access</span></a>
+                        </li>
+                        @endif
                     @endif
                     {{-- <li id="managementMenu">
                         <a href="#"><i class="fa fa-th-large"></i><span class="nav-label">Manajemen Perpus</span><span class="fa arrow"></span></a>
@@ -135,7 +144,7 @@
                         </li>
                         @if (session('status_login') != 'local')
                             <li class="pr-3 d-inline">
-                                <a href="{{ url('http://10.14.179.250:2222/dashboard') }}" class="p-0 pt-2"><button
+                                <a href="{{ url('/toPortal') }}" class="p-0 pt-2"><button
                                         class="btn btn-secondary">Ke Portal</button></a>
                             </li>
                         @endif

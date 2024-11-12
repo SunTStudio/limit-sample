@@ -6,6 +6,7 @@ use App\Mail\NeedApprovalMail;
 use App\Mail\TolakLimitSampleMail;
 use App\Models\AreaPart;
 use App\Models\Characteristics;
+use App\Models\ManageAccess;
 use App\Models\ModelPart;
 use App\Models\Part;
 use App\Models\PartArea;
@@ -28,9 +29,14 @@ class AreaPartController extends Controller
      */
     public function index($id)
     {
+        $secHead1 = ManageAccess::where('peran','Section Head 1')->first();
+        $secHead2 = ManageAccess::where('peran','Section Head 2')->first();
+        $DeptHead = ManageAccess::where('peran','Department Head')->first();
+
         $part = Part::find($id);
         $model = ModelPart::find($part->model_part_id);
-        if (in_array('Guest', session('roles', []))) {
+
+        if ((auth()->user()->id != $secHead1->user_id && auth()->user()->id != $secHead2->user_id && auth()->user()->id != $DeptHead->user_id) && !auth()->user()->hasRole('AdminLS') ) {
             $partAreas = PartArea::has('areaPart')
                 ->whereHas(
                     'areaPart',
@@ -50,7 +56,7 @@ class AreaPartController extends Controller
         } else {
             $partAreas = PartArea::where('part_id', $id)->get();
         }
-        return response()->view('areaPart.index', compact('part', 'partAreas', 'model'));
+        return response()->view('areaPart.index', compact('secHead1','secHead2','DeptHead','part', 'partAreas', 'model'));
     }
 
     public function katalog($id)
@@ -59,8 +65,12 @@ class AreaPartController extends Controller
         $part = Part::find($partArea->part_id);
         $model = ModelPart::find($part->model_part_id);
         $characteristics = Characteristics::all();
+        $secHead1 = ManageAccess::where('peran','Section Head 1')->first();
+        $secHead2 = ManageAccess::where('peran','Section Head 2')->first();
+        $DeptHead = ManageAccess::where('peran','Department Head')->first();
+        $user_id = auth()->user()->id;
 
-        if (in_array('Guest', session('roles', []))) {
+        if ((auth()->user()->id != $secHead1->user_id && auth()->user()->id != $secHead2->user_id && auth()->user()->id != $DeptHead->user_id) && !auth()->user()->hasRole('AdminLS') ) {
             $count = $partArea->count_visit;
             $count++;
             $partArea->update([
@@ -68,7 +78,7 @@ class AreaPartController extends Controller
             ]);
         }
 
-        if (in_array('Guest', session('roles', []))) {
+        if ((auth()->user()->id != $secHead1->user_id && auth()->user()->id != $secHead2->user_id && auth()->user()->id != $DeptHead->user_id) && !auth()->user()->hasRole('AdminLS') ) {
             $AreaParts = AreaPart::where('part_area_id', $id)
                 ->where('expired_date', '>', Carbon::now()->format('Y-m-d'))
                 ->where(function ($query) {
@@ -79,7 +89,7 @@ class AreaPartController extends Controller
             $AreaParts = AreaPart::where('part_area_id', $id)->simplePaginate();
         }
 
-        return response()->view('areaPart.katalog', compact('part', 'partArea', 'model', 'AreaParts', 'characteristics'));
+        return response()->view('areaPart.katalog', compact('user_id','secHead1','secHead2','DeptHead','part', 'partArea', 'model', 'AreaParts', 'characteristics'));
     }
 
     /**
@@ -89,7 +99,7 @@ class AreaPartController extends Controller
      */
     public function create($id)
     {
-        // if(in_array('Guest', session('roles', []))){
+        // if((auth()->user()->id != $secHead1->user_id && auth()->user()->id != $secHead2->user_id && auth()->user()->id != $DeptHead->user_id) && !auth()->user()->hasRole('AdminLS') ){
         //     return redirect()->route('areaPart.katalog',['id' => $id]);
         // }
         $areaParts = AreaPart::where('part_area_id', $id)->get();
@@ -327,41 +337,10 @@ class AreaPartController extends Controller
         //kirim data yang sudah dibuat ke email untuk review sec head and Dept Head
         $emailData = AreaPart::latest()->first();
 
-        //mengambil data session Posisi dari web utama
-        $allPositions = session('all_positions', []);
-        $detailPostColumn = array_column($allPositions, 'id');
-
-        //mengambil data session detail departement dari web utama
-        $allDetailDepts = session('all_detail_dept', []);
-        $detailDeptColumn = array_column($allDetailDepts, 'id');
-
-        //mengambil data session departement dari web utama
-        $allDepts = session('all_depts', []);
-        $DeptColumn = array_column($allDepts, 'id');
-
-
-
-        //mengambil nama Dept Head
-        $semuaUsers = session('all_users');
-        foreach ($semuaUsers as $semuaUser) {
-            //mengambil nama Position
-            $searchPositionId = array_search($semuaUser['position_id'], $detailPostColumn);
-            $PositionName = $allPositions[$searchPositionId]['position'];
-            //mengambil nama detail Departement
-            $searchDetailDeptId = array_search($semuaUser['detail_dept_id'], $detailDeptColumn);
-            $DetailDeptName = $allDetailDepts[$searchDetailDeptId]['name'];
-            //mengambil nama departement
-            $searchDeptId = array_search($semuaUser['dept_id'], $DeptColumn);
-            $DeptName = $allDepts[$searchDeptId]['name'];
-
-            //kondisi untuk kirim email ke sechead dan dept head
-            if ($PositionName == 'Dept Head' && $DetailDeptName == 'Quality Control' && $DeptName == 'PEQUALITY') {
-                //send Mail Ke Sec Head dan Dept Head
-                Mail::to($semuaUser['email'])->send(new NeedApprovalMail($emailData, $semuaUser['name']));
-            } elseif ($PositionName == 'Supervisor' && ($DetailDeptName == 'Quality Control' || $DetailDeptName == 'Quality Assurance') && $DeptName == 'PEQUALITY') {
-                //send Mail Ke Sec Head dan Dept Head
-                Mail::to($semuaUser['email'])->send(new NeedApprovalMail($emailData, $semuaUser['name']));
-            }
+        $usersLS =ManageAccess::all();
+        foreach($usersLS as $userLS)
+        {
+            Mail::to($userLS->user->email)->send(new NeedApprovalMail($emailData, $userLS->user->name));
         }
 
         // Redirect atau return ke halaman lain dengan pesan sukses
@@ -435,11 +414,14 @@ class AreaPartController extends Controller
 
     public function tolakSecHead(Request $request, $id)
     {
+        $secHead1 = ManageAccess::where('peran','Section Head 1')->first();
+        $secHead2 = ManageAccess::where('peran','Section Head 2')->first();
+        $DeptHead = ManageAccess::where('peran','Department Head')->first();
         $areaPart = AreaPart::find($id);
         $partArea = PartArea::find($areaPart->part_area_id);
         $part = Part::find($areaPart->part_id);
         $model = ModelPart::find($part->model_part_id);
-        return response()->view('areaPart.tolakLimitSample', compact('part', 'areaPart', 'model', 'partArea'));
+        return response()->view('areaPart.tolakLimitSample', compact('secHead1','secHead2','DeptHead','part', 'areaPart', 'model', 'partArea'));
     }
 
     public function tolakSecHeadProsses(Request $request, $id)
@@ -460,44 +442,26 @@ class AreaPartController extends Controller
         $part = Part::find($areaPart->part_id);
         $model = ModelPart::find($part->model_part_id);
 
-        //mengambil data session Posisi dari web utama
-        $allPositions = session('all_positions', []);
-        $detailPostColumn = array_column($allPositions, 'id');
-
-        //mengambil data session detail departement dari web utama
-        $allDetailDepts = session('all_detail_dept', []);
-        $detailDeptColumn = array_column($allDetailDepts, 'id');
-
-        //mengambil data session departement dari web utama
-        $allDepts = session('all_depts', []);
-        $DeptColumn = array_column($allDepts, 'id');
-
         //kirim data yang sudah dibuat ke email untuk informasi Penolakan ke sec head and Dept Head
         $emailData = AreaPart::find($id);
-        //mengambil nama Dept Head
-        $semuaUsers = session('all_users');
-        foreach ($semuaUsers as $semuaUser) {
-            //mengambil nama Position
-            $searchPositionId = array_search($semuaUser['position_id'], $detailPostColumn);
-            $PositionName = $allPositions[$searchPositionId]['position'];
-            //mengambil nama detail Departement
-            $searchDetailDeptId = array_search($semuaUser['detail_dept_id'], $detailDeptColumn);
-            $DetailDeptName = $allDetailDepts[$searchDetailDeptId]['name'];
-            //mengambil nama departement
-            $searchDeptId = array_search($semuaUser['dept_id'], $DeptColumn);
-            $DeptName = $allDepts[$searchDeptId]['name'];
 
-            if ($PositionName == 'Dept Head' && $DetailDeptName == 'Quality Control' && $DeptName == 'PEQUALITY') {
-                //send Mail ke Dept Head
-                Mail::to($semuaUser['email'])->send(new TolakLimitSampleMail($emailData, $semuaUser['name']));
-            } elseif ($PositionName == 'Supervisor' && ($DetailDeptName == 'Quality Control' || $DetailDeptName == 'Quality Assurance') && $DeptName == 'PEQUALITY') {
-                //send Mail Ke Sec Head
-                Mail::to($semuaUser['email'])->send(new TolakLimitSampleMail($emailData, $semuaUser['name']));
-            } elseif ($semuaUser['username'] == 'adminLS') {
-                //send Mail ke Admin
-                Mail::to($semuaUser['email'])->send(new TolakLimitSampleMail($emailData, $semuaUser['name']));
+        //email ke sechead dan depthead
+        $usersLS =ManageAccess::all();
+        foreach($usersLS as $userLS)
+        {
+            Mail::to($userLS->user->email)->send(new NeedApprovalMail($emailData, $userLS->user->name));
+        }
+
+        //email ke editor
+        $usersall = User::all();
+        foreach($usersall as $userall)
+        {
+            if($userall->hasRole('AdminLS'))
+            {
+                Mail::to($userall->email)->send(new NeedApprovalMail($emailData, $userLS->user->name));
             }
         }
+
         return redirect()
             ->route('areaPart.katalog', ['id' => $areaPart->part_area_id])
             ->with('success', 'Limit Sample Berhasil di Tolak');
@@ -529,9 +493,30 @@ class AreaPartController extends Controller
         $partArea = PartArea::find($areaPart->part_area_id);
         $part = Part::find($areaPart->part_id);
         $model = ModelPart::find($part->model_part_id);
+
+        //kirim data yang sudah dibuat ke email untuk informasi Penolakan ke sec head and Dept Head
+        $emailData = AreaPart::find($id);
+
+        //email ke sechead dan depthead
+        $usersLS =ManageAccess::all();
+        foreach($usersLS as $userLS)
+        {
+            Mail::to($userLS->user->email)->send(new NeedApprovalMail($emailData, $userLS->user->name));
+        }
+
+        //email ke editor
+        $usersall = User::all();
+        foreach($usersall as $userall)
+        {
+            if($userall->hasRole('AdminLS'))
+            {
+                Mail::to($userall->email)->send(new NeedApprovalMail($emailData, $userLS->user->name));
+            }
+        }
+
         return redirect()
             ->route('areaPart.katalog', ['id' => $areaPart->part_area_id])
-            ->with('success', 'Limit Sample Berhasil di Approve');
+            ->with('success', 'Limit Sample Berhasil di Tolak!');
     }
 
     /**
@@ -809,13 +794,16 @@ class AreaPartController extends Controller
 
     public function katalogSearch(Request $request, $id)
     {
+        $secHead1 = ManageAccess::where('peran','Section Head 1')->first();
+        $secHead2 = ManageAccess::where('peran','Section Head 2')->first();
+        $DeptHead = ManageAccess::where('peran','Department Head')->first();
         $partArea = PartArea::find($id);
         $part = Part::find($partArea->part_id);
         $model = ModelPart::find($part->model_part_id);
         if ($request->ajax()) {
             // Jika AJAX, ambil parameter pencarian
             $searchTerm = $request->input('query');
-            if (in_array('Guest', session('roles', []))) {
+            if ((auth()->user()->id != $secHead1->user_id && auth()->user()->id != $secHead2->user_id && auth()->user()->id != $DeptHead->user_id) && !auth()->user()->hasRole('AdminLS') ) {
                 $AreaParts = AreaPart::with(['modelPart'])
                     ->where('part_area_id', $id)
                     ->where(function ($query) {
@@ -831,7 +819,7 @@ class AreaPartController extends Controller
             }
             return response()->json($AreaParts);
         } else {
-            if (in_array('Guest', session('roles', []))) {
+            if ((auth()->user()->id != $secHead1->user_id && auth()->user()->id != $secHead2->user_id && auth()->user()->id != $DeptHead->user_id) && !auth()->user()->hasRole('AdminLS') ) {
                 $AreaParts = AreaPart::with(['modelPart'])
                     ->where('part_area_id', $id)
                     ->where(function ($query) {

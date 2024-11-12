@@ -38,7 +38,7 @@
                         value="" required>
                 </div>
                 <div class="form-group">
-                    <input type="hidden" class="form-control" name="password" placeholder="Password" value="guest123">
+                    <input type="hidden" class="form-control" name="password" placeholder="Password" value="admin123">
                 </div>
                 <button type="submit" class="btn btn-info block full-width m-b"
                     style="background-color:#225879" id="loginButton">Login</button>

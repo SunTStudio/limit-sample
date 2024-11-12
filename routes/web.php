@@ -23,7 +23,8 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('limitSample.loginProsses');
 // Route::post('/login', [LoginController::class, 'login'])->name('limitSample.loginProsses');
 Route::get('/limit-sample/login-external', [LoginController::class, 'externalLogin'])->name('limitSample.externalLogin');
-Route::post('/directToExternalSite', [LoginController::class, 'directToExternalSite'])->name('limitSample.directToExternalSite');
+Route::post('/loginPortalAJI', [LoginController::class, 'directToExternalSite'])->name('limitSample.directToExternalSite');
+Route::get('/toPortal', [LoginController::class, 'toPortal'])->name('limitSample.toPortal');
 
 // Route::post('/login', [LoginController::class, 'authenticate'])->name('limitSample.loginProsses');
 Route::get('/login-guest', [LoginController::class, 'loginGuest'])->name('loginGuest');
@@ -31,9 +32,9 @@ Route::post('/login-guest', [LoginController::class, 'authenticate'])->name('lim
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/visits-data', [DashboardController::class, 'getVisitsData']);
 
-Route::middleware(['verify.token'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('limitSample.dashboard');
-    Route::get('/limit-sample', [LoginController::class, 'dashboard'])->name('limitSample.dashboard');
+    Route::get('/limit-sample', [LoginController::class, 'dashboard'])->name('limitSample.dashboards');
     Route::get('/all-limit-sample/search', [DashboardController::class, 'allLimitSampleSearch'])->name('limitSample.Allsearch');
     Route::get('/all-limit-sample/search/model', [DashboardController::class, 'allModelSearch'])->name('AllLimitSample.modelSearch');
     Route::get('/all-limit-sample/search/part', [DashboardController::class, 'allPartSearch'])->name('AllLimitSample.partSearch');
@@ -52,6 +53,9 @@ Route::middleware(['verify.token'])->group(function () {
         Route::get('/limit-sample/model/edit/{id}', [ModelPartController::class, 'edit'])->name('model.edit');
         Route::post('/limit-sample/model/edit/{id}', [ModelPartController::class, 'update'])->name('model.update');
         Route::delete('/limit-sample/model/delete/{id}', [ModelPartController::class, 'destroy'])->name('model.delete');
+        Route::get('/manage-access', [DashboardController::class, 'manageAccess'])->name('dashboard.manage.access');
+        Route::post('/manage-access/store', [DashboardController::class, 'manageAccessStore'])->name('manage.access.store');
+
     });
     Route::get('/limit-sample/model/search/', [ModelPartController::class, 'search'])->name('model.search');
     Route::get('/limit-sample/model/list/', [ModelPartController::class, 'listModel'])->name('limitSample.listModel');
@@ -76,7 +80,7 @@ Route::middleware(['verify.token'])->group(function () {
     Route::get('/limit-sample/part/{id}', [AreaPartController::class, 'index'])->name('areaPart.index');
     Route::get('/limit-sample/area-part/{id}', [AreaPartController::class, 'katalog'])->name('areaPart.katalog');
     Route::get('/limit-sample/area-part/search/{id}', [AreaPartController::class, 'katalogSearch'])->name('katalog.search');
-    Route::get('/limit-sample/areaPart/{id}', [AreaPartController::class, 'detail'])->name('areaPart.edit');
+    Route::get('/limit-sample/areaPart/{id}', [AreaPartController::class, 'detail'])->name('area.Part.edit');
     Route::get('/limit-sample/area-part/search/{id}', [AreaPartController::class, 'katalogSearch'])->name('katalog.search');
     Route::get('/limit-sample/area-part/{id}/getDataCharacteristic', [AreaPartController::class, 'getDataCharacteristic'])->name('katalog.getDataCharacteristic');
     Route::get('/limit-sample/area-part/{id}/count', [AreaPartController::class, 'katalogCount'])->name('katalog.count');
@@ -93,6 +97,7 @@ Route::middleware(['verify.token'])->group(function () {
         Route::get('/limit-sample/area-part/{id}/delCharacteristic', [AreaPartController::class, 'delCharacteristic'])->name('katalog.delCharacteristic');
         Route::get('/area-part/export-pdf/{id}', [AreaPartController::class, 'exportPDF'])->name('areaPart.exportPDF');
     });
+
     Route::delete('/limit-sample/areaPart/delete/{id}', [AreaPartController::class, 'destroy'])->name('katalog.delete');
     Route::get('/activity', [DashboardController::class, 'activity'])->name('limitSample.activity');
     Route::get('/getDatatables', [DashboardController::class, 'getDatatables'])->name('guests.datatables');
@@ -101,17 +106,19 @@ Route::middleware(['verify.token'])->group(function () {
     Route::get('/arsip', [DashboardController::class, 'arsip'])->name('limitSample.arsip');
     Route::get('/arsipModal', [DashboardController::class, 'arsipModal'])->name('limitSample.arsipModal');
     Route::get('/need-approve', [DashboardController::class, 'needApprovePage'])->name('limitSample.needApprovePage');
+    Route::get('/ditolak', [DashboardController::class, 'ditolak'])->name('limitSample.ditolak');
+
     //approval
     Route::middleware('role:Supervisor')->group(function () {
         Route::get('/limit-sample/area-part/approve/sechead1/{id}', [AreaPartController::class, 'approvalSecHead1'])->name('katalog.approve.secHead1');
         Route::get('/limit-sample/area-part/approve/sechead2/{id}', [AreaPartController::class, 'approvalSecHead2'])->name('katalog.approve.secHead2');
         Route::get('/limit-sample/area-part/tolak/sechead/{id}', [AreaPartController::class, 'tolakSecHead'])->name('katalog.tolak.secHead');
-        Route::post('/limit-sample/area-part/tolak/sechead/{id}', [AreaPartController::class, 'tolakSecHeadProsses'])->name('katalog.tolak.secHead');
+        Route::post('/limit-sample/area-part/tolak/sechead/{id}', [AreaPartController::class, 'tolakSecHeadProsses'])->name('katalog.tolak.secHead.prosses');
     });
     Route::middleware('role:Department Head')->group(function () {
         Route::get('/limit-sample/area-part/approve/depthead/{id}', [AreaPartController::class, 'approvalDeptHead'])->name('katalog.approve.deptHead');
         Route::get('/limit-sample/area-part/tolak/depthead/{id}', [AreaPartController::class, 'tolakDeptHead'])->name('katalog.tolak.deptHead');
-        Route::post('/limit-sample/area-part/tolak/depthead/{id}', [AreaPartController::class, 'tolakDeptHeadProsses'])->name('katalog.tolak.deptHead');
+        Route::post('/limit-sample/area-part/tolak/depthead/{id}', [AreaPartController::class, 'tolakDeptHeadProsses'])->name('katalog.tolak.deptHead.prosses');
     });
 
 

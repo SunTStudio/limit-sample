@@ -16,122 +16,265 @@ class Detail_DepartmentSeeder extends Seeder
     {
         Detail_departements::create([
             'departement_id' => 1,
-            'name' => 'Marketing',
             'code' => 'MKT',
-        ]);
-
-        Detail_departements::create([
-            'departement_id' => 13,
-            'name' => 'Process Engineering',
-            'code' => 'PE',
+            'name' => 'Marketing',
         ]);
 
         Detail_departements::create([
             'departement_id' => 3,
-            'name' => 'New Product Development',
             'code' => 'NPD',
+            'name' => 'New Product Development',
         ]);
 
         Detail_departements::create([
             'departement_id' => 3,
-            'name' => 'Research And Development',
             'code' => 'RND',
-        ]);
-
-        Detail_departements::create([
-            'departement_id' => 12,
-            'name' => 'Assy Koja',
-            'code' => 'ASSY',
-        ]);
-
-        Detail_departements::create([
-            'departement_id' => 12,
-            'name' => 'Injection Surface',
-            'code' => 'INJ',
+            'name' => 'Research And Development',
         ]);
 
         Detail_departements::create([
             'departement_id' => 5,
-            'name' => 'Human Resource',
             'code' => 'HR',
+            'name' => 'Human Resource',
         ]);
 
         Detail_departements::create([
             'departement_id' => 5,
-            'name' => 'General Affair',
             'code' => 'GA',
+            'name' => 'General Affair',
         ]);
 
         Detail_departements::create([
             'departement_id' => 5,
-            'name' => 'Environtment Health Safety',
             'code' => 'EHS',
+            'name' => 'Environtment Health Safety',
         ]);
 
         Detail_departements::create([
             'departement_id' => 5,
-            'name' => 'Information Technology',
             'code' => 'IT',
+            'name' => 'Information Technology',
         ]);
 
         Detail_departements::create([
             'departement_id' => 5,
-            'name' => 'Export Import',
             'code' => 'EXIM',
+            'name' => 'Export Import',
         ]);
 
         Detail_departements::create([
             'departement_id' => 5,
-            'name' => 'Legal',
             'code' => 'LA',
+            'name' => 'Legal',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 5,
+            'code' => 'PNP',
+            'name' => 'Payroll & Personalia',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 5,
+            'code' => 'GA MBT',
+            'name' => 'GA MBT',
         ]);
 
         Detail_departements::create([
             'departement_id' => 6,
-            'name' => 'Purchasing',
             'code' => 'PUR',
+            'name' => 'Purchasing',
         ]);
 
         Detail_departements::create([
             'departement_id' => 7,
-            'name' => 'Finance',
             'code' => 'FA',
+            'name' => 'Finance',
         ]);
 
         Detail_departements::create([
-            'departement_id' => 13,
-            'name' => 'Quality Control',
-            'code' => 'QC',
+            'departement_id' => 7,
+            'code' => 'CGLT',
+            'name' => 'Coasting, General Ledger & Tax',
         ]);
 
         Detail_departements::create([
-            'departement_id' => 13,
-            'name' => 'Quality Assurance',
-            'code' => 'QA',
+            'departement_id' => 9,
+            'code' => 'PPC',
+            'name' => 'Production Planning Control',
         ]);
 
         Detail_departements::create([
-            'departement_id' => 12,
-            'name' => 'Delivery',
+            'departement_id' => 9,
+            'code' => 'IC',
+            'name' => 'Inventory Control',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 9,
+            'code' => 'PNWHFG',
+            'name' => 'Planning & WHFG',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 9,
+            'code' => 'INC',
+            'name' => 'Incoming',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 9,
+            'code' => 'WHRMNWHFG',
+            'name' => 'WHRM & WHRG',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 9,
+            'code' => 'PA',
+            'name' => 'Production Asselmbling',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 9,
+            'code' => 'ASMBLI',
+            'name' => 'Assembling',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 9,
             'code' => 'DEL',
-        ]);
-
-        Detail_departements::create([
-            'departement_id' => 12,
-            'name' => 'Warehouse',
-            'code' => 'WH',
-        ]);
-
-        Detail_departements::create([
-            'departement_id' => 12,
-            'name' => 'Maintanance Engineering',
-            'code' => 'ME',
+            'name' => 'Delivery',
         ]);
 
         Detail_departements::create([
             'departement_id' => 11,
-            'name' => 'Board Of Direction',
             'code' => 'BOD',
+            'name' => 'Board of Direction',
         ]);
+
+        Detail_departements::create([
+            'departement_id' => 12,
+            'code' => 'HW',
+            'name' => 'Warehouse',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'PE',
+            'name' => 'Process Engineering',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'ASSY',
+            'name' => 'Assy Koja',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'INJ',
+            'name' => 'Injection Surface',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'ME',
+            'name' => 'Maintenance Engineering',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'MM',
+            'name' => 'Mold Maintenance',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'PEINJ',
+            'name' => 'PE Injection',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'PESUR',
+            'name' => 'PE Surface',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'PEASS',
+            'name' => 'PE Assembling',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'PEPROJ',
+            'name' => 'PE Project',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'MEINJ',
+            'name' => 'ME Injection',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'MESUR',
+            'name' => 'ME Surface',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'MEASS',
+            'name' => 'ME Assembling',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'MEUTY',
+            'name' => 'ME Utility',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 14,
+            'code' => 'BNF',
+            'name' => 'Built & Facility',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 15,
+            'code' => 'QC',
+            'name' => 'Quality Control',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 15,
+            'code' => 'QA',
+            'name' => 'Quality Engineering',
+        ]);
+
+        Detail_departements::create([
+            'departement_id' => 15,
+            'code' => 'QE',
+            'name' => 'Quality Engineering',
+        ]);
+        Detail_departements::create([
+            'departement_id' => 15,
+            'code' => 'QRO',
+            'name' => 'Quality Rep. Off',
+        ]);
+
+        // Detail_departements::create([
+        //     'departement_id' => 14,
+        //     'name' => 'Process Engineering',
+        //     'code' => 'BOD',
+        // ]);
+
+        // Detail_departements::create([
+        //     'departement_id' => 14,
+        //     'name' => 'Maintenance E',
+        //     'code' => 'BOD',
+        // ]);
     }
 }

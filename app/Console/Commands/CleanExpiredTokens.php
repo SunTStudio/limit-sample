@@ -39,6 +39,7 @@ class CleanExpiredTokens extends Command
      */
     public function handle()
     {
+        //query untuk menghapus token user setiap 24 jam
         DB::table('personal_access_tokens')
             ->where('created_at', '<',  Carbon::now()->subHours(24))
             ->delete();

@@ -78,5 +78,16 @@ class DepartmentSeeder extends Seeder
             'code' => 'PEQA',
             'name' => 'PEQUALITY',
         ]);
+
+        Departments::create([
+            'code' => 'PM',
+            'name' => 'PEME',
+        ]);
+
+        Departments::create([
+            'code' => 'QA',
+            'name' => 'Quality Engineering',
+        ]);
+
     }
 }

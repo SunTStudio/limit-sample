@@ -8,7 +8,7 @@
 @section('header')
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
-            <h2>Limit Sample - <strong>Part D26A</strong> </h2>
+            <h2>Limit Sample - <strong>Part</strong> </h2>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                     <a href="{{ url('/limit-sample/model') }}">Model</a>

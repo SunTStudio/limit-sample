@@ -70,6 +70,10 @@
     <script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/js/lightbox.min.js"></script>
 
     <script>
+        const user_id = @json(auth()->user()->id);
+        const secHead1 = @json($secHead1);
+        const secHead2 = @json($secHead2);
+        const DeptHead = @json($DeptHead);
         //datatables deleted limit sample data
         $(document).ready(function() {
             $('#arsip').DataTable({
@@ -319,7 +323,7 @@
                                                                                                         <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date2} </strong></p>
                                                                                                     ` : ` `}
 
-                                                                ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Control' && item.penolak_posisi == 'Supervisor' ? `
+                                                                ${item.status == 'tolak' && item.penolak_id == secHead1.user_id && item.penolak_posisi == 'Supervisor' ? `
                                                                                                         <br><p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
                                                                                                     ` : `<br><br>`}
                                                                 <br>
@@ -333,7 +337,7 @@
                                                                                                         <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
                                                                                                     ` : ` `}
 
-                                                                ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Assurance' && item.penolak_posisi == 'Supervisor' ? `
+                                                                ${item.status == 'tolak' && item.penolak_id == secHead2.user_id && item.penolak_posisi == 'Supervisor' ? `
                                                                                                         <br><p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
                                                                                                     ` : `<br><br>`}
                                                                 <br>

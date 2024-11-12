@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\AreaPart; 
+use App\Models\AreaPart;
 use App\Models\ModelPart;
 use App\Models\Part;
 use App\Models\PartArea;
@@ -21,6 +21,12 @@ class ExcelImportController extends Controller
         $lastIdAreapart = AreaPart::orderByDesc('id')->first();
         $part = Part::find($partArea->part_id);
         $modelPart = ModelPart::find($part->model_part_id);
+
+        if($lastIdAreapart == null){
+            $lastId = 1;
+        }else{
+            $lastId = $lastIdAreapart->id;
+        }
 
         $request->validate([
             'excel_file' => 'required|mimes:xlsx,csv,xls',
@@ -47,7 +53,7 @@ class ExcelImportController extends Controller
                 $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
                 if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])) {
                     // Buat nama baru dengan menambahkan '1' sebelum ekstensi file
-                    $newFileName = $lastIdAreapart->id . pathinfo($fileName, PATHINFO_FILENAME) . '.' . $fileExtension;
+                    $newFileName = $lastId . pathinfo($fileName, PATHINFO_FILENAME) . '.' . $fileExtension;
                     // Ekstrak file ke lokasi sementara
                     $zip->extractTo(storage_path('app/temp/'), $fileName);
                     $sourceFilePath = storage_path('app/temp/' . $fileName);
@@ -73,11 +79,6 @@ class ExcelImportController extends Controller
             if ($index === 1 || $index === 2) {
                 continue; // Lewati baris pertama dan kedua
             }
-            // // Ambil gambar berdasarkan koordinat gambar di lembar kerja
-            // $fotoKeSatu = $this->uploadImageFromExcel($spreadsheet, $index + 2, 'L');
-            // $fotoKeDua = $this->uploadImageFromExcel($spreadsheet, $index + 2, 'M');
-            // $fotoKeTiga = $this->uploadImageFromExcel($spreadsheet, $index + 2, 'N');
-            // $fotoKeEmpat = $this->uploadImageFromExcel($spreadsheet, $index + 2, 'O');
 
             //apabila colomn sebaris kosong terdeteksi maka akan di skip
             if ($row['A'] == '') {
@@ -107,10 +108,10 @@ class ExcelImportController extends Controller
                 'appearance' => $row['I'],
                 'jumlah' => $row['J'],
                 'metode_pengecekan' => $row['K'],
-                'foto_ke_satu' => $lastIdAreapart->id . $row['L']  ,
-                'foto_ke_dua' =>$lastIdAreapart->id . $row['M'] ,
-                'foto_ke_tiga' =>$lastIdAreapart->id . $row['N'] ,
-                'foto_ke_empat' =>$lastIdAreapart->id . $row['O'] ,
+                'foto_ke_satu' => $lastId . $row['L']  ,
+                'foto_ke_dua' =>$lastId . $row['M'] ,
+                'foto_ke_tiga' =>$lastId . $row['N'] ,
+                'foto_ke_empat' =>$lastId . $row['O'] ,
                 'sec_head_approval_date1' => $row['P'] ?? null,
                 'sec_head_approval_date2' => $row['Q'] ?? null,
                 'dept_head_approval_date' => $row['R'] ?? null,

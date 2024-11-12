@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Spatie\Permission\Models\Role;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class RolesSeeder extends Seeder
 {
@@ -16,10 +16,6 @@ class RolesSeeder extends Seeder
     {
         Role::create([
             'name' => 'admin',
-            'guard_name' => 'web'
-        ]);
-        Role::create([
-            'name' => 'adminLS',
             'guard_name' => 'web'
         ]);
         Role::create([

@@ -24,9 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Membuat direktif Blade kustom @hasRole
         Blade::directive('hasRole', function ($role) {
-            return "<?php if(in_array($role, session('roles', []))): ?>";
+            return "<?php if(auth()->user()->hasRole($role)): ?>";
         });
 
         // Menutup direktif kustom

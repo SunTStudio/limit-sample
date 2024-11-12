@@ -18,11 +18,10 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
+    protected $guarded = [
+        'id'
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -33,16 +32,6 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
-    public function hasRole($role)
-    {
-        // Mengambil peran pengguna dari sesi
-        $roles = session('roles', []);
-
-        // Menggunakan in_array untuk memeriksa apakah peran ada dalam sesi
-        return in_array($role, $roles);
-    }
-
 
     /**
      * The attributes that should be cast.
@@ -56,6 +45,11 @@ class User extends Authenticatable
     public function position()
     {
         return $this->belongsTo(Position::class, 'position_id');
+    }
+
+    public function manageAccess()
+    {
+        return $this->hasMany(ManageAccess::class);
     }
     // public function areaPart()
     // {

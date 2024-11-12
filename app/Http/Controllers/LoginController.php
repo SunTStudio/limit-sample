@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Departments;
 use App\Models\Detail_departements;
 use App\Models\Guest;
+use App\Models\ManageAccess;
 use App\Models\Position;
 use App\Models\User;
 use Carbon\Carbon;
@@ -32,11 +33,13 @@ class LoginController extends Controller
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([
-            'username' => ['required'],
-            'password' => ['required'],
+            'username' => 'required',
+            'password' => 'required',
         ]);
 
+        //melakukan autentikasi login dari username dan password
         if (Auth::attempt($credentials)) {
+            //menyimpan seluruh data untuk keperluan akses
             $userData = Auth::user();
             $users = User::all()->toArray();
             $depts = Departments::all()->toArray();
@@ -44,6 +47,7 @@ class LoginController extends Controller
             $positions = Position::all()->toArray();
             $roles = Auth::user()->getRoleNames()->toArray();
 
+            //menyimpan data sebelumnya kedalam session
             $request->session()->regenerate();
             $request->session()->put('user', $userData);
             $request->session()->put('all_users', $users);
@@ -54,8 +58,13 @@ class LoginController extends Controller
 
             session()->put('roles', $roles);
 
+            //membuat token untuk login
             $token = $userData->createToken('API Token')->plainTextToken;
+
+            //menyimpan token kesession untuk akses route
             $request->session()->put('token', $token);
+
+            //jika login sebagai guest maka tambah data guest
             if ($request->username == 'guest') {
                 Guest::create([
                     'guest_name' => $request->guest_name,
@@ -169,11 +178,15 @@ class LoginController extends Controller
         }
     }
 
+
     //login dengan portal AJI
     public function directToExternalSite(Request $request)
     {
-        $token = $request->token;
+        $encryptedToken = $request->token;
+
+        $token = base64_decode($encryptedToken);
         $request->session()->put('token', $token);
+
         $client = new Client();
 
         $response = $client->get(env('API_BASE_URL') . '/api/user', [
@@ -186,6 +199,10 @@ class LoginController extends Controller
         if (isset($data['status']) && $data['status'] === 'success') {
             $userData = $data['user'];
             // Save token and user data to session
+            $userId = User::where('username', $userData['username'])->pluck('id')->first();
+            Auth::loginUsingId($userId);
+            $request->session()->regenerate();
+
             $request->session()->put('user', $userData);
 
             // Synchronize roles
@@ -202,18 +219,11 @@ class LoginController extends Controller
 
             $request->session()->put('permissions', $permissions);
             $this->fetchUserData($request, $token);
+            $secHead1 = ManageAccess::where('peran','Section Head 1')->first();
+            $secHead2 = ManageAccess::where('peran','Section Head 2')->first();
+            $DeptHead = ManageAccess::where('peran','Department Head')->first();
 
-            // // Create a user instance manually
-            // $user = new User(); // Use your User model namespace
-            // $user->id = $userData['id']; // Ensure this ID matches your API user ID
-            // $user->name = $userData['name'];
-            // $user->email = $userData['email'];
-            // $user->password = $userData['password'];
-            // // You don't need to set the password here if it's not used
-
-            // // Log the user in using their details (this method creates a session)
-            // Auth::login($user); // 'true' for remember me
-            if (session('user_detail_dept_name') != 'Quality Control' && session('user_detail_dept_name') != 'Quality Assurance' && session('roles', []) != 'AdminLS') {
+            if ((auth()->user()->id != $secHead1->user_id && auth()->user()->id != $secHead2->user_id && auth()->user()->id != $DeptHead->user_id) && !auth()->user()->hasRole('AdminLS') ) {
                 Guest::create([
                     'guest_name' => $userData['npk'],
                     'login_date' => Carbon::now()->format('Y-m-d'),
@@ -229,12 +239,22 @@ class LoginController extends Controller
             $request->session()->put('status_login', 'api');
 
             // Redirect based on roles
-            return redirect()->route('limitSample.dashboard')->with('success', 'Login successful.');
+            return redirect()->route('limitSample.dashboards')->with('success', 'Login successful.');
         } else {
             return redirect()
                 ->back()
                 ->withErrors(['message' => 'Invalid credentials.']);
         }
+    }
+
+    public function toPortal(Request $request)
+    {
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+        Auth::logout();
+
+        return redirect(env('API_BASE_URL')) ;
     }
 
     //login dari PORTAL

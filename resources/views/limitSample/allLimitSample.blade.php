@@ -5,7 +5,6 @@
         href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.4.0/css/responsive.bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/css/lightbox.min.css" rel="stylesheet" />
-
     <style>
         .product-imitation {
             height: 15rem;
@@ -203,6 +202,13 @@
     <script src="https://cdn.datatables.net/responsive/2.4.0/js/responsive.bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/js/lightbox.min.js"></script>
     <script>
+
+        const user_id = @json(auth()->user()->id);
+        const secHead1 = @json($secHead1);
+        const secHead2 = @json($secHead2);
+        const DeptHead = @json($DeptHead);
+        var dataRolesAdmin = @json(auth()->user()->hasRole('AdminLS'));
+        var positionUser = @json(auth()->user()->position ? auth()->user()->position->position : 'unknown');
         let listCount = 0;
 
         function listModel() {
@@ -306,6 +312,7 @@
         let formUrlSearch = document.getElementById('formUrlSearch');
         let search = document.getElementById('search');
         const dataRoles = @json(session('roles'));
+
         let csrf_token = '{{ csrf_token() }}';
 
         function allSearch() {
@@ -358,13 +365,13 @@
                                                                 <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"
                                                                     class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                                         class="fa fa-long-arrow-right"></i> </a>
-                                                                ${dataRoles == 'AdminLS' ? `
+                                                                ${dataRolesAdmin ? `
                                                                 <a href="{{ url('/limit-sample/model/edit/') }}/${combinedData.id}"
                                                                     class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i>
                                                                 </a>` : ''
                                                                     }
                                                             </div>
-                                                            ${dataRoles == 'AdminLS' ? `
+                                                            ${dataRolesAdmin ? `
                                                             <div class="d-flex">
 
                                                                 <form action="{{ url('/limit-sample/model/delete/') }}/${combinedData.id}"
@@ -387,7 +394,7 @@
                                                                 <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"
                                                                     class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                                         class="fa fa-long-arrow-right"></i> </a>
-                                                                ${dataRoles == 'AdminLS'?`
+                                                                ${dataRolesAdmin?`
                                                         <a href="{{ url('/limit-sample/part/edit/') }}/${combinedData.id}"
                                                             class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                                 class="fa fa-edit"></i>
@@ -405,7 +412,7 @@
                                                                 <a data-toggle="modal" data-target="#${combinedData.id}"
                                                                     class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                                         class="fa fa-long-arrow-right"></i> </a>
-                                                                ${dataRoles == "Admin"? `
+                                                                ${dataRolesAdmin? `
                                                         <a href="{{ url('/limit-sample/area-part/edit/') }}/${combinedData.id}"
                                                             class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                                 class="fa fa-edit"></i>
@@ -477,13 +484,13 @@
                                                     <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"
                                                         class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                             class="fa fa-long-arrow-right"></i> </a>
-                                                    ${dataRoles == 'AdminLS' ? `
+                                                    ${dataRolesAdmin ? `
                                                                             <a href="{{ url('/limit-sample/model/edit/') }}/${combinedData.id}"
                                                                                 class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i>
                                                                             </a>` : ''
                                                         }
                                                 </div>
-                                                ${dataRoles == 'AdminLS' ? `
+                                                ${dataRolesAdmin ? `
                                                                         <div class="d-flex">
 
                                                                             <form action="{{ url('/limit-sample/model/delete/') }}/${combinedData.id}"
@@ -557,7 +564,7 @@
                                                     <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"
                                                         class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                             class="fa fa-long-arrow-right"></i> </a>
-                                                    ${dataRoles == 'AdminLS'?`
+                                                    ${dataRolesAdmin?`
                                                                     <a href="{{ url('/limit-sample/part/edit/') }}/${combinedData.id}"
                                                                         class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                                             class="fa fa-edit"></i>
@@ -626,7 +633,7 @@
                                                     <a data-toggle="modal" data-target="#${combinedData.id}"
                                                         class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                             class="fa fa-long-arrow-right"></i> </a>
-                                                    ${dataRoles == "Admin"? `
+                                                    ${dataRolesAdmin? `
                                                                     <a href="{{ url('/limit-sample/area-part/edit/') }}/${combinedData.id}"
                                                                         class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                                             class="fa fa-edit"></i>
@@ -782,7 +789,7 @@
                                                                                                                                     <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date2} </strong></p>
                                                                                                                                 ` : ``}
 
-                                                                ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Control' && item.penolak_posisi == 'Supervisor' ? `
+                                                                ${item.status == 'tolak' && item.penolak_id == secHead1.user_id && item.penolak_posisi == 'Supervisor' ? `
                                                                                                                                     <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
                                                                                                                                 ` : ``}
                                                                 <br>
@@ -796,7 +803,7 @@
                                                                                                                                     <p style="color: rgb(18, 1, 170);" class="p-0 m-0"><strong> Pada ${item.sec_head_approval_date1} </strong></p>
                                                                                                                                 ` : ``}
 
-                                                                ${item.status == 'tolak' && penolakDetailDeptName == 'Quality Assurance' && item.penolak_posisi == 'Supervisor' ? `
+                                                                ${item.status == 'tolak' && item.penolak_id == secHead2.user_id && item.penolak_posisi == 'Supervisor' ? `
                                                                                                                                     <p style="color: red;" class="p-0 m-0"><strong> Ditolak </strong></p>
                                                                                                                                 ` : ``}
                                                                 <br>
@@ -920,13 +927,13 @@
                                                                 <a href="{{ url('/limit-sample/model/') }}/${combinedData.id}/part"
                                                                     class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                                         class="fa fa-long-arrow-right"></i> </a>
-                                                                ${dataRoles == 'AdminLS' ? `
+                                                                ${dataRolesAdmin ? `
                                                                 <a href="{{ url('/limit-sample/model/edit/') }}/${combinedData.id}"
                                                                     class="btn btn-xs btn-outline btn-primary mr-1">Edit <i class="fa fa-edit"></i>
                                                                 </a>` : ''
                                                                     }
                                                             </div>
-                                                            ${dataRoles == 'AdminLS' ? `
+                                                            ${dataRolesAdmin ? `
                                                             <div class="d-flex">
 
                                                                 <form action="{{ url('/limit-sample/model/delete/') }}/${combinedData.id}"
@@ -949,7 +956,7 @@
                                                                 <a href="{{ url('/limit-sample/part/') }}/${combinedData.id}"
                                                                     class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                                         class="fa fa-long-arrow-right"></i> </a>
-                                                                ${dataRoles == 'AdminLS'?`
+                                                                ${dataRolesAdmin?`
                                                         <a href="{{ url('/limit-sample/part/edit/') }}/${combinedData.id}"
                                                             class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                                 class="fa fa-edit"></i>
@@ -967,7 +974,7 @@
                                                                 <a data-toggle="modal" data-target="#${combinedData.id}"
                                                                     class="btn btn-xs btn-outline btn-primary">Lihat <i
                                                                         class="fa fa-long-arrow-right"></i> </a>
-                                                                ${dataRoles == "Admin"? `
+                                                                ${dataRolesAdmin? `
                                                         <a href="{{ url('/limit-sample/area-part/edit/') }}/${combinedData.id}"
                                                             class="btn btn-xs btn-outline btn-primary mr-1">Edit <i
                                                                 class="fa fa-edit"></i>

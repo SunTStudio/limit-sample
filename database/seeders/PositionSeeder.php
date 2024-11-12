@@ -15,6 +15,11 @@ class PositionSeeder extends Seeder
     public function run()
     {
         Position::create([
+            'position' => 'BOD',
+            'code' => 'BOD',
+        ]);
+
+        Position::create([
             'position' => 'Dept Head',
             'code' => 'DEPT',
         ]);
@@ -25,32 +30,33 @@ class PositionSeeder extends Seeder
         ]);
 
         Position::create([
+            'position' => 'Officer',
+            'code' => 'OFFICER',
+        ]);
+
+        Position::create([
             'position' => 'Staff',
             'code' => 'STAFF',
-        ]);
-
-        Position::create([
-            'position' => 'SUB',
-            'code' => 'SUB',
-        ]);
-
-        Position::create([
-            'position' => 'BOD',
-            'code' => 'BOD',
-        ]);
-
-        Position::create([
-            'position' => 'Leader',
-            'code' => 'LEAD',
         ]);
 
         Position::create([
             'position' => 'Foreman',
             'code' => 'FRM',
         ]);
+        
+        Position::create([
+            'position' => 'Leader',
+            'code' => 'LEAD',
+        ]);
+
         Position::create([
             'position' => 'Member',
             'code' => 'OP',
+        ]);
+
+        Position::create([
+            'position' => 'SUB',
+            'code' => 'SUB',
         ]);
     }
 }

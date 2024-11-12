@@ -20,6 +20,8 @@ class CreateUsersTable extends Migration
             $table->string('npk')->unique()->nullable();
             $table->string('username')->unique();
             $table->string('gender');
+            $table->date('tgl_masuk')->nullable();
+            $table->date('tgl_lahir')->nullable();
             $table->integer('dept_id')->references('id')->on('departement')->nullable();
             $table->integer('position_id')->references('id')->on('position')->nullable();
             $table->integer('detail_dept_id')->references('id')->on('detail_departement')->nullable();

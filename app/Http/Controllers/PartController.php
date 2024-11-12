@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ManageAccess;
 use App\Models\ModelPart;
 use App\Models\Part;
 use App\Models\PartArea;
@@ -20,16 +21,23 @@ class PartController extends Controller
      */
     public function index(Request $request, $id)
     {
+        $secHead1 = ManageAccess::where('peran','Section Head 1')->first();
+        $secHead2 = ManageAccess::where('peran','Section Head 2')->first();
+        $DeptHead = ManageAccess::where('peran','Department Head')->first();
+        //mengambil data part dengan paginasion per halaman 4
         $parts = Part::where('model_part_id', $id)->simplePaginate(4);
+        //mengambil data model part bedasarkan id request
         $model = ModelPart::find($id);
-        if(in_array('Guest', session('roles', []))){
+
+        //melakukan pengecekan apabila pengakses adalah role Guest maka count pada model yang diakses bertambah++
+        if(auth()->user()->id != $secHead1->user_id && auth()->user()->id != $secHead2->user_id && auth()->user()->id != $DeptHead->user_id){
             $count = $model->count_visit;
                         $count++;
                         $model->update([
                             'count_visit' => $count,
                         ]);
         }
-        return response()->view('part.index', compact('parts', 'model'));
+        return response()->view('part.index', compact('secHead1','secHead2','DeptHead','parts', 'model'));
     }
 
     public function search(Request $request, $id)
@@ -43,9 +51,12 @@ class PartController extends Controller
             // Kembalikan hasil pencarian dalam format JSON
             return response()->json($parts);
         } else {
+            //mengambil seluruh data part bedasarkan model part id yang diakses
             $parts = Part::where('model_part_id', $id)
                 ->where('name', 'LIKE', "%$request->searchPart%")
                 ->simplePaginate(4);
+
+            //mengambil model part bedasarkan parameter id yang dikirimkan
             $model = ModelPart::find($id);
 
             return view('part.index', compact('parts', 'model'));
@@ -59,6 +70,7 @@ class PartController extends Controller
      */
     public function create($id)
     {
+        //mengambil data model bedasarkan id request
         $model = ModelPart::find($id);
         return response()->view('part.create', compact('model'));
     }
@@ -126,7 +138,9 @@ class PartController extends Controller
      */
     public function edit(Part $part, $id)
     {
+        //mengambil data part bedasarkan id request
         $part = Part::find($id);
+        //mengambil data model part bedasarkan model part id dari data part
         $model = ModelPart::find($part->model_part_id);
         return response()->view('part.edit', compact('part', 'model'));
     }
@@ -140,6 +154,7 @@ class PartController extends Controller
      */
     public function update(Request $request, Part $part, $id)
     {
+        //mengambil data part lama bedasarkan id request
         $oldPart = Part::find($id);
         $validatedData = $request->validate([
             'name' => 'required',
@@ -168,16 +183,25 @@ class PartController extends Controller
         if ($oldImage && file_exists(public_path('img/part/' . $oldImage))) {
             unlink(public_path('img/part/' . $oldImage));
         }
+
+        //update data part lama dengan data part baru
         $oldPart->update($validatedData);
+
+        //menyimpan id model part untuk dikirim ke view part
         $id = $oldPart->model_part_id;
+
         return redirect()->route('part.index', compact('id'))->with('success','Part Berhasil diPerbarui!');
     }
 
     public function kelola(Request $request, $id)
     {
+        //mengambil data part bedasarkan id request
         $part = Part::find($id);
+        //mengambil data part area bedasarkan part_id
         $partAreas = PartArea::where('part_id', $id)->get();
+        //mengambil data total part
         $partAreasCount = PartArea::where('part_id', $id)->count();
+        //mengambil data model part bedasarkan model part id dari data part
         $model = ModelPart::find($part->model_part_id);
         return view('part.partArea', compact('part', 'model', 'partAreas', 'partAreasCount'));
     }
@@ -190,6 +214,7 @@ class PartController extends Controller
             return back();
         }
 
+        //melalukan perulangan bedasarkan nilai count (nilai count adalah jumlah data yang dimasukan)
         for ($i = 1; $i <= $count; $i++) {
             if ($request->{'id' . $i} != null) {
                 $oldData = PartArea::find($request->{'id' . $i});
@@ -225,6 +250,7 @@ class PartController extends Controller
     {
         // Temukan data Part berdasarkan ID
         $part = Part::find($id);
+        //mengambil data model part bedasarkan model part id dari data part
         $modelPart = ModelPart::find($part->model_part_id);
 
         // Cek apakah Part ditemukan
@@ -250,8 +276,10 @@ class PartController extends Controller
     }
 
     public function listPart(Request $request,$id){
+        //pengecekan apakah request adalah ajax
         if($request->ajax()){
             $data = Part::where('model_part_id',$id)->get();
+            //return data ke datatables
             return DataTables::of($data)->make(true);
         }
     }
